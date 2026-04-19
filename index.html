@@ -11,6 +11,7 @@
             --bg-cream: #fdf6e3;
             --text-dark: #2d3436;
             --white: #ffffff;
+            --text-muted: #636e72;
         }
 
         * {
@@ -146,6 +147,58 @@
             color: var(--text-dark);
             width: 400px;
         }
+
+        .details-link {
+            display: block;
+            text-align: center;
+            width: 100%;
+            margin-top: 15px;
+            padding: 10px;
+            background: #f0ebff;
+            border: none;
+            border-radius: 8px;
+            color: var(--primary-purple);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .about-page {
+            background: var(--bg-cream);
+            padding: 80px 10%;
+            color: var(--text-dark);
+        }
+
+        .about-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .about-container h2 { font-size: 32px; margin-bottom: 20px; }
+        .about-container h3 { font-size: 20px; margin: 30px 0 15px 0; }
+        .about-container p { line-height: 1.6; margin-bottom: 15px; color: #4b5563; }
+        .about-container ul { margin-left: 20px; margin-bottom: 20px; }
+        .about-container li { margin-bottom: 10px; line-height: 1.5; color: #4b5563; }
+
+        .feedback-box {
+            background: #3d4451;
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 50px;
+        }
+
+        .feedback-btns button {
+            padding: 8px 20px;
+            margin-left: 10px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
@@ -154,8 +207,7 @@
     <div class="logo" onclick="showPage('home')">worklink</div>
     <div class="nav-links">
         <a onclick="showPage('business')">Для бизнеса</a>
-        <a href="#">О нас</a>
-        <a href="#">База знаний</a>
+        <a onclick="showPage('about')">О нас</a>
     </div>
     <div class="auth-buttons">
         <button class="btn-login" onclick="showPage('login')">Вход</button>
@@ -180,7 +232,7 @@
                 <div style="font-size:12px; color:gray">08:00 - 20:00 · Сегодня</div>
                 <div style="font-size:14px; margin-top:10px">Услуги по погрузке-выгрузке</div>
                 <div style="color:var(--primary-purple); font-size:12px; margin-top:5px">📍 Заммлер Казахстан</div>
-                <button style="width:100%; margin-top:15px; padding:10px; background:#f0ebff; border:none; border-radius:8px; color:var(--primary-purple)">Подробнее</button>
+                <a href="https://zammler.com.kz/services/fulfillment/" target="_blank" class="details-link">Подробнее</a>
             </div>
         </div>
     </div>
@@ -214,6 +266,54 @@
                 <input type="text" placeholder="+7 775 876 74 75">
             </div>
             <button class="submit-btn">Оставить заявку</button>
+        </div>
+    </div>
+</div>
+
+<div id="about" class="page">
+    <div class="about-page">
+        <div class="about-container">
+            <h2>Что такое WorkLink</h2>
+            <p><strong>WorkLink</strong> — это сервис, который помогает компаниям быстро находить проверенных исполнителей на посменную работу. Через платформу вы можете оформить заявку на нужную роль, выбрать время, количество исполнителей и быть уверенными в качестве работы — WorkLink всё организует.</p>
+
+            <h3>Как разместить заявку?</h3>
+            <p>Войдите в личный кабинет WorkLink по номеру телефона. Создайте заявку, указав:</p>
+            <ul>
+                <li>Филиал/адрес</li>
+                <li>Позиция (фасовка, выкладка, доставка и т.д.)</li>
+                <li>Количество работников</li>
+                <li>Пол (если важно)</li>
+                <li>Дату и время смены</li>
+                <li>Номер телефона (кто встретит исполнителя)</li>
+            </ul>
+            <p>Отправьте заявку на публикацию. После проверки она появится в системе, и исполнители смогут откликнуться. 💡 Среднее время подбора исполнителей — до 30 минут после публикации.</p>
+
+            <h3>Как проходит процесс отбора?</h3>
+            <ol>
+                <li>Заявка публикуется в приложении исполнителей.</li>
+                <li>Исполнители проходят фильтрацию по рейтингу, опыту и требованиям ранее указанным со стороны Заказчика при заключении договора.</li>
+                <li>WorkLink формирует список подходящих кандидатов и направляет на смену.</li>
+                <li>Все исполнители проходят верификацию личности, проверку документов и наличие медкнижки при необходимости.</li>
+            </ol>
+
+            <h3>Оплата услуг</h3>
+            <p>Оплата производится в формате предоплаты по безналичному расчёту на основании заранее согласованного объема услуг. В конце месяца согласно Акта выполненных работ списывается сумма услуг с ранее пополненного баланса. WorkLink выставляет счёт после подтверждения закрытых смен.</p>
+
+            <h3>Стандарты сервиса WorkLink для партнёров</h3>
+            <ul>
+                <li>подбор только проверенных исполнителей;</li>
+                <li>своевременное закрытие смен — 80% заявок закрываются в день публикации;</li>
+                <li>вежливую и ответственную коммуникацию;</li>
+                <li>аналитику по филиалам и сменам — доступно в личном кабинете.</li>
+            </ul>
+
+            <div class="feedback-box">
+                <span>Было ли полезно?</span>
+                <div class="feedback-btns">
+                    <button>Да</button>
+                    <button>Нет</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
