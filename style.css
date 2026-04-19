@@ -87,6 +87,42 @@ nav {
     .hero-image-section { display: none; }
 }
 
+/* Кошелек */
+.wallet-card {
+    background: linear-gradient(135deg, var(--primary-purple), #8e61ff);
+    color: white;
+    padding: 25px;
+    border-radius: 20px;
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.balance-amount { font-size: 32px; font-weight: 800; }
+
+/* Система рейтинга */
+.stars { color: #fdcb6e; font-size: 18px; margin-top: 5px; }
+.rating-input {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin: 20px 0;
+}
+.star-btn {
+    font-size: 30px;
+    cursor: pointer;
+    color: #ddd;
+    transition: 0.2s;
+}
+.star-btn.active { color: #fdcb6e; }
+
+/* Кнопки действий в карточках */
+.card-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
 .reg-btn {
     background: rgba(255,255,255,0.2); 
     padding: 10px 20px; 
