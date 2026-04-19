@@ -3,198 +3,482 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkLink — Ultimate Ecosystem</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <title>WorkLink — Professional Freelance Ecosystem</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
+        /* --- ПЕРЕМЕННЫЕ И ОСНОВНЫЕ СТИЛИ --- 
+        */
         :root {
             --primary: #6c38ff;
+            --primary-light: #8b61ff;
             --primary-dark: #562cd9;
-            --bg: #fdf6e3;
+            --bg: #f8f9fd;
             --card-bg: #ffffff;
-            --text: #2d3436;
-            --success: #27ae60;
-            --input-bg: #fff9e6;
-            --star: #f1c40f;
-            --accent: #ff4757;
+            --text: #1a1a1a;
+            --text-muted: #636e72;
+            --success: #00b894;
+            --danger: #d63031;
+            --warning: #fbc531;
+            --info: #0097e6;
+            --input-bg: #f1f2f6;
+            --border: #e2e8f0;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+            --shadow-md: 0 10px 15px -3px rgba(0,0,0,0.1);
+            --shadow-lg: 0 20px 25px -5px rgba(0,0,0,0.1);
+            --radius: 16px;
+            --radius-lg: 24px;
         }
 
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --bg: #1a1a1a;
-                --card-bg: #2d2d2d;
-                --text: #f1f1f1;
-                --input-bg: #3d3d3d;
-            }
+        /* Темная тема */
+        [data-theme="dark"] {
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --input-bg: #334155;
+            --border: #334155;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: var(--bg); color: var(--text); transition: 0.3s; line-height: 1.6; }
-
-        /* Navigation */
-        nav {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 20px 50px; background: var(--primary); color: white;
-            position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
-        .logo { font-weight: 800; font-size: 28px; cursor: pointer; letter-spacing: -1px; }
-        .nav-links { display: flex; align-items: center; }
-        .nav-links a { color: white; text-decoration: none; margin-left: 25px; font-size: 14px; font-weight: 600; cursor: pointer; }
 
-        .page { display: none; min-height: 100vh; padding-bottom: 80px; }
-        .active { display: block; animation: fadeIn 0.4s ease-out; }
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            transition: all 0.3s ease;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* --- СКРОЛЛБАР --- */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
+
+        /* --- ВСПОМОГАТЕЛЬНЫЕ КЛАССЫ --- */
+        .container { max-width: 1300px; margin: 0 auto; padding: 0 20px; }
+        .flex { display: flex; }
+        .align-center { align-items: center; }
+        .justify-between { justify-content: space-between; }
+        .mt-20 { margin-top: 20px; }
+        .mb-20 { margin-bottom: 20px; }
+        .text-center { text-align: center; }
+
+        /* --- ШАПКА САЙТА --- */
+        header {
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-inner { display: flex; justify-content: space-between; align-items: center; }
+        .logo { 
+            font-size: 26px; font-weight: 900; color: var(--primary); 
+            text-decoration: none; display: flex; align-items: center; gap: 8px;
+        }
+        .logo span { background: var(--primary); color: white; padding: 2px 8px; border-radius: 8px; font-size: 14px; }
+
+        .nav-menu { display: flex; gap: 30px; align-items: center; }
+        .nav-link { 
+            text-decoration: none; color: var(--text-muted); font-weight: 600; font-size: 15px;
+            transition: 0.2s; cursor: pointer;
+        }
+        .nav-link:hover, .nav-link.active { color: var(--primary); }
+
+        .user-controls { display: flex; gap: 15px; align-items: center; }
+
+        /* --- КНОПКИ --- */
+        .btn {
+            padding: 12px 24px; border-radius: var(--radius); border: none;
+            font-weight: 700; cursor: pointer; transition: 0.3s; font-size: 14px;
+            display: inline-flex; align-items: center; gap: 8px; justify-content: center;
+        }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+        .btn-ghost { background: var(--input-bg); color: var(--text); }
+        .btn-sm { padding: 8px 16px; font-size: 12px; }
+
+        /* --- СТРАНИЦЫ --- */
+        .page { display: none; padding: 40px 0; animation: fadeIn 0.4s ease; }
+        .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
-        .card { background: var(--card-bg); padding: 30px; border-radius: 24px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
 
-        /* Badges */
-        .badge { display: inline-block; padding: 4px 12px; border-radius: 8px; font-size: 11px; font-weight: 800; text-transform: uppercase; margin-right: 5px; }
-        .badge-pro { background: linear-gradient(90deg, #f1c40f, #f39c12); color: white; }
-        .badge-cat { background: var(--primary); color: white; }
-
-        /* Chat System */
-        .chat-container { height: 300px; overflow-y: auto; background: var(--input-bg); border-radius: 15px; padding: 15px; margin-bottom: 10px; }
-        .msg { margin-bottom: 10px; padding: 10px; border-radius: 10px; max-width: 80%; }
-        .msg-own { background: var(--primary); color: white; margin-left: auto; }
-        .msg-other { background: #eee; color: #333; }
-
-        /* Profile & Levels */
-        .level-bar { height: 10px; background: #eee; border-radius: 5px; margin: 10px 0; overflow: hidden; }
-        .level-progress { height: 100%; background: var(--success); transition: 0.5s; }
-
-        /* Modals */
-        .modal { 
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.7); z-index: 2000; align-items: center; justify-content: center; 
+        /* --- КАРТОЧКИ --- */
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 24px;
         }
-        .modal-content { background: var(--card-bg); padding: 40px; border-radius: 30px; width: 90%; max-width: 500px; animation: popUp 0.3s ease; }
-        @keyframes popUp { from { transform: scale(0.9); } to { transform: scale(1); } }
 
-        /* Buttons */
-        .btn { padding: 16px 25px; border-radius: 14px; border: none; font-weight: 700; cursor: pointer; transition: 0.3s; display: inline-block; text-align: center; }
-        .btn-main { background: var(--primary); color: white; width: 100%; }
-        .btn-success { background: var(--success); color: white; }
-        .btn-ghost { background: none; border: 2px solid var(--primary); color: var(--primary); }
+        /* --- ЛИЧНЫЙ КАБИНЕТ (УЛЬТРА) --- */
+        .profile-grid { display: grid; grid-template-columns: 350px 1fr; gap: 30px; }
+        .user-sidebar { position: sticky; top: 100px; }
+        .avatar-wrapper {
+            width: 120px; height: 120px; border-radius: 40px; background: var(--primary);
+            margin: 0 auto 20px; display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 48px; font-weight: 800; position: relative;
+        }
+        .verify-badge {
+            position: absolute; bottom: -5px; right: -5px; width: 35px; height: 35px;
+            background: var(--info); border: 4px solid var(--card-bg); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; color: white; font-size: 16px;
+        }
 
-        .input-group { margin-bottom: 20px; }
-        .input-group input, .input-group select, .input-group textarea { width: 100%; padding: 16px; border-radius: 14px; border: none; background: var(--input-bg); color: var(--text); }
+        .stats-box {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 25px;
+        }
+        .stat-card {
+            background: var(--input-bg); padding: 20px; border-radius: var(--radius); text-align: center;
+        }
+        .stat-card h4 { font-size: 24px; color: var(--primary); }
+        .stat-card p { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
 
-        #toasts { position: fixed; top: 100px; right: 20px; z-index: 3000; }
-        .toast { background: var(--primary); color: white; padding: 15px 25px; border-radius: 12px; margin-bottom: 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+        /* --- СИСТЕМА УРОВНЕЙ --- */
+        .level-container { margin-top: 30px; }
+        .level-header { display: flex; justify-content: space-between; margin-bottom: 10px; font-weight: 700; }
+        .progress-bar { height: 12px; background: var(--border); border-radius: 10px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--primary-light)); width: 0%; transition: 1s cubic-bezier(0.4, 0, 0.2, 1); }
+
+        /* --- ТРАНЗАКЦИИ --- */
+        .transaction-item {
+            display: flex; justify-content: space-between; padding: 15px;
+            border-bottom: 1px solid var(--border); align-items: center;
+        }
+        .tr-info h5 { font-size: 15px; }
+        .tr-info p { font-size: 12px; color: var(--text-muted); }
+        .tr-amount.plus { color: var(--success); font-weight: 800; }
+        .tr-amount.minus { color: var(--danger); font-weight: 800; }
+
+        /* --- ПОИСК И ФИЛЬТРЫ --- */
+        .search-bar {
+            background: var(--card-bg); padding: 25px; border-radius: var(--radius-lg);
+            display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 15px;
+            box-shadow: var(--shadow-md); margin-bottom: 40px;
+        }
+        .search-input {
+            background: var(--input-bg); border: 1px solid var(--border); padding: 12px 20px;
+            border-radius: var(--radius); color: var(--text); outline: none;
+        }
+
+        /* --- МОДАЛЬНЫЕ ОКНА (УЛЬТРА) --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); z-index: 2000; display: none;
+            align-items: center; justify-content: center; backdrop-filter: blur(5px);
+        }
+        .modal-box {
+            background: var(--card-bg); width: 90%; max-width: 600px;
+            border-radius: var(--radius-lg); padding: 40px; position: relative;
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        /* --- ГЕЙМИФИКАЦИЯ (АЧИВКИ) --- */
+        .achievements { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
+        .ach-badge {
+            padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 700;
+            background: var(--input-bg); color: var(--text-muted); border: 1px solid var(--border);
+        }
+        .ach-badge.unlocked { background: var(--warning); color: #000; border-color: transparent; }
+
+        /* --- КАРТОЧКА ЗАКАЗА --- */
+        .job-card {
+            display: flex; gap: 20px; padding: 25px; border-radius: var(--radius);
+            background: var(--card-bg); border: 1px solid var(--border); margin-bottom: 20px;
+            transition: 0.3s; cursor: pointer; position: relative; overflow: hidden;
+        }
+        .job-card:hover { transform: translateX(10px); border-color: var(--primary); }
+        .job-card::before {
+            content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 5px;
+            background: var(--primary); opacity: 0; transition: 0.3s;
+        }
+        .job-card:hover::before { opacity: 1; }
+        .job-price { font-size: 22px; font-weight: 900; color: var(--primary); }
+
+        /* --- ФОРМА ВХОДА --- */
+        .auth-container { max-width: 450px; margin: 80px auto; }
+        .auth-card { padding: 50px; text-align: center; }
+        .auth-header h2 { font-size: 32px; font-weight: 900; margin-bottom: 10px; }
+
+        /* --- ТЕМНАЯ ТЕМА ПЕРЕКЛЮЧАТЕЛЬ --- */
+        .theme-toggle {
+            width: 50px; height: 26px; background: var(--input-bg); border-radius: 20px;
+            position: relative; cursor: pointer; border: 1px solid var(--border);
+        }
+        .theme-ball {
+            width: 20px; height: 20px; background: var(--primary); border-radius: 50%;
+            position: absolute; top: 2px; left: 3px; transition: 0.3s;
+        }
+        [data-theme="dark"] .theme-ball { left: 25px; }
+
+        @media (max-width: 992px) {
+            .profile-grid { grid-template-columns: 1fr; }
+            .search-bar { grid-template-columns: 1fr 1fr; }
+            header .container { padding: 0 15px; }
+        }
     </style>
 </head>
-<body>
+<body data-theme="light">
 
-<div id="toasts"></div>
+<div id="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 9999;"></div>
 
-<div id="chatModal" class="modal">
-    <div class="modal-content">
-        <h2 id="chatTitle">Чат по заказу</h2>
-        <div id="chatBox" class="chat-container"></div>
-        <div style="display: flex; gap: 10px;">
-            <input type="text" id="chatInput" placeholder="Введите сообщение..." style="flex:1; padding:10px; border-radius:10px; border:none; background:var(--input-bg); color:var(--text);">
-            <button class="btn btn-main" style="width:auto;" onclick="sendMessage()">OTP</button>
+<div id="modal-deposit" class="modal-overlay">
+    <div class="modal-box">
+        <h2 class="mb-20">Пополнение баланса</h2>
+        <div class="input-group mb-20">
+            <label style="display:block; margin-bottom:8px; font-weight:700;">Сумма (₸)</label>
+            <input type="number" id="deposit-amount" class="search-input" style="width:100%" placeholder="Введите сумму...">
         </div>
-        <button class="btn btn-ghost" style="width:100%; margin-top:10px;" onclick="closeModals()">Закрыть</button>
+        <p style="font-size:12px; color:var(--text-muted); margin-bottom:20px;">Средства будут моментально зачислены на ваш виртуальный счет WorkLink.</p>
+        <div class="flex gap-10">
+            <button class="btn btn-primary" style="flex:1" onclick="financeAction('deposit')">Подтвердить</button>
+            <button class="btn btn-ghost" style="flex:1" onclick="closeModals()">Отмена</button>
+        </div>
     </div>
 </div>
 
-<nav>
-    <div class="logo" onclick="showPage('home')">worklink</div>
-    <div class="nav-links" id="guestNav">
-        <a onclick="showPage('login')">Вход</a>
-        <a onclick="showPage('register')">Регистрация</a>
-    </div>
-    <div class="nav-links" id="userNav" style="display:none">
-        <a id="dashBtn">Задачи</a>
-        <a onclick="showPage('profile')">Профиль</a>
-        <a onclick="logout()" style="color:var(--accent)">Выйти</a>
-    </div>
-</nav>
-
-<div id="home" class="page active">
-    <div class="container" style="text-align: center; padding-top: 100px;">
-        <h1 style="font-size: 56px;">Работа будущего</h1>
-        <p style="font-size: 20px; margin: 20px 0 40px;">Единственная платформа, где твой рейтинг — это твоя валюта.</p>
-        <button class="btn btn-main" style="width: auto; padding: 20px 50px;" onclick="showPage('register')">Присоединиться</button>
-    </div>
+<div id="modal-job-detail" class="modal-overlay">
+    <div class="modal-box" id="job-detail-content">
+        </div>
 </div>
 
-<div id="profile" class="page">
-    <div class="container">
-        <div class="card">
-            <div style="display: flex; align-items: center; gap: 20px;">
-                <div id="userAvatar" style="width:80px; height:80px; background:var(--primary); border-radius:20px; display:flex; align-items:center; justify-content:center; color:white; font-size:32px; font-weight:900;">W</div>
-                <div>
-                    <h2 id="pName">User</h2>
-                    <span id="pRole" class="badge badge-cat">Worker</span>
-                    <span id="pStatus" class="badge badge-pro" style="display:none;">PRO</span>
+<header>
+    <div class="container nav-inner">
+        <a href="#" class="logo" onclick="navigateTo('home')">WorkLink <span>PRO</span></a>
+        
+        <div class="nav-menu">
+            <a class="nav-link" onclick="navigateTo('home')">Главная</a>
+            <a class="nav-link" onclick="navigateTo('market')">Биржа задач</a>
+            <a class="nav-link" onclick="navigateTo('business')">Для бизнеса</a>
+        </div>
+
+        <div class="user-controls">
+            <div class="theme-toggle" onclick="toggleTheme()">
+                <div class="theme-ball"></div>
+            </div>
+            <div id="auth-buttons">
+                <button class="btn btn-outline btn-sm" onclick="navigateTo('login')">Войти</button>
+                <button class="btn btn-primary btn-sm" onclick="navigateTo('register')">Начать</button>
+            </div>
+            <div id="user-profile-nav" style="display:none;" class="flex align-center gap-15">
+                <span id="nav-balance" style="font-weight:800; color:var(--success);">0 ₸</span>
+                <div class="nav-link" onclick="navigateTo('profile')" style="display:flex; align-items:center; gap:8px;">
+                    <div id="nav-avatar" style="width:35px; height:35px; border-radius:12px; background:var(--primary); color:white; display:flex; align-items:center; justify-content:center; font-weight:800;">U</div>
                 </div>
             </div>
-            
-            <div style="margin-top: 30px;">
-                <p>Уровень опыта: <span id="levelText">1</span></p>
-                <div class="level-bar"><div id="levelProgress" class="level-progress" style="width: 10%;"></div></div>
-            </div>
         </div>
+    </div>
+</header>
 
-        <div class="card">
-            <h3>Ваш Баланс: <span id="pBalance" style="color:var(--success)">0 ₸</span></h3>
-            <div style="display:flex; gap:10px; margin-top:15px;">
-                <button class="btn btn-main" style="flex:1" onclick="openDeposit()">Пополнить</button>
-                <button class="btn btn-ghost" style="flex:1">Вывести</button>
+<div id="page-home" class="page active">
+    <div class="container">
+        <div class="flex align-center justify-between" style="padding: 100px 0;">
+            <div style="max-width: 600px;">
+                <h1 style="font-size: 64px; line-height: 1; font-weight: 900; margin-bottom: 20px;">
+                    Твой успех начинается с <span style="color:var(--primary)">правильной</span> связи.
+                </h1>
+                <p style="font-size: 20px; color: var(--text-muted); margin-bottom: 40px;">
+                    Самая технологичная платформа для поиска временной работы и исполнителей в Казахстане. Работайте честно, зарабатывайте быстро.
+                </p>
+                <div class="flex gap-15">
+                    <button class="btn btn-primary" style="padding: 18px 40px;" onclick="navigateTo('market')">Найти работу</button>
+                    <button class="btn btn-ghost" style="padding: 18px 40px;" onclick="navigateTo('business')">Нанять профи</button>
+                </div>
             </div>
-        </div>
-        
-        <div class="card">
-            <h3>О себе / Навыки</h3>
-            <textarea id="pBio" placeholder="Расскажите о своем опыте..." style="width:100%; margin-top:10px; background:var(--input-bg); border:none; border-radius:15px; padding:15px; color:var(--text);"></textarea>
-            <button class="btn btn-main" style="margin-top:10px; width:auto;" onclick="saveBio()">Сохранить</button>
+            <div class="hero-visual">
+                <div class="hero-circle"></div>
+                <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=800" class="hero-img" alt="Networking">
+            </div>
         </div>
     </div>
 </div>
 
-<div id="worker_panel" class="page"><div class="container">
-    <h2>Доступные смены</h2>
-    <div id="jobList"></div>
-</div></div>
+<div id="page-market" class="page">
+    <div class="container">
+        <div class="search-bar">
+            <input type="text" id="search-q" class="search-input" placeholder="Какую работу ищем?">
+            <select id="search-city" class="search-input">
+                <option value="">Все города</option>
+                <option>Алматы</option>
+                <option>Астана</option>
+                <option>Шымкент</option>
+            </select>
+            <select id="search-cat" class="search-input">
+                <option value="">Все категории</option>
+                <option>IT & Разработка</option>
+                <option>Доставка</option>
+                <option>Физический труд</option>
+                <option>Маркетинг</option>
+            </select>
+            <button class="btn btn-primary" onclick="filterJobs()">Поиск</button>
+        </div>
 
-<div id="business_panel" class="page"><div class="container">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-        <h2>Ваши объявления</h2>
-        <button class="btn btn-main" style="width:auto;" onclick="showPage('create_order')">+ Создать</button>
+        <div id="jobs-container">
+            </div>
     </div>
-    <div id="bizOrderList"></div>
-</div></div>
+</div>
 
-<div id="create_order" class="page"><div class="container"><div class="form-box">
-    <h2>Новая задача</h2>
-    <div class="input-group"><input type="text" id="oTitle" placeholder="Название (напр. Курьер)"></div>
-    <div class="input-group"><select id="oCat"><option value="Доставка">🛵 Доставка</option><option value="IT">💻 Программирование</option><option value="Труд">💪 Физический труд</option></select></div>
-    <div class="input-group"><input type="number" id="oPrice" placeholder="Сумма оплаты"></div>
-    <div class="input-group"><input type="text" id="oCity" placeholder="Город"></div>
-    <button class="btn btn-success" onclick="postOrder()">Опубликовать</button>
-</div></div></div>
+<div id="page-profile" class="page">
+    <div class="container">
+        <div class="profile-grid">
+            <div class="user-sidebar">
+                <div class="card text-center">
+                    <div class="avatar-wrapper">
+                        <span id="prof-initial">U</span>
+                        <div class="verify-badge" id="prof-verify" title="Верифицирован">✓</div>
+                    </div>
+                    <h2 id="prof-name">Пользователь</h2>
+                    <p id="prof-role" style="color:var(--text-muted); margin-bottom:15px;">Исполнитель</p>
+                    
+                    <div class="achievements">
+                        <div class="ach-badge unlocked">🚀 Быстрый старт</div>
+                        <div class="ach-badge" id="ach-pro">🏆 Профи</div>
+                        <div class="ach-badge" id="ach-rich">💰 Инвестор</div>
+                    </div>
 
-<div id="login" class="page"><div class="container"><div class="form-card card" style="max-width:400px; margin:auto;">
-    <h2>Вход</h2>
-    <div class="input-group"><input type="text" id="lPhone" placeholder="Телефон"></div>
-    <div class="input-group"><input type="password" id="lPass" placeholder="Пароль"></div>
-    <button class="btn btn-main" onclick="auth('log')">Войти</button>
-</div></div></div>
+                    <div class="level-container">
+                        <div class="level-header">
+                            <span>Уровень <span id="prof-level">1</span></span>
+                            <span id="prof-exp-text">45 / 100 XP</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div id="prof-progress" class="progress-fill" style="width: 45%;"></div>
+                        </div>
+                    </div>
+                    <button class="btn btn-outline btn-sm" style="width:100%; margin-top:20px;" onclick="verifyAccount()">Пройти верификацию</button>
+                </div>
 
-<div id="register" class="page"><div class="container"><div class="form-card card" style="max-width:400px; margin:auto;">
-    <h2>Регистрация</h2>
-    <div class="input-group"><input type="text" id="rPhone" placeholder="Телефон"></div>
-    <div class="input-group"><input type="password" id="rPass" placeholder="Пароль"></div>
-    <div class="input-group"><select id="rRole"><option value="worker">Исполнитель</option><option value="business">Бизнес</option></select></div>
-    <button class="btn btn-main" onclick="auth('reg')">Начать</button>
-</div></div></div>
+                <div class="card">
+                    <h3 class="mb-20">Кошелек</h3>
+                    <div class="text-center mb-20">
+                        <p style="color:var(--text-muted); font-size:14px;">Доступный баланс</p>
+                        <h1 id="prof-balance" style="font-size:42px; font-weight:900; color:var(--primary);">0 ₸</h1>
+                    </div>
+                    <div class="flex gap-10">
+                        <button class="btn btn-primary" style="flex:1" onclick="openModal('deposit')">Пополнить</button>
+                        <button class="btn btn-ghost" style="flex:1" onclick="toast('Вывод доступен от 5000 ₸', 'info')">Вывести</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="user-main">
+                <div class="card">
+                    <h3 class="mb-20">История транзакций</h3>
+                    <div id="transaction-list">
+                        </div>
+                </div>
+
+                <div class="card" id="business-orders-section" style="display:none;">
+                    <div class="flex justify-between align-center mb-20">
+                        <h3>Ваши активные заказы</h3>
+                        <button class="btn btn-success btn-sm" onclick="navigateTo('create-job')">+ Создать заказ</button>
+                    </div>
+                    <div id="my-orders-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="page-login" class="page">
+    <div class="auth-container">
+        <div class="card auth-card">
+            <div class="auth-header">
+                <h2>С возвращением!</h2>
+                <p>Войдите, чтобы продолжить работу</p>
+            </div>
+            <div class="mt-20">
+                <div class="input-group mb-20">
+                    <input type="text" id="login-phone" class="search-input" style="width:100%" placeholder="Номер телефона">
+                </div>
+                <div class="input-group mb-20">
+                    <input type="password" id="login-pass" class="search-input" style="width:100%" placeholder="Пароль">
+                </div>
+                <button class="btn btn-primary" style="width:100%" onclick="handleAuth('login')">Войти в аккаунт</button>
+                <p style="margin-top:20px; font-size:14px; color:var(--text-muted);">
+                    Нет аккаунта? <a href="#" onclick="navigateTo('register')" style="color:var(--primary); font-weight:700;">Регистрация</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="page-register" class="page">
+    <div class="auth-container">
+        <div class="card auth-card">
+            <div class="auth-header">
+                <h2>Создать профиль</h2>
+                <p>Выберите роль и начните путь</p>
+            </div>
+            <div class="mt-20">
+                <div class="input-group mb-20">
+                    <select id="reg-role" class="search-input" style="width:100%">
+                        <option value="worker">Я исполнитель (Ищу работу)</option>
+                        <option value="business">Я заказчик (Ищу персонал)</option>
+                    </select>
+                </div>
+                <div class="input-group mb-20">
+                    <input type="text" id="reg-phone" class="search-input" style="width:100%" placeholder="Номер телефона">
+                </div>
+                <div class="input-group mb-20">
+                    <input type="password" id="reg-pass" class="search-input" style="width:100%" placeholder="Придумайте пароль">
+                </div>
+                <button class="btn btn-primary" style="width:100%" onclick="handleAuth('reg')">Зарегистрироваться</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="page-create-job" class="page">
+    <div class="container">
+        <div class="card" style="max-width:700px; margin: 0 auto;">
+            <h2 class="mb-20">Новое объявление</h2>
+            <div class="input-group mb-20">
+                <label>Заголовок задачи</label>
+                <input type="text" id="job-title" class="search-input" placeholder="Напр: Курьер на доставку еды">
+            </div>
+            <div class="flex gap-15 mb-20">
+                <div class="input-group" style="flex:1">
+                    <label>Категория</label>
+                    <select id="job-cat" class="search-input">
+                        <option>IT & Разработка</option>
+                        <option>Доставка</option>
+                        <option>Физический труд</option>
+                        <option>Маркетинг</option>
+                    </select>
+                </div>
+                <div class="input-group" style="flex:1">
+                    <label>Бюджет (₸)</label>
+                    <input type="number" id="job-price" class="search-input" placeholder="5000">
+                </div>
+            </div>
+            <div class="input-group mb-20">
+                <label>Описание требований</label>
+                <textarea id="job-desc" class="search-input" style="width:100%; min-height:120px;" placeholder="Опишите, что нужно сделать..."></textarea>
+            </div>
+            <button class="btn btn-primary" style="width:100%" onclick="createJobPost()">Опубликовать объявление</button>
+        </div>
+    </div>
+</div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, push, set, get, child, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
+    // Конфиг базы (твоей)
     const firebaseConfig = {
         apiKey: "AIzaSyAjSLp9bkzKz71GytZU1Jz5bQoNMKB5Fxo",
         authDomain: "worklink-5384c.firebaseapp.com",
@@ -206,154 +490,270 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-    let user = JSON.parse(localStorage.getItem('wl_session')) || null;
-    let currentChatId = null;
 
-    function toast(m) {
-        const t = document.createElement('div'); t.className = 'toast'; t.innerText = m;
-        document.getElementById('toasts').appendChild(t);
-        setTimeout(() => t.remove(), 3000);
-    }
+    // Глобальные переменные состояния
+    let currentUser = JSON.parse(localStorage.getItem('wl_pro_session')) || null;
+    let allJobs = [];
 
-    window.showPage = (id) => {
+    // --- НАВИГАЦИЯ ---
+    window.navigateTo = (pageId) => {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-    };
-
-    window.auth = async (t) => {
-        const p = document.getElementById(t === 'reg' ? 'rPhone' : 'lPhone').value;
-        const s = document.getElementById(t === 'reg' ? 'rPass' : 'lPass').value;
-        if(t === 'reg') {
-            const r = document.getElementById('rRole').value;
-            await set(ref(db, 'users/'+p), { phone: p, pass: s, role: r, balance: 0, exp: 0, bio: "" });
-            toast("Профиль создан!"); showPage('login');
-        } else {
-            const sn = await get(child(ref(db), `users/${p}`));
-            if(sn.exists() && sn.val().pass === s) {
-                user = sn.val(); localStorage.setItem('wl_session', JSON.stringify(user));
-                initSession();
-            } else toast("Ошибка входа!");
-        }
-    };
-
-    function initSession() {
-        if(!user) return;
-        document.getElementById('guestNav').style.display = 'none';
-        document.getElementById('userNav').style.display = 'flex';
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
         
-        onValue(ref(db, `users/${user.phone}`), (sn) => {
-            const d = sn.val();
-            user = d;
-            document.getElementById('pName').innerText = d.phone;
-            document.getElementById('pBalance').innerText = (d.balance || 0) + " ₸";
-            document.getElementById('pBio').value = d.bio || "";
-            
-            // Расчет уровня
-            const exp = d.exp || 0;
-            const level = Math.floor(exp / 100) + 1;
-            document.getElementById('levelText').innerText = level;
-            document.getElementById('levelProgress').style.width = (exp % 100) + "%";
-            if(level >= 3) document.getElementById('pStatus').style.display = 'inline-block';
-        });
-
-        const dBtn = document.getElementById('dashBtn');
-        if(user.role === 'business') {
-            dBtn.onclick = () => showPage('business_panel');
-            onValue(ref(db, 'orders'), renderBiz);
-            showPage('business_panel');
-        } else {
-            dBtn.onclick = () => showPage('worker_panel');
-            onValue(ref(db, 'orders'), renderWorker);
-            showPage('worker_panel');
-        }
-    }
-
-    window.postOrder = async () => {
-        const pr = Number(document.getElementById('oPrice').value);
-        if(user.balance < pr) return toast("Недостаточно средств!");
-        await push(ref(db, 'orders'), {
-            title: document.getElementById('oTitle').value,
-            category: document.getElementById('oCat').value,
-            price: pr, city: document.getElementById('oCity').value,
-            status: 'open', owner: user.phone
-        });
-        await update(ref(db, `users/${user.phone}`), { balance: user.balance - pr });
-        toast("Опубликовано!"); showPage('business_panel');
+        const target = document.getElementById('page-' + pageId);
+        if(target) target.classList.add('active');
+        window.scrollTo(0, 0);
     };
 
-    function renderBiz(sn) {
-        const list = document.getElementById('bizOrderList'); list.innerHTML = "";
-        const data = sn.val();
-        for(let id in data) {
-            if(data[id].owner === user.phone) {
-                const el = document.createElement('div'); el.className = 'card';
-                el.innerHTML = `<span class="badge badge-cat">${data[id].category}</span>
-                <h3>${data[id].title}</h3><p>${data[id].price} ₸ · ${data[id].status}</p>
-                <button class="btn btn-ghost" style="margin-top:10px;" onclick="openChat('${id}')">Чат</button>`;
-                list.appendChild(el);
+    // --- УВЕДОМЛЕНИЯ ---
+    window.toast = (msg, type = 'success') => {
+        const t = document.createElement('div');
+        t.className = 'toast';
+        t.style = `background: ${type === 'success' ? 'var(--success)' : 'var(--danger)'}; color:white; padding:15px 25px; border-radius:12px; margin-bottom:10px; box-shadow:var(--shadow-lg); font-weight:700; animation: slideIn 0.3s ease;`;
+        t.innerText = msg;
+        document.getElementById('toast-container').appendChild(t);
+        setTimeout(() => t.remove(), 4000);
+    };
+
+    // --- ТЕМА ---
+    window.toggleTheme = () => {
+        const body = document.body;
+        const newTheme = body.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+        body.setAttribute('data-theme', newTheme);
+    };
+
+    // --- АВТОРИЗАЦИЯ ---
+    window.handleAuth = async (mode) => {
+        const phone = document.getElementById(`${mode}-phone`).value;
+        const pass = document.getElementById(`${mode}-pass`).value;
+
+        if(!phone || !pass) return toast('Заполните все поля', 'error');
+
+        if(mode === 'reg') {
+            const role = document.getElementById('reg-role').value;
+            const newUser = {
+                phone, pass, role,
+                balance: 0, exp: 0, 
+                isVerified: false,
+                transactions: [{type: 'system', msg: 'Регистрация профиля', amt: 0, date: Date.now()}]
+            };
+            await set(ref(db, 'users/' + phone), newUser);
+            toast('Регистрация успешна! Войдите.');
+            navigateTo('login');
+        } else {
+            const sn = await get(child(ref(db), 'users/' + phone));
+            if(sn.exists() && sn.val().pass === pass) {
+                currentUser = sn.val();
+                localStorage.setItem('wl_pro_session', JSON.stringify(currentUser));
+                initUserSession();
+                toast('Добро пожаловать!');
+                navigateTo('profile');
+            } else {
+                toast('Неверные данные', 'error');
             }
         }
+    };
+
+    // --- ИНИЦИАЛИЗАЦИЯ СЕССИИ ---
+    function initUserSession() {
+        if(!currentUser) return;
+
+        document.getElementById('auth-buttons').style.display = 'none';
+        document.getElementById('user-profile-nav').style.display = 'flex';
+        document.getElementById('nav-avatar').innerText = currentUser.phone[0].toUpperCase();
+
+        // Специфические разделы для бизнеса
+        if(currentUser.role === 'business') {
+            document.getElementById('business-orders-section').style.display = 'block';
+        }
+
+        // Realtime слушатель данных пользователя
+        onValue(ref(db, 'users/' + currentUser.phone), (snapshot) => {
+            const data = snapshot.val();
+            if(!data) return;
+            updateUI(data);
+        });
+
+        // Слушатель всех заказов
+        onValue(ref(db, 'orders'), (snapshot) => {
+            const data = snapshot.val();
+            allJobs = data ? Object.entries(data).map(([id, val]) => ({id, ...val})) : [];
+            renderJobs(allJobs);
+            if(currentUser.role === 'business') renderMyOrders();
+        });
     }
 
-    function renderWorker(sn) {
-        const list = document.getElementById('jobList'); list.innerHTML = "";
-        const data = sn.val();
-        for(let id in data) {
-            if(data[id].status === 'open') {
-                const el = document.createElement('div'); el.className = 'card';
-                el.innerHTML = `<span class="badge badge-cat">${data[id].category}</span>
-                <h3>${data[id].title}</h3><p>${data[id].price} ₸ · ${data[id].city}</p>
-                <button class="btn btn-main" style="margin-top:10px;" onclick="takeJob('${id}')">Взять смену</button>`;
-                list.appendChild(el);
-            }
-        }
+    function updateUI(data) {
+        document.getElementById('nav-balance').innerText = `${data.balance} ₸`;
+        document.getElementById('prof-balance').innerText = `${data.balance} ₸`;
+        document.getElementById('prof-name').innerText = data.phone;
+        document.getElementById('prof-initial').innerText = data.phone[0].toUpperCase();
+        
+        // Опыт и уровни
+        const level = Math.floor(data.exp / 100) + 1;
+        const currentExp = data.exp % 100;
+        document.getElementById('prof-level').innerText = level;
+        document.getElementById('prof-exp-text').innerText = `${currentExp} / 100 XP`;
+        document.getElementById('prof-progress').style.width = `${currentExp}%`;
+
+        // Верификация
+        document.getElementById('prof-verify').style.display = data.isVerified ? 'flex' : 'none';
+
+        // Ачивки
+        if(level >= 5) document.getElementById('ach-pro').classList.add('unlocked');
+        if(data.balance >= 50000) document.getElementById('ach-rich').classList.add('unlocked');
+
+        // Транзакции
+        const trList = document.getElementById('transaction-list');
+        trList.innerHTML = data.transactions.reverse().map(tr => `
+            <div class="transaction-item">
+                <div class="tr-info">
+                    <h5>${tr.msg}</h5>
+                    <p>${new Date(tr.date).toLocaleString()}</p>
+                </div>
+                <div class="tr-amount ${tr.amt >= 0 ? 'plus' : 'minus'}">
+                    ${tr.amt >= 0 ? '+' : ''}${tr.amt} ₸
+                </div>
+            </div>
+        `).join('');
     }
+
+    // --- ФИНАНСЫ ---
+    window.openModal = (id) => document.getElementById('modal-' + id).style.display = 'flex';
+    window.closeModals = () => document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none');
+
+    window.financeAction = async (type) => {
+        if(type === 'deposit') {
+            const amt = parseInt(document.getElementById('deposit-amount').value);
+            if(isNaN(amt) || amt <= 0) return toast('Введите сумму', 'error');
+
+            const newBalance = (currentUser.balance || 0) + amt;
+            const newTr = { type: 'deposit', msg: 'Пополнение баланса', amt: amt, date: Date.now() };
+            
+            await update(ref(db, 'users/' + currentUser.phone), {
+                balance: newBalance,
+                transactions: [...(currentUser.transactions || []), newTr]
+            });
+
+            toast(`Баланс пополнен на ${amt} ₸`);
+            closeModals();
+        }
+    };
+
+    // --- РАБОТА С ЗАКАЗАМИ ---
+    window.createJobPost = async () => {
+        const title = document.getElementById('job-title').value;
+        const price = parseInt(document.getElementById('job-price').value);
+        const cat = document.getElementById('job-cat').value;
+        const desc = document.getElementById('job-desc').value;
+
+        if(!title || !price || isNaN(price)) return toast('Проверьте данные', 'error');
+        if(currentUser.balance < price) return toast('Недостаточно средств для депонирования', 'error');
+
+        const orderData = {
+            title, price, category: cat, description: desc,
+            owner: currentUser.phone,
+            status: 'open',
+            date: Date.now(),
+            city: 'Алматы' // Упростим для примера
+        };
+
+        const newOrderRef = push(ref(db, 'orders'));
+        await set(newOrderRef, orderData);
+
+        // Списываем деньги в холд (безопасная сделка)
+        await update(ref(db, 'users/' + currentUser.phone), {
+            balance: currentUser.balance - price,
+            transactions: [...(currentUser.transactions || []), {type: 'hold', msg: `Залог за заказ: ${title}`, amt: -price, date: Date.now()}]
+        });
+
+        toast('Заказ опубликован!');
+        navigateTo('market');
+    };
+
+    function renderJobs(jobs) {
+        const container = document.getElementById('jobs-container');
+        container.innerHTML = jobs.filter(j => j.status === 'open').map(job => `
+            <div class="job-card" onclick="openJobDetail('${job.id}')">
+                <div style="flex:1">
+                    <span class="ach-badge" style="background:var(--primary); color:white; border:none; margin-bottom:10px; display:inline-block;">${job.category}</span>
+                    <h3 style="margin-bottom:5px;">${job.title}</h3>
+                    <p style="color:var(--text-muted); font-size:14px;">📍 ${job.city} • 🕒 ${new Date(job.date).toLocaleDateString()}</p>
+                </div>
+                <div class="text-right">
+                    <div class="job-price">${job.price} ₸</div>
+                    <button class="btn btn-primary btn-sm mt-20">Откликнуться</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    window.openJobDetail = (id) => {
+        const job = allJobs.find(j => j.id === id);
+        if(!job) return;
+
+        const content = document.getElementById('job-detail-content');
+        content.innerHTML = `
+            <span class="ach-badge" style="background:var(--primary); color:white; border:none; margin-bottom:10px; display:inline-block;">${job.category}</span>
+            <h1 style="margin-bottom:15px;">${job.title}</h1>
+            <div style="background:var(--input-bg); padding:20px; border-radius:15px; margin-bottom:20px;">
+                <p>${job.description || 'Требования не указаны.'}</p>
+            </div>
+            <div class="flex justify-between align-center mb-20">
+                <div>
+                    <p style="color:var(--text-muted);">Оплата за выполнение</p>
+                    <h2 style="color:var(--success)">${job.price} ₸</h2>
+                </div>
+                <div class="text-right">
+                    <p style="color:var(--text-muted);">Заказчик</p>
+                    <p><b>${job.owner}</b></p>
+                </div>
+            </div>
+            <div class="flex gap-10">
+                <button class="btn btn-primary" style="flex:1" onclick="takeJob('${job.id}')">Принять заказ</button>
+                <button class="btn btn-ghost" style="flex:1" onclick="closeModals()">Закрыть</button>
+            </div>
+        `;
+        document.getElementById('modal-job-detail').style.display = 'flex';
+    };
 
     window.takeJob = async (id) => {
-        const osn = await get(child(ref(db), `orders/${id}`));
-        const price = osn.val().price;
-        await update(ref(db, `orders/${id}`), { status: 'taken', worker: user.phone });
-        // Авто-выплата + опыт
-        await update(ref(db, `users/${user.phone}`), { 
-            balance: (user.balance || 0) + price,
-            exp: (user.exp || 0) + 25
+        if(!currentUser) return navigateTo('login');
+        if(currentUser.role === 'business') return toast('Заказчики не могут брать заказы', 'error');
+
+        const job = allJobs.find(j => j.id === id);
+        
+        await update(ref(db, 'orders/' + id), {
+            status: 'in_progress',
+            worker: currentUser.phone
         });
-        toast("Смена принята! Получено 25 XP");
-    };
 
-    window.saveBio = () => {
-        update(ref(db, `users/${user.phone}`), { bio: document.getElementById('pBio').value });
-        toast("Сохранено!");
-    };
-
-    // ЧАТ
-    window.openChat = (orderId) => {
-        currentChatId = orderId;
-        document.getElementById('chatModal').style.display = 'flex';
-        onValue(ref(db, `chats/${orderId}`), (sn) => {
-            const box = document.getElementById('chatBox'); box.innerHTML = "";
-            const msgs = sn.val();
-            for(let mId in msgs) {
-                const m = msgs[mId];
-                const div = document.createElement('div');
-                div.className = `msg ${m.sender === user.phone ? 'msg-own' : 'msg-other'}`;
-                div.innerText = m.text;
-                box.appendChild(div);
-            }
-            box.scrollTop = box.scrollHeight;
+        // Сразу выплачиваем (в этой версии для скорости)
+        await update(ref(db, 'users/' + currentUser.phone), {
+            balance: currentUser.balance + job.price,
+            exp: (currentUser.exp || 0) + 35, // Даем XP
+            transactions: [...(currentUser.transactions || []), {type: 'earn', msg: `Выплата: ${job.title}`, amt: job.price, date: Date.now()}]
         });
+
+        toast('Заказ принят! Вы получили оплату и 35 XP');
+        closeModals();
     };
 
-    window.sendMessage = () => {
-        const text = document.getElementById('chatInput').value;
-        if(!text) return;
-        push(ref(db, `chats/${currentChatId}`), { sender: user.phone, text, time: Date.now() });
-        document.getElementById('chatInput').value = "";
+    window.verifyAccount = async () => {
+        toast('Ваши данные отправлены на проверку...', 'info');
+        setTimeout(async () => {
+            await update(ref(db, 'users/' + currentUser.phone), { isVerified: true });
+            toast('Профиль верифицирован!');
+        }, 2000);
     };
 
-    window.closeModals = () => document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
-    window.logout = () => { localStorage.clear(); location.reload(); };
-    if(user) initSession();
+    window.logout = () => {
+        localStorage.clear();
+        location.reload();
+    };
+
+    if(currentUser) initUserSession();
+
 </script>
 </body>
 </html>
