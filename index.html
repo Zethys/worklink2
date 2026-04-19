@@ -56,12 +56,6 @@
         <div style="background:white; padding:40px; border-radius:30px">
             <h2>Что такое WorkLink</h2>
             <p><strong>WorkLink</strong> — это сервис, который помогает компаниям быстро находить проверенных исполнителей на посменную работу.</p>
-            <h3 style="margin-top:25px">Как разместить заявку?</h3>
-            <ul>
-                <li>Войдите в личный кабинет по номеру телефона.</li>
-                <li>Создайте заявку, указав детали смены.</li>
-                <li>Дождитесь отклика (обычно до 30 минут).</li>
-            </ul>
         </div>
     </div>
 </div>
@@ -71,17 +65,10 @@
         <div>
             <p style="color:var(--primary-purple); font-weight:800; font-size:12px">ОСТАВЬТЕ ЗАЯВКУ</p>
             <h2 style="font-size:42px; margin:15px 0">Подключайтесь к WorkLink уже завтра</h2>
-            <ul style="list-style:none; font-weight:600">
-                <li style="margin-bottom:15px">1. Заполните форму</li>
-                <li style="margin-bottom:15px">2. Получите предложение</li>
-                <li style="margin-bottom:15px">3. Создайте заявку</li>
-            </ul>
         </div>
         <div class="form-box" style="margin:0">
-            <div class="form-group"><label>Ваше Ф.И.О</label><input type="text" id="biz_fio" placeholder="Меня зовут..."></div>
-            <div class="form-group"><label>Компания</label><input type="text" id="biz_name" placeholder="WorkLink"></div>
-            <div class="form-group"><label>Телефон</label><input type="text" id="biz_phone" placeholder="+7 777..."></div>
-            <div class="form-group"><label>Город</label><input type="text" id="biz_city" placeholder="Алматы..."></div>
+            <div class="form-group"><label>Ваше Ф.И.О</label><input type="text" id="biz_fio"></div>
+            <div class="form-group"><label>Телефон</label><input type="text" id="biz_phone"></div>
             <button class="btn-action" style="background:#3d4451; color:white" onclick="submitPartner()">Оставить заявку</button>
         </div>
     </div>
@@ -108,35 +95,20 @@
 
 <div id="worker_panel" class="page">
     <div class="container">
-        <div class="container">
-    <div class="wallet-card">
-        <div>
-            <p style="opacity: 0.8; font-size: 14px;">Мой баланс</p>
-            <div class="balance-amount"><span id="wBalance">0</span> ₸</div>
+        <div class="wallet-card">
+            <div>
+                <p style="opacity: 0.8; font-size: 14px;">Мой баланс</p>
+                <div class="balance-amount"><span id="wBalance">0</span> ₸</div>
+            </div>
+            <button class="btn-action" style="width:auto; background:white; color:var(--primary-purple); padding:10px 20px">Вывести</button>
         </div>
-        <button class="btn-action" style="width:auto; background:white; color:var(--primary-purple); padding:10px 20px">Вывести</button>
-    </div>
-    </div>
-
-<div id="ratingModal" class="page" style="position:fixed; background:rgba(0,0,0,0.8); z-index:10000; align-items:center; justify-content:center; display:none">
-    <div class="form-box" style="text-align:center">
-        <h3>Оцените работу</h3>
-        <div class="rating-input" id="starContainer">
-            <span class="star-btn" onclick="setRating(1)">★</span>
-            <span class="star-btn" onclick="setRating(2)">★</span>
-            <span class="star-btn" onclick="setRating(3)">★</span>
-            <span class="star-btn" onclick="setRating(4)">★</span>
-            <span class="star-btn" onclick="setRating(5)">★</span>
-        </div>
-        <button class="btn-action btn-purple" onclick="submitRating()">Подтвердить</button>
-    </div>
-</div>
+        
         <div style="display:flex; justify-content:space-between; margin-bottom:30px">
             <h2>Доступные смены</h2>
             <button class="btn-action btn-purple" style="width:auto" onclick="showPage('my_jobs')">Мои задачи</button>
         </div>
         <div class="controls">
-            <input type="text" id="sTitle" placeholder="Поиск по названию..." oninput="renderWorker()">
+            <input type="text" id="sTitle" placeholder="Поиск..." oninput="renderWorker()">
             <input type="text" id="sCity" placeholder="Город..." oninput="renderWorker()">
             <select id="sPrice" onchange="renderWorker()"><option value="new">Новые</option><option value="exp">Дорогие</option></select>
         </div>
@@ -147,36 +119,21 @@
 <div id="my_jobs" class="page">
     <div class="container">
         <button onclick="showPage('worker_panel')" style="border:none; background:none; cursor:pointer; font-weight:700">← К поиску</button>
-        <h2 style="margin-top:20px">Мои принятые заказы</h2>
-        <div id="my_list" style="margin-top:30px"></div>
+        <h2 style="margin-top:20px">Принятые заказы</h2>
+        <div id="my_list"></div>
     </div>
 </div>
 
 <div id="business_panel" class="page">
     <div class="container">
-        <div class="container">
-    <div class="wallet-card">
-        <div>
-            <p style="opacity: 0.8; font-size: 14px;">Мой баланс</p>
-            <div class="balance-amount"><span id="wBalance">0</span> ₸</div>
+        <div class="wallet-card">
+            <div>
+                <p style="opacity: 0.8; font-size: 14px;">Баланс компании</p>
+                <div class="balance-amount"><span id="bBalance">0</span> ₸</div>
+            </div>
+            <button class="btn-action" style="width:auto; background:white; color:var(--primary-purple); padding:10px 20px" onclick="addMoney()">Пополнить счет</button>
         </div>
-        <button class="btn-action" style="width:auto; background:white; color:var(--primary-purple); padding:10px 20px">Вывести</button>
-    </div>
-    </div>
 
-<div id="ratingModal" class="page" style="position:fixed; background:rgba(0,0,0,0.8); z-index:10000; align-items:center; justify-content:center; display:none">
-    <div class="form-box" style="text-align:center">
-        <h3>Оцените работу</h3>
-        <div class="rating-input" id="starContainer">
-            <span class="star-btn" onclick="setRating(1)">★</span>
-            <span class="star-btn" onclick="setRating(2)">★</span>
-            <span class="star-btn" onclick="setRating(3)">★</span>
-            <span class="star-btn" onclick="setRating(4)">★</span>
-            <span class="star-btn" onclick="setRating(5)">★</span>
-        </div>
-        <button class="btn-action btn-purple" onclick="submitRating()">Подтвердить</button>
-    </div>
-</div>
         <div style="display:flex; justify-content:space-between; margin-bottom:30px">
             <h2>Ваши объявления</h2>
             <button class="btn-action btn-purple" style="width:auto" onclick="showPage('create_order_page')">+ Создать</button>
@@ -192,7 +149,23 @@
         <div class="form-group"><label>Оплата (₸)</label><input type="number" id="oPrice"></div>
         <div class="form-group"><label>Город</label><input type="text" id="oCity"></div>
         <button class="btn-action btn-success" onclick="postOrder()">Опубликовать</button>
+        <button class="btn-action" style="background:none; color:gray" onclick="showPage('business_panel')">Отмена</button>
     </div></div>
+</div>
+
+<div id="ratingModal" class="page" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:10000; align-items:center; justify-content:center; display:none">
+    <div class="form-box" style="text-align:center">
+        <h3>Оцените работу</h3>
+        <div class="rating-input" id="starContainer">
+            <span class="star-btn" onclick="setRating(1)">★</span>
+            <span class="star-btn" onclick="setRating(2)">★</span>
+            <span class="star-btn" onclick="setRating(3)">★</span>
+            <span class="star-btn" onclick="setRating(4)">★</span>
+            <span class="star-btn" onclick="setRating(5)">★</span>
+        </div>
+        <button class="btn-action btn-purple" onclick="submitRating()">Подтвердить</button>
+        <button class="btn-action" style="background:none; color:gray; margin-top:10px" onclick="document.getElementById('ratingModal').style.display='none'">Закрыть</button>
+    </div>
 </div>
 
 <script type="module" src="app.js"></script>
