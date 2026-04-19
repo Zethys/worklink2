@@ -6,24 +6,14 @@
     --white: #ffffff;
     --success: #27ae60;
     --input-bg: #fff9e6;
+    --biz-beige: #fdf6e3; /* Цвет из макета */
 }
 
+/* Общие стили */
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
 body { background: var(--bg-cream); color: var(--text-dark); overflow-x: hidden; line-height: 1.6; }
 
-:root {
-    --primary-purple: #6c38ff;
-    --light-purple: #f0ebff;
-    --bg-cream: #fdf6e3;
-    --text-dark: #2d3436;
-    --white: #ffffff;
-    --success: #27ae60;
-    --input-bg: #fff9e6;
-}
-
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-body { background: var(--bg-cream); color: var(--text-dark); overflow-x: hidden; line-height: 1.6; }
-
+/* Навигация */
 nav {
     display: flex; justify-content: space-between; align-items: center;
     padding: 20px 50px; background: var(--primary-purple); color: white;
@@ -32,9 +22,11 @@ nav {
 .logo { font-weight: 800; font-size: 26px; cursor: pointer; }
 .nav-links a { color: white; text-decoration: none; margin-left: 25px; font-size: 14px; font-weight: 600; cursor: pointer; }
 
+/* Страницы */
 .page { display: none; min-height: 100vh; }
 .active { display: block; }
 
+/* Уведомления */
 #toast-container { position: fixed; top: 100px; right: 20px; z-index: 9999; }
 .toast { 
     background: #333; color: white; padding: 16px 24px; border-radius: 12px; 
@@ -42,6 +34,7 @@ nav {
     animation: slideIn 0.3s ease-out;
 }
 
+/* Hero секция */
 .hero { display: flex; background: var(--primary-purple); color: white; height: calc(100vh - 80px); align-items: center; }
 .hero-content { flex: 1; padding: 0 80px; }
 .hero h1 { font-size: 56px; line-height: 1.1; margin-bottom: 30px; font-weight: 800; }
@@ -56,15 +49,18 @@ nav {
     box-shadow: 0 20px 40px rgba(0,0,0,0.3); color: var(--text-dark);
 }
 
-.container { max-width: 1100px; margin: 0 auto; padding: 60px 20px; }
+/* Контейнеры и формы */
+.container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
 .form-box { background: white; padding: 40px; border-radius: 24px; max-width: 500px; margin: 0 auto; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
 .form-group { margin-bottom: 20px; }
 .form-group label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 8px; }
 .form-group input, .form-group select { width: 100%; padding: 16px; border-radius: 12px; border: 1px solid #eee; background: var(--input-bg); font-size: 15px; }
 
+/* Управление и фильтры */
 .controls { display: flex; gap: 15px; margin-bottom: 30px; flex-wrap: wrap; }
 .controls input, .controls select { padding: 15px; border-radius: 12px; border: 1px solid #ddd; flex: 1; min-width: 200px; }
 
+/* Карточки заказов */
 .order-card { 
     background: white; padding: 25px; border-radius: 20px; margin-bottom: 20px;
     border-left: 8px solid var(--primary-purple); box-shadow: 0 5px 15px rgba(0,0,0,0.03);
@@ -74,57 +70,69 @@ nav {
 .status-taken { background: #fff3e0; color: #f57c00; }
 .status-completed { background: #e8f5e9; color: #2e7d32; }
 
+/* Кнопки */
 .btn-action { width: 100%; padding: 18px; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.2s; }
 .btn-purple { background: var(--primary-purple); color: white; }
 .btn-success { background: var(--success); color: white; }
 
+/* Кошелек */
+.wallet-card {
+    background: linear-gradient(135deg, var(--primary-purple), #8e61ff);
+    color: white; padding: 25px; border-radius: 20px; margin-bottom: 30px;
+    display: flex; justify-content: space-between; align-items: center;
+}
+.balance-amount { font-size: 32px; font-weight: 800; }
+
+/* Рейтинг */
+.stars { color: #fdcb6e; font-size: 18px; margin-top: 5px; }
+.rating-input { display: flex; gap: 10px; justify-content: center; margin: 20px 0; }
+.star-btn { font-size: 35px; cursor: pointer; color: #ddd; transition: 0.2s; }
+.star-btn.active { color: #fdcb6e; }
+
+/* Специфические стили ДЛЯ БИЗНЕСА (ПО ФОТО) */
+.biz-layout { display: flex; justify-content: space-between; gap: 60px; padding: 40px 0; align-items: flex-start; }
+.biz-info { flex: 1; }
+.biz-info .subtitle { color: #b5a48b; font-weight: 700; font-size: 14px; text-transform: uppercase; }
+.biz-info .main-title { font-size: 48px; font-weight: 800; margin: 20px 0; line-height: 1.1; }
+
+.steps-list { list-style: none; margin-top: 30px; }
+.steps-list li { font-size: 18px; font-weight: 600; margin-bottom: 15px; display: flex; gap: 10px; }
+.steps-list li span { color: var(--text-dark); }
+
+.biz-form-container { flex: 1.2; display: flex; flex-direction: column; gap: 20px; }
+.biz-form-field { display: flex; flex-direction: column; gap: 8px; }
+.biz-form-field label { font-size: 13px; font-weight: 700; }
+.biz-form-field input { 
+    background: var(--biz-beige); 
+    border: 1px solid #2d3436; 
+    border-radius: 8px; 
+    padding: 15px; 
+    font-size: 15px; 
+}
+.phone-input-wrapper { 
+    display: flex; align-items: center; background: var(--biz-beige); 
+    border: 1px solid #2d3436; border-radius: 8px; padding-left: 15px; 
+}
+.phone-input-wrapper input { border: none; background: transparent; width: 100%; }
+
+.btn-submit-biz { 
+    background: #3d4451; color: white; padding: 20px; border: none; 
+    border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 16px;
+}
+
+/* Специфические стили О НАС */
+.about-section { background: white; padding: 60px; border-radius: 30px; text-align: center; }
+.about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 40px; }
+.info-card { padding: 30px; border: 1px solid #eee; border-radius: 20px; transition: 0.3s; }
+.info-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+
+/* Анимации и адаптив */
 @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
 
 @media (max-width: 900px) {
     .hero { flex-direction: column; text-align: center; height: auto; }
     .hero-content { padding: 60px 20px; }
-    .hero h1 { font-size: 38px; }
     .hero-image-section { display: none; }
-}
-
-/* Кошелек */
-.wallet-card {
-    background: linear-gradient(135deg, var(--primary-purple), #8e61ff);
-    color: white;
-    padding: 25px;
-    border-radius: 20px;
-    margin-bottom: 30px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-.balance-amount { font-size: 32px; font-weight: 800; }
-
-/* Система рейтинга */
-.stars { color: #fdcb6e; font-size: 18px; margin-top: 5px; }
-.rating-input {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    margin: 20px 0;
-}
-.star-btn {
-    font-size: 30px;
-    cursor: pointer;
-    color: #ddd;
-    transition: 0.2s;
-}
-.star-btn.active { color: #fdcb6e; }
-
-/* Кнопки действий в карточках */
-.card-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 15px;
-}
-
-.reg-btn {
-    background: rgba(255,255,255,0.2); 
-    padding: 10px 20px; 
-    border-radius: 10px;
+    .biz-layout { flex-direction: column; gap: 40px; }
+    .about-grid { grid-template-columns: 1fr; }
 }
