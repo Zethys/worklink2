@@ -11,15 +11,9 @@
             --bg-cream: #fdf6e3;
             --text-dark: #2d3436;
             --white: #ffffff;
-            --text-muted: #636e72;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
 
         nav {
             display: flex;
@@ -30,20 +24,9 @@
             color: white;
         }
 
-        .logo {
-            font-weight: 800;
-            font-size: 24px;
-            cursor: pointer;
-            letter-spacing: -0.5px;
-        }
+        .logo { font-weight: 800; font-size: 24px; cursor: pointer; letter-spacing: -0.5px; }
 
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            margin-left: 30px;
-            font-size: 14px;
-            cursor: pointer;
-        }
+        .nav-links a { color: white; text-decoration: none; margin-left: 30px; font-size: 14px; cursor: pointer; }
 
         .auth-buttons button {
             padding: 10px 20px;
@@ -60,20 +43,9 @@
         .page { display: none; min-height: 100vh; }
         .active { display: block; }
 
-        .hero {
-            display: flex;
-            background: var(--primary-purple);
-            color: white;
-            height: calc(100vh - 80px);
-        }
+        .hero { display: flex; background: var(--primary-purple); color: white; height: calc(100vh - 80px); }
 
-        .hero-content {
-            flex: 1;
-            padding: 80px 50px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
+        .hero-content { flex: 1; padding: 80px 50px; display: flex; flex-direction: column; justify-content: center; }
 
         .hero-image {
             flex: 1;
@@ -98,17 +70,9 @@
         .features { list-style: none; }
         .features li { margin-bottom: 15px; display: flex; align-items: center; }
 
-        .business-page {
-            background: var(--bg-cream);
-            padding: 100px 50px;
-            display: flex;
-            justify-content: space-between;
-        }
+        .business-page { background: var(--bg-cream); padding: 100px 50px; display: flex; justify-content: space-between; }
 
-        .form-container {
-            background: transparent;
-            width: 500px;
-        }
+        .form-container { background: transparent; width: 500px; }
 
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 5px; }
@@ -140,13 +104,7 @@
             color: white;
         }
 
-        .auth-box {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            color: var(--text-dark);
-            width: 400px;
-        }
+        .auth-box { background: white; padding: 40px; border-radius: 20px; color: var(--text-dark); width: 400px; }
 
         .details-link {
             display: block;
@@ -163,42 +121,13 @@
             font-size: 14px;
         }
 
-        .about-page {
-            background: var(--bg-cream);
-            padding: 80px 10%;
-            color: var(--text-dark);
-        }
-
-        .about-container {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
+        .about-page { background: var(--bg-cream); padding: 80px 10%; color: var(--text-dark); }
+        .about-container { max-width: 900px; margin: 0 auto; }
         .about-container h2 { font-size: 32px; margin-bottom: 20px; }
         .about-container h3 { font-size: 20px; margin: 30px 0 15px 0; }
         .about-container p { line-height: 1.6; margin-bottom: 15px; color: #4b5563; }
         .about-container ul { margin-left: 20px; margin-bottom: 20px; }
         .about-container li { margin-bottom: 10px; line-height: 1.5; color: #4b5563; }
-
-        .feedback-box {
-            background: #3d4451;
-            color: white;
-            padding: 20px;
-            border-radius: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 50px;
-        }
-
-        .feedback-btns button {
-            padding: 8px 20px;
-            margin-left: 10px;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-        }
     </style>
 </head>
 <body>
@@ -241,7 +170,7 @@
 <div id="business" class="page">
     <div class="business-page">
         <div>
-            <h2 style="font-size: 42px; color: #2d3436;">Подключайтесь<br>к WorkLink уже<br>завтра</h2>
+            <h2 style="font-size: 42px; color: #2d3436;">Подключайтесь<br>к WorkLink уже завтра</h2>
             <ol style="margin-top: 30px; line-height: 2;">
                 <li>1. Заполните форму</li>
                 <li>2. Получите коммерческое предложение</li>
@@ -249,23 +178,11 @@
             </ol>
         </div>
         <div class="form-container">
-            <div class="form-group">
-                <label>*Ваше Ф.И.О</label>
-                <input type="text" placeholder="Меня зовут...">
-            </div>
-            <div class="form-group">
-                <label>*Название компании</label>
-                <input type="text" placeholder="WorkLink">
-            </div>
-            <div class="form-group">
-                <label>*Ваша должность</label>
-                <input type="text" placeholder="HR-рекрутер">
-            </div>
-            <div class="form-group">
-                <label>*Контактный телефон</label>
-                <input type="text" placeholder="+7 775 876 74 75">
-            </div>
-            <button class="submit-btn">Оставить заявку</button>
+            <div class="form-group"><label>*Ваше Ф.И.О</label><input type="text" id="bizName" placeholder="Меня зовут..."></div>
+            <div class="form-group"><label>*Название компании</label><input type="text" id="bizCompany" placeholder="WorkLink"></div>
+            <div class="form-group"><label>*Ваша должность</label><input type="text" id="bizPosition" placeholder="HR-рекрутер"></div>
+            <div class="form-group"><label>*Контактный телефон</label><input type="text" id="bizPhone" placeholder="+7 775 876 74 75"></div>
+            <button class="submit-btn" id="btnBiz">Оставить заявку</button>
         </div>
     </div>
 </div>
@@ -274,46 +191,9 @@
     <div class="about-page">
         <div class="about-container">
             <h2>Что такое WorkLink</h2>
-            <p><strong>WorkLink</strong> — это сервис, который помогает компаниям быстро находить проверенных исполнителей на посменную работу. Через платформу вы можете оформить заявку на нужную роль, выбрать время, количество исполнителей и быть уверенными в качестве работы — WorkLink всё организует.</p>
-
+            <p><strong>WorkLink</strong> — это сервис, который помогает компаниям быстро находить проверенных исполнителей.</p>
             <h3>Как разместить заявку?</h3>
-            <p>Войдите в личный кабинет WorkLink по номеру телефона. Создайте заявку, указав:</p>
-            <ul>
-                <li>Филиал/адрес</li>
-                <li>Позиция (фасовка, выкладка, доставка и т.д.)</li>
-                <li>Количество работников</li>
-                <li>Пол (если важно)</li>
-                <li>Дату и время смены</li>
-                <li>Номер телефона (кто встретит исполнителя)</li>
-            </ul>
-            <p>Отправьте заявку на публикацию. После проверки она появится в системе, и исполнители смогут откликнуться. 💡 Среднее время подбора исполнителей — до 30 минут после публикации.</p>
-
-            <h3>Как проходит процесс отбора?</h3>
-            <ol>
-                <li>Заявка публикуется в приложении исполнителей.</li>
-                <li>Исполнители проходят фильтрацию по рейтингу, опыту и требованиям ранее указанным со стороны Заказчика при заключении договора.</li>
-                <li>WorkLink формирует список подходящих кандидатов и направляет на смену.</li>
-                <li>Все исполнители проходят верификацию личности, проверку документов и наличие медкнижки при необходимости.</li>
-            </ol>
-
-            <h3>Оплата услуг</h3>
-            <p>Оплата производится в формате предоплаты по безналичному расчёту на основании заранее согласованного объема услуг. В конце месяца согласно Акта выполненных работ списывается сумма услуг с ранее пополненного баланса. WorkLink выставляет счёт после подтверждения закрытых смен.</p>
-
-            <h3>Стандарты сервиса WorkLink для партнёров</h3>
-            <ul>
-                <li>подбор только проверенных исполнителей;</li>
-                <li>своевременное закрытие смен — 80% заявок закрываются в день публикации;</li>
-                <li>вежливую и ответственную коммуникацию;</li>
-                <li>аналитику по филиалам и сменам — доступно в личном кабинете.</li>
-            </ul>
-
-            <div class="feedback-box">
-                <span>Было ли полезно?</span>
-                <div class="feedback-btns">
-                    <button>Да</button>
-                    <button>Нет</button>
-                </div>
-            </div>
+            <p>Войдите в личный кабинет WorkLink по номеру телефона и создайте заявку.</p>
         </div>
     </div>
 </div>
@@ -321,16 +201,10 @@
 <div id="register" class="page">
     <div class="auth-screen">
         <div class="auth-box">
-            <h2 style="margin-bottom:20px">Регистрация в WorkLink</h2>
-            <div class="form-group">
-                <label>Номер телефона</label>
-                <input type="text" placeholder="+7">
-            </div>
-            <div class="form-group">
-                <label>Придумайте пароль</label>
-                <input type="password">
-            </div>
-            <button class="submit-btn" style="background:var(--primary-purple)">Создать аккаунт</button>
+            <h2 style="margin-bottom:20px">Регистрация</h2>
+            <div class="form-group"><label>Номер телефона</label><input type="text" id="regPhone" placeholder="+7"></div>
+            <div class="form-group"><label>Придумайте пароль</label><input type="password" id="regPass"></div>
+            <button class="submit-btn" style="background:var(--primary-purple)" id="btnReg">Создать аккаунт</button>
         </div>
     </div>
 </div>
@@ -338,27 +212,73 @@
 <div id="login" class="page">
     <div class="auth-screen">
         <div class="auth-box">
-            <h2 style="margin-bottom:20px">Вход в WorkLink</h2>
-            <div class="form-group">
-                <label>Номер телефона</label>
-                <input type="text">
-            </div>
-            <div class="form-group">
-                <label>Пароль</label>
-                <input type="password">
-            </div>
-            <button class="submit-btn" style="background:var(--primary-purple)">Войти</button>
+            <h2 style="margin-bottom:20px">Вход</h2>
+            <div class="form-group"><label>Номер телефона</label><input type="text" id="logPhone"></div>
+            <div class="form-group"><label>Пароль</label><input type="password" id="logPass"></div>
+            <button class="submit-btn" style="background:var(--primary-purple)" id="btnLogin">Войти</button>
         </div>
     </div>
 </div>
 
-<script>
-    function showPage(pageId) {
-        const pages = document.querySelectorAll('.page');
-        pages.forEach(page => page.classList.remove('active'));
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAjSLp9bkzKz71GytZU1Jz5bQoNMKB5Fxo",
+        authDomain: "worklink-5384c.firebaseapp.com",
+        projectId: "worklink-5384c",
+        storageBucket: "worklink-5384c.firebasestorage.app",
+        messagingSenderId: "582114312352",
+        appId: "1:582114312352:web:08dea19f81f35abfe649c5"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Функция сохранения для бизнеса
+    document.getElementById('btnBiz').onclick = async () => {
+        try {
+            await addDoc(collection(db, "business_requests"), {
+                name: document.getElementById('bizName').value,
+                company: document.getElementById('bizCompany').value,
+                position: document.getElementById('bizPosition').value,
+                phone: document.getElementById('bizPhone').value,
+                timestamp: new Date()
+            });
+            alert("Заявка бизнеса сохранена!");
+        } catch (e) { alert("Ошибка: " + e.message); }
+    };
+
+    // Функция регистрации
+    document.getElementById('btnReg').onclick = async () => {
+        try {
+            await addDoc(collection(db, "users"), {
+                phone: document.getElementById('regPhone').value,
+                password: document.getElementById('regPass').value,
+                type: 'worker',
+                timestamp: new Date()
+            });
+            alert("Пользователь зарегистрирован!");
+        } catch (e) { alert("Ошибка: " + e.message); }
+    };
+
+    // Функция входа (простая запись попытки)
+    document.getElementById('btnLogin').onclick = async () => {
+        try {
+            await addDoc(collection(db, "login_attempts"), {
+                phone: document.getElementById('logPhone').value,
+                timestamp: new Date()
+            });
+            alert("Попытка входа зафиксирована!");
+        } catch (e) { alert("Ошибка: " + e.message); }
+    };
+
+    window.showPage = (pageId) => {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.getElementById(pageId).classList.add('active');
         window.scrollTo(0,0);
-    }
+    };
 </script>
 
 </body>
