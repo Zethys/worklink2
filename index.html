@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkLink — Maximum Edition</title>
+    <title>WorkLink — Ultimate Ecosystem</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -15,211 +15,147 @@
             --success: #27ae60;
             --input-bg: #fff9e6;
             --star: #f1c40f;
-            --danger: #e74c3c;
+            --accent: #ff4757;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #1a1a1a;
+                --card-bg: #2d2d2d;
+                --text: #f1f1f1;
+                --input-bg: #3d3d3d;
+            }
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: var(--bg); color: var(--text); overflow-x: hidden; line-height: 1.6; }
+        body { background: var(--bg); color: var(--text); transition: 0.3s; line-height: 1.6; }
 
+        /* Navigation */
         nav {
             display: flex; justify-content: space-between; align-items: center;
             padding: 20px 50px; background: var(--primary); color: white;
-            position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
         .logo { font-weight: 800; font-size: 28px; cursor: pointer; letter-spacing: -1px; }
         .nav-links { display: flex; align-items: center; }
-        .nav-links a { color: white; text-decoration: none; margin-left: 25px; font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.3s; }
-        .btn-reg-nav { background: rgba(255,255,255,0.2); padding: 10px 20px; border-radius: 12px; }
+        .nav-links a { color: white; text-decoration: none; margin-left: 25px; font-size: 14px; font-weight: 600; cursor: pointer; }
 
         .page { display: none; min-height: 100vh; padding-bottom: 80px; }
         .active { display: block; animation: fadeIn 0.4s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
         .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
-        .card { background: white; padding: 30px; border-radius: 24px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.05); }
-        
-        /* Hero */
-        .hero { display: flex; background: var(--primary); color: white; height: calc(100vh - 80px); align-items: center; }
-        .hero-content { flex: 1; padding: 0 80px; }
-        .hero h1 { font-size: 64px; font-weight: 800; line-height: 1.1; margin-bottom: 30px; }
-        .hero-image { flex: 1; position: relative; display: flex; align-items: center; justify-content: center; }
-        .hero-img-main { width: 80%; border-radius: 30px; transform: rotate(-2deg); box-shadow: 20px 20px 60px rgba(0,0,0,0.3); }
+        .card { background: var(--card-bg); padding: 30px; border-radius: 24px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
 
-        /* Вкладка Бизнесу */
-        .biz-hero { text-align: center; padding: 60px 20px; background: white; border-radius: 50px; margin: 40px 20px; }
-        .biz-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; margin-top: 50px; }
-        .biz-card { padding: 40px; background: var(--bg); border-radius: 30px; }
+        /* Badges */
+        .badge { display: inline-block; padding: 4px 12px; border-radius: 8px; font-size: 11px; font-weight: 800; text-transform: uppercase; margin-right: 5px; }
+        .badge-pro { background: linear-gradient(90deg, #f1c40f, #f39c12); color: white; }
+        .badge-cat { background: var(--primary); color: white; }
 
-        /* Формы */
-        .form-box { background: white; padding: 40px; border-radius: 30px; max-width: 500px; margin: 0 auto; }
-        .input-group { margin-bottom: 20px; }
-        .input-group label { display: block; font-weight: 700; font-size: 13px; margin-bottom: 8px; }
-        .input-group input, .input-group select { width: 100%; padding: 16px; border-radius: 14px; border: 1.5px solid #eee; background: var(--input-bg); font-size: 16px; }
+        /* Chat System */
+        .chat-container { height: 300px; overflow-y: auto; background: var(--input-bg); border-radius: 15px; padding: 15px; margin-bottom: 10px; }
+        .msg { margin-bottom: 10px; padding: 10px; border-radius: 10px; max-width: 80%; }
+        .msg-own { background: var(--primary); color: white; margin-left: auto; }
+        .msg-other { background: #eee; color: #333; }
 
-        /* Кнопки */
-        .btn { padding: 18px 30px; border-radius: 16px; border: none; font-weight: 700; cursor: pointer; transition: 0.3s; font-size: 15px; text-align: center; }
-        .btn-main { background: var(--primary); color: white; width: 100%; }
-        .btn-white { background: white; color: var(--primary); }
-        .btn-success { background: var(--success); color: white; }
-        .btn-outline { border: 2px solid var(--primary); color: var(--primary); background: none; }
+        /* Profile & Levels */
+        .level-bar { height: 10px; background: #eee; border-radius: 5px; margin: 10px 0; overflow: hidden; }
+        .level-progress { height: 100%; background: var(--success); transition: 0.5s; }
 
-        /* Личный кабинет */
-        .profile-header { display: flex; align-items: center; gap: 20px; margin-bottom: 40px; }
-        .avatar { width: 80px; height: 80px; background: var(--primary); border-radius: 25px; display: flex; align-items: center; justify-content: center; color: white; font-size: 30px; font-weight: 800; }
-        .balance-box { background: linear-gradient(135deg, #6c38ff, #a285ff); color: white; padding: 30px; border-radius: 30px; margin-bottom: 30px; position: relative; overflow: hidden; }
-
-        /* Модальные окна */
+        /* Modals */
         .modal { 
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.6); z-index: 2000; align-items: center; justify-content: center; 
+            background: rgba(0,0,0,0.7); z-index: 2000; align-items: center; justify-content: center; 
         }
-        .modal-content { background: white; padding: 40px; border-radius: 30px; width: 90%; max-width: 450px; text-align: center; position: relative; animation: popUp 0.3s ease; }
-        @keyframes popUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        
-        .stars { display: flex; justify-content: center; gap: 10px; margin: 25px 0; }
-        .star { font-size: 35px; cursor: pointer; color: #ddd; transition: 0.2s; }
-        .star.active { color: var(--star); }
+        .modal-content { background: var(--card-bg); padding: 40px; border-radius: 30px; width: 90%; max-width: 500px; animation: popUp 0.3s ease; }
+        @keyframes popUp { from { transform: scale(0.9); } to { transform: scale(1); } }
+
+        /* Buttons */
+        .btn { padding: 16px 25px; border-radius: 14px; border: none; font-weight: 700; cursor: pointer; transition: 0.3s; display: inline-block; text-align: center; }
+        .btn-main { background: var(--primary); color: white; width: 100%; }
+        .btn-success { background: var(--success); color: white; }
+        .btn-ghost { background: none; border: 2px solid var(--primary); color: var(--primary); }
+
+        .input-group { margin-bottom: 20px; }
+        .input-group input, .input-group select, .input-group textarea { width: 100%; padding: 16px; border-radius: 14px; border: none; background: var(--input-bg); color: var(--text); }
 
         #toasts { position: fixed; top: 100px; right: 20px; z-index: 3000; }
-        .toast { background: var(--text); color: white; padding: 16px 25px; border-radius: 15px; margin-bottom: 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-
-        /* Контролы */
-        .controls { display: flex; gap: 10px; margin-bottom: 30px; }
-        .controls input { flex: 1; padding: 15px; border-radius: 15px; border: 1px solid #ddd; }
-
-        @media (max-width: 900px) {
-            .hero { flex-direction: column; text-align: center; height: auto; }
-            .hero-image { display: none; }
-            nav { padding: 15px 20px; }
-            .controls { flex-direction: column; }
-        }
+        .toast { background: var(--primary); color: white; padding: 15px 25px; border-radius: 12px; margin-bottom: 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
     </style>
 </head>
 <body>
 
 <div id="toasts"></div>
 
-<div id="ratingModal" class="modal">
+<div id="chatModal" class="modal">
     <div class="modal-content">
-        <h2>Оцените работу</h2>
-        <p style="color: gray;">Средний рейтинг исполнителя обновится автоматически</p>
-        <div class="stars">
-            <span class="star" data-v="1">★</span>
-            <span class="star" data-v="2">★</span>
-            <span class="star" data-v="3">★</span>
-            <span class="star" data-v="4">★</span>
-            <span class="star" data-v="5">★</span>
+        <h2 id="chatTitle">Чат по заказу</h2>
+        <div id="chatBox" class="chat-container"></div>
+        <div style="display: flex; gap: 10px;">
+            <input type="text" id="chatInput" placeholder="Введите сообщение..." style="flex:1; padding:10px; border-radius:10px; border:none; background:var(--input-bg); color:var(--text);">
+            <button class="btn btn-main" style="width:auto;" onclick="sendMessage()">OTP</button>
         </div>
-        <button class="btn btn-main" onclick="submitRating()">Подтвердить</button>
-    </div>
-</div>
-
-<div id="depositModal" class="modal">
-    <div class="modal-content">
-        <h2>Пополнение баланса</h2>
-        <p style="margin-bottom: 20px; color: gray;">Введите сумму для пополнения (₸)</p>
-        <div class="input-group">
-            <input type="number" id="depAmount" placeholder="50 000" style="text-align: center; font-size: 24px; font-weight: 800;">
-        </div>
-        <button class="btn btn-success" onclick="confirmDeposit()">Пополнить счет</button>
-        <button class="btn" style="background:none; color:gray;" onclick="closeModals()">Отмена</button>
+        <button class="btn btn-ghost" style="width:100%; margin-top:10px;" onclick="closeModals()">Закрыть</button>
     </div>
 </div>
 
 <nav>
     <div class="logo" onclick="showPage('home')">worklink</div>
     <div class="nav-links" id="guestNav">
-        <a onclick="showPage('business')">Бизнесу</a>
         <a onclick="showPage('login')">Вход</a>
-        <a onclick="showPage('register')" class="btn-reg-nav">Создать профиль</a>
+        <a onclick="showPage('register')">Регистрация</a>
     </div>
     <div class="nav-links" id="userNav" style="display:none">
-        <a id="dashboardBtn">Поиск</a>
-        <a onclick="showPage('profile')">Личный кабинет</a>
-        <a onclick="logout()" style="color: #ffb8b8;">Выйти</a>
+        <a id="dashBtn">Задачи</a>
+        <a onclick="showPage('profile')">Профиль</a>
+        <a onclick="logout()" style="color:var(--accent)">Выйти</a>
     </div>
 </nav>
 
 <div id="home" class="page active">
-    <div class="hero">
-        <div class="hero-content">
-            <h1>Твоя идеальная подработка здесь</h1>
-            <p style="font-size: 18px; opacity: 0.9; margin-bottom: 40px;">WorkLink соединяет амбициозных людей с лучшими компаниями города.</p>
-            <button class="btn btn-white" onclick="showPage('register')">Начать сейчас</button>
-        </div>
-        <div class="hero-image">
-            <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1000" class="hero-img-main">
-        </div>
-    </div>
-</div>
-
-<div id="business" class="page">
-    <div class="container">
-        <div class="biz-hero">
-            <h1>Новый стандарт управления персоналом</h1>
-            <div class="biz-grid">
-                <div class="biz-card"><h3>⚡ Скорость</h3><p>Закрытие вакансий до 30 минут.</p></div>
-                <div class="biz-card"><h3>💎 Качество</h3><p>Рейтинговая система исполнителей.</p></div>
-                <div class="biz-card"><h3>📈 Гибкость</h3><p>Масштабируйте команду в клик.</p></div>
-            </div>
-            <button class="btn btn-main" style="width: auto; margin-top: 40px;" onclick="showPage('register')">Стать партнером</button>
-        </div>
+    <div class="container" style="text-align: center; padding-top: 100px;">
+        <h1 style="font-size: 56px;">Работа будущего</h1>
+        <p style="font-size: 20px; margin: 20px 0 40px;">Единственная платформа, где твой рейтинг — это твоя валюта.</p>
+        <button class="btn btn-main" style="width: auto; padding: 20px 50px;" onclick="showPage('register')">Присоединиться</button>
     </div>
 </div>
 
 <div id="profile" class="page">
     <div class="container">
-        <div class="profile-header">
-            <div class="avatar" id="userInitial">U</div>
-            <div>
-                <h1 id="userNameDisplay">Пользователь</h1>
-                <p id="userRoleDisplay">Роль</p>
+        <div class="card">
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <div id="userAvatar" style="width:80px; height:80px; background:var(--primary); border-radius:20px; display:flex; align-items:center; justify-content:center; color:white; font-size:32px; font-weight:900;">W</div>
+                <div>
+                    <h2 id="pName">User</h2>
+                    <span id="pRole" class="badge badge-cat">Worker</span>
+                    <span id="pStatus" class="badge badge-pro" style="display:none;">PRO</span>
+                </div>
             </div>
-        </div>
-
-        <div class="balance-box">
-            <p>Текущий баланс</p>
-            <h1 style="font-size: 42px;" id="balanceDisplay">0 ₸</h1>
-            <div style="display:flex; gap:10px; margin-top:20px;">
-                <button id="depBtn" class="btn btn-white" style="font-size:12px; display:none;" onclick="openDeposit()">Пополнить</button>
-                <button class="btn btn-white" style="font-size:12px; opacity:0.8;">Вывести</button>
+            
+            <div style="margin-top: 30px;">
+                <p>Уровень опыта: <span id="levelText">1</span></p>
+                <div class="level-bar"><div id="levelProgress" class="level-progress" style="width: 10%;"></div></div>
             </div>
         </div>
 
         <div class="card">
-            <h3>Активность и репутация</h3>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
-                <div style="background: var(--bg); padding: 20px; border-radius: 20px; text-align: center;">
-                    <p style="font-size: 12px; color: gray;">Завершено задач</p>
-                    <h2 id="statsCount">0</h2>
-                </div>
-                <div style="background: var(--bg); padding: 20px; border-radius: 20px; text-align: center;">
-                    <p style="font-size: 12px; color: gray;">Рейтинг (AVG)</p>
-                    <h2 id="avgRating">0.0</h2>
-                </div>
+            <h3>Ваш Баланс: <span id="pBalance" style="color:var(--success)">0 ₸</span></h3>
+            <div style="display:flex; gap:10px; margin-top:15px;">
+                <button class="btn btn-main" style="flex:1" onclick="openDeposit()">Пополнить</button>
+                <button class="btn btn-ghost" style="flex:1">Вывести</button>
             </div>
+        </div>
+        
+        <div class="card">
+            <h3>О себе / Навыки</h3>
+            <textarea id="pBio" placeholder="Расскажите о своем опыте..." style="width:100%; margin-top:10px; background:var(--input-bg); border:none; border-radius:15px; padding:15px; color:var(--text);"></textarea>
+            <button class="btn btn-main" style="margin-top:10px; width:auto;" onclick="saveBio()">Сохранить</button>
         </div>
     </div>
 </div>
 
-<div id="login" class="page"><div class="container"><div class="form-box">
-    <h2>Вход</h2>
-    <div class="input-group"><label>Телефон</label><input type="text" id="logPhone"></div>
-    <div class="input-group"><label>Пароль</label><input type="password" id="logPass"></div>
-    <button class="btn btn-main" onclick="auth('log')">Войти</button>
-</div></div></div>
-
-<div id="register" class="page"><div class="container"><div class="form-box">
-    <h2>Регистрация</h2>
-    <div class="input-group"><label>Телефон</label><input type="text" id="regPhone"></div>
-    <div class="input-group"><label>Пароль</label><input type="password" id="regPass"></div>
-    <div class="input-group"><select id="regRole"><option value="worker">Работник</option><option value="business">Бизнес</option></select></div>
-    <button class="btn btn-main" onclick="auth('reg')">Создать</button>
-</div></div></div>
-
 <div id="worker_panel" class="page"><div class="container">
-    <h2>Поиск работы</h2>
-    <div class="controls"><input type="text" id="sCity" placeholder="Город..." oninput="renderWorker()"></div>
+    <h2>Доступные смены</h2>
     <div id="jobList"></div>
 </div></div>
 
@@ -233,10 +169,26 @@
 
 <div id="create_order" class="page"><div class="container"><div class="form-box">
     <h2>Новая задача</h2>
-    <div class="input-group"><input type="text" id="oTitle" placeholder="Название"></div>
-    <div class="input-group"><input type="number" id="oPrice" placeholder="Оплата"></div>
+    <div class="input-group"><input type="text" id="oTitle" placeholder="Название (напр. Курьер)"></div>
+    <div class="input-group"><select id="oCat"><option value="Доставка">🛵 Доставка</option><option value="IT">💻 Программирование</option><option value="Труд">💪 Физический труд</option></select></div>
+    <div class="input-group"><input type="number" id="oPrice" placeholder="Сумма оплаты"></div>
     <div class="input-group"><input type="text" id="oCity" placeholder="Город"></div>
     <button class="btn btn-success" onclick="postOrder()">Опубликовать</button>
+</div></div></div>
+
+<div id="login" class="page"><div class="container"><div class="form-card card" style="max-width:400px; margin:auto;">
+    <h2>Вход</h2>
+    <div class="input-group"><input type="text" id="lPhone" placeholder="Телефон"></div>
+    <div class="input-group"><input type="password" id="lPass" placeholder="Пароль"></div>
+    <button class="btn btn-main" onclick="auth('log')">Войти</button>
+</div></div></div>
+
+<div id="register" class="page"><div class="container"><div class="form-card card" style="max-width:400px; margin:auto;">
+    <h2>Регистрация</h2>
+    <div class="input-group"><input type="text" id="rPhone" placeholder="Телефон"></div>
+    <div class="input-group"><input type="password" id="rPass" placeholder="Пароль"></div>
+    <div class="input-group"><select id="rRole"><option value="worker">Исполнитель</option><option value="business">Бизнес</option></select></div>
+    <button class="btn btn-main" onclick="auth('reg')">Начать</button>
 </div></div></div>
 
 <script type="module">
@@ -255,9 +207,7 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     let user = JSON.parse(localStorage.getItem('wl_session')) || null;
-    let selectedOrderId = null;
-    let selectedWorkerPhone = null;
-    let currentRating = 5;
+    let currentChatId = null;
 
     function toast(m) {
         const t = document.createElement('div'); t.className = 'toast'; t.innerText = m;
@@ -271,18 +221,18 @@
     };
 
     window.auth = async (t) => {
-        const p = document.getElementById(t+'Phone').value;
-        const s = document.getElementById(t+'Pass').value;
+        const p = document.getElementById(t === 'reg' ? 'rPhone' : 'lPhone').value;
+        const s = document.getElementById(t === 'reg' ? 'rPass' : 'lPass').value;
         if(t === 'reg') {
-            const r = document.getElementById('regRole').value;
-            await set(ref(db, 'users/'+p), { phone: p, pass: s, role: r, balance: 0, ratingSum: 0, ratingCount: 0 });
-            toast("Аккаунт создан!"); showPage('login');
+            const r = document.getElementById('rRole').value;
+            await set(ref(db, 'users/'+p), { phone: p, pass: s, role: r, balance: 0, exp: 0, bio: "" });
+            toast("Профиль создан!"); showPage('login');
         } else {
             const sn = await get(child(ref(db), `users/${p}`));
             if(sn.exists() && sn.val().pass === s) {
                 user = sn.val(); localStorage.setItem('wl_session', JSON.stringify(user));
                 initSession();
-            } else toast("Ошибка!");
+            } else toast("Ошибка входа!");
         }
     };
 
@@ -290,21 +240,23 @@
         if(!user) return;
         document.getElementById('guestNav').style.display = 'none';
         document.getElementById('userNav').style.display = 'flex';
-        document.getElementById('userNameDisplay').innerText = user.phone;
-        document.getElementById('userRoleDisplay').innerText = user.role === 'business' ? 'Бизнес-аккаунт' : 'Исполнитель';
         
-        if(user.role === 'business') document.getElementById('depBtn').style.display = 'block';
-
-        // Realtime баланс и рейтинг
         onValue(ref(db, `users/${user.phone}`), (sn) => {
             const d = sn.val();
-            document.getElementById('balanceDisplay').innerText = (d.balance || 0) + " ₸";
-            const avg = d.ratingCount > 0 ? (d.ratingSum / d.ratingCount).toFixed(1) : "0.0";
-            document.getElementById('avgRating').innerText = avg;
-            user.balance = d.balance;
+            user = d;
+            document.getElementById('pName').innerText = d.phone;
+            document.getElementById('pBalance').innerText = (d.balance || 0) + " ₸";
+            document.getElementById('pBio').value = d.bio || "";
+            
+            // Расчет уровня
+            const exp = d.exp || 0;
+            const level = Math.floor(exp / 100) + 1;
+            document.getElementById('levelText').innerText = level;
+            document.getElementById('levelProgress').style.width = (exp % 100) + "%";
+            if(level >= 3) document.getElementById('pStatus').style.display = 'inline-block';
         });
 
-        const dBtn = document.getElementById('dashboardBtn');
+        const dBtn = document.getElementById('dashBtn');
         if(user.role === 'business') {
             dBtn.onclick = () => showPage('business_panel');
             onValue(ref(db, 'orders'), renderBiz);
@@ -316,21 +268,12 @@
         }
     }
 
-    // ПОПОЛНЕНИЕ
-    window.openDeposit = () => document.getElementById('depositModal').style.display = 'flex';
-    window.confirmDeposit = async () => {
-        const amt = Number(document.getElementById('depAmount').value);
-        if(amt <= 0) return toast("Некорректная сумма");
-        await update(ref(db, `users/${user.phone}`), { balance: (user.balance || 0) + amt });
-        toast("Баланс пополнен на " + amt + " ₸");
-        closeModals();
-    };
-
     window.postOrder = async () => {
         const pr = Number(document.getElementById('oPrice').value);
-        if(user.balance < pr) return toast("Пополните баланс!");
+        if(user.balance < pr) return toast("Недостаточно средств!");
         await push(ref(db, 'orders'), {
             title: document.getElementById('oTitle').value,
+            category: document.getElementById('oCat').value,
             price: pr, city: document.getElementById('oCity').value,
             status: 'open', owner: user.phone
         });
@@ -344,8 +287,9 @@
         for(let id in data) {
             if(data[id].owner === user.phone) {
                 const el = document.createElement('div'); el.className = 'card';
-                el.innerHTML = `<h3>${data[id].title}</h3><p>${data[id].price} ₸ · ${data[id].status}</p>
-                ${data[id].status === 'completed' && !data[id].rated ? `<button class="btn btn-success" style="margin-top:10px;" onclick="openRating('${id}', '${data[id].worker}')">Оценить работу</button>` : ''}`;
+                el.innerHTML = `<span class="badge badge-cat">${data[id].category}</span>
+                <h3>${data[id].title}</h3><p>${data[id].price} ₸ · ${data[id].status}</p>
+                <button class="btn btn-ghost" style="margin-top:10px;" onclick="openChat('${id}')">Чат</button>`;
                 list.appendChild(el);
             }
         }
@@ -354,55 +298,58 @@
     function renderWorker(sn) {
         const list = document.getElementById('jobList'); list.innerHTML = "";
         const data = sn.val();
-        const cityQ = document.getElementById('sCity').value.toLowerCase();
-        let finished = 0;
         for(let id in data) {
-            if(data[id].status === 'open' && data[id].city.toLowerCase().includes(cityQ)) {
+            if(data[id].status === 'open') {
                 const el = document.createElement('div'); el.className = 'card';
-                el.innerHTML = `<h3>${data[id].title}</h3><p>${data[id].price} ₸ · ${data[id].city}</p>
-                <button class="btn btn-main" style="margin-top:10px;" onclick="takeJob('${id}')">Принять и выполнить</button>`;
+                el.innerHTML = `<span class="badge badge-cat">${data[id].category}</span>
+                <h3>${data[id].title}</h3><p>${data[id].price} ₸ · ${data[id].city}</p>
+                <button class="btn btn-main" style="margin-top:10px;" onclick="takeJob('${id}')">Взять смену</button>`;
                 list.appendChild(el);
             }
-            if(data[id].worker === user.phone && data[id].status === 'completed') finished++;
         }
-        document.getElementById('statsCount').innerText = finished;
     }
 
     window.takeJob = async (id) => {
         const osn = await get(child(ref(db), `orders/${id}`));
         const price = osn.val().price;
-        await update(ref(db, `orders/${id}`), { status: 'completed', worker: user.phone });
-        await update(ref(db, `users/${user.phone}`), { balance: (user.balance || 0) + price });
-        toast("Работа выполнена! + " + price + " ₸");
-    };
-
-    // РЕЙТИНГ (Среднее арифметическое)
-    window.openRating = (id, workerPhone) => { 
-        selectedOrderId = id; 
-        selectedWorkerPhone = workerPhone;
-        document.getElementById('ratingModal').style.display = 'flex'; 
-    };
-
-    window.submitRating = async () => {
-        // Обновляем сумму и кол-во у работника
-        const wsn = await get(child(ref(db), `users/${selectedWorkerPhone}`));
-        const d = wsn.val();
-        await update(ref(db, `users/${selectedWorkerPhone}`), {
-            ratingSum: (d.ratingSum || 0) + Number(currentRating),
-            ratingCount: (d.ratingCount || 0) + 1
+        await update(ref(db, `orders/${id}`), { status: 'taken', worker: user.phone });
+        // Авто-выплата + опыт
+        await update(ref(db, `users/${user.phone}`), { 
+            balance: (user.balance || 0) + price,
+            exp: (user.exp || 0) + 25
         });
-        await update(ref(db, `orders/${selectedOrderId}`), { rated: true });
-        toast("Рейтинг исполнителя обновлен!");
-        closeModals();
+        toast("Смена принята! Получено 25 XP");
     };
 
-    // Звезды
-    document.querySelectorAll('.star').forEach(s => {
-        s.onclick = () => {
-            currentRating = s.getAttribute('data-v');
-            document.querySelectorAll('.star').forEach(st => st.classList.toggle('active', st.getAttribute('data-v') <= currentRating));
-        };
-    });
+    window.saveBio = () => {
+        update(ref(db, `users/${user.phone}`), { bio: document.getElementById('pBio').value });
+        toast("Сохранено!");
+    };
+
+    // ЧАТ
+    window.openChat = (orderId) => {
+        currentChatId = orderId;
+        document.getElementById('chatModal').style.display = 'flex';
+        onValue(ref(db, `chats/${orderId}`), (sn) => {
+            const box = document.getElementById('chatBox'); box.innerHTML = "";
+            const msgs = sn.val();
+            for(let mId in msgs) {
+                const m = msgs[mId];
+                const div = document.createElement('div');
+                div.className = `msg ${m.sender === user.phone ? 'msg-own' : 'msg-other'}`;
+                div.innerText = m.text;
+                box.appendChild(div);
+            }
+            box.scrollTop = box.scrollHeight;
+        });
+    };
+
+    window.sendMessage = () => {
+        const text = document.getElementById('chatInput').value;
+        if(!text) return;
+        push(ref(db, `chats/${currentChatId}`), { sender: user.phone, text, time: Date.now() });
+        document.getElementById('chatInput').value = "";
+    };
 
     window.closeModals = () => document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
     window.logout = () => { localStorage.clear(); location.reload(); };
