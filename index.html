@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkLink - Поиск подработки</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-purple: #6c38ff;
+            --bg-cream: #fdf6e3;
+            --text-dark: #2d3436;
+            --white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px;
+            background: var(--primary-purple);
+            color: white;
+        }
+
+        .logo {
+            font-weight: 800;
+            font-size: 24px;
+            cursor: pointer;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 30px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .auth-buttons button {
+            padding: 10px 20px;
+            border-radius: 25px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .btn-reg { background: white; color: var(--primary-purple); }
+        .btn-login { background: rgba(255,255,255,0.2); color: white; }
+
+        .page { display: none; min-height: 100vh; }
+        .active { display: block; }
+
+        .hero {
+            display: flex;
+            background: var(--primary-purple);
+            color: white;
+            height: calc(100vh - 80px);
+        }
+
+        .hero-content {
+            flex: 1;
+            padding: 80px 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .hero-image {
+            flex: 1;
+            background: url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&q=80&w=1000') center/cover;
+            position: relative;
+        }
+
+        .job-card {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            color: black;
+            padding: 20px;
+            border-radius: 15px;
+            width: 300px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .hero h1 { font-size: 48px; margin-bottom: 30px; }
+        .features { list-style: none; }
+        .features li { margin-bottom: 15px; display: flex; align-items: center; }
+
+        .business-page {
+            background: var(--bg-cream);
+            padding: 100px 50px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .form-container {
+            background: transparent;
+            width: 500px;
+        }
+
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 5px; }
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.5);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: #3d4451;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .auth-screen {
+            background: var(--primary-purple);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .auth-box {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            color: var(--text-dark);
+            width: 400px;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="logo" onclick="showPage('home')">worklink</div>
+    <div class="nav-links">
+        <a onclick="showPage('business')">Для бизнеса</a>
+        <a href="#">О нас</a>
+        <a href="#">База знаний</a>
+    </div>
+    <div class="auth-buttons">
+        <button class="btn-login" onclick="showPage('login')">Вход</button>
+        <button class="btn-reg" onclick="showPage('register')">Регистрация</button>
+    </div>
+</nav>
+
+<div id="home" class="page active">
+    <div class="hero">
+        <div class="hero-content">
+            <h1>Найти подработку<br>с помощью WorkLink</h1>
+            <ul class="features">
+                <li>💵 Доход до 45 000 тг в день</li>
+                <li>💼 Опыт работы не нужен</li>
+                <li>📖 Компенсация сан.книжки — 3000 тг</li>
+                <li>🕒 Выплаты в течение недели</li>
+            </ul>
+        </div>
+        <div class="hero-image">
+            <div class="job-card">
+                <div style="font-weight:700">13 200 ₸ / услуга</div>
+                <div style="font-size:12px; color:gray">08:00 - 20:00 · Сегодня</div>
+                <div style="font-size:14px; margin-top:10px">Услуги по погрузке-выгрузке</div>
+                <div style="color:var(--primary-purple); font-size:12px; margin-top:5px">📍 Заммлер Казахстан</div>
+                <button style="width:100%; margin-top:15px; padding:10px; background:#f0ebff; border:none; border-radius:8px; color:var(--primary-purple)">Подробнее</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="business" class="page">
+    <div class="business-page">
+        <div>
+            <h2 style="font-size: 42px; color: #2d3436;">Подключайтесь<br>к WorkLink уже<br>завтра</h2>
+            <ol style="margin-top: 30px; line-height: 2;">
+                <li>1. Заполните форму</li>
+                <li>2. Получите коммерческое предложение</li>
+                <li>3. Создайте заявку</li>
+            </ol>
+        </div>
+        <div class="form-container">
+            <div class="form-group">
+                <label>*Ваше Ф.И.О</label>
+                <input type="text" placeholder="Меня зовут...">
+            </div>
+            <div class="form-group">
+                <label>*Название компании</label>
+                <input type="text" placeholder="WorkLink">
+            </div>
+            <div class="form-group">
+                <label>*Ваша должность</label>
+                <input type="text" placeholder="HR-рекрутер">
+            </div>
+            <div class="form-group">
+                <label>*Контактный телефон</label>
+                <input type="text" placeholder="+7 775 876 74 75">
+            </div>
+            <button class="submit-btn">Оставить заявку</button>
+        </div>
+    </div>
+</div>
+
+<div id="register" class="page">
+    <div class="auth-screen">
+        <div class="auth-box">
+            <h2 style="margin-bottom:20px">Регистрация в WorkLink</h2>
+            <div class="form-group">
+                <label>Номер телефона</label>
+                <input type="text" placeholder="+7">
+            </div>
+            <div class="form-group">
+                <label>Придумайте пароль</label>
+                <input type="password">
+            </div>
+            <button class="submit-btn" style="background:var(--primary-purple)">Создать аккаунт</button>
+        </div>
+    </div>
+</div>
+
+<div id="login" class="page">
+    <div class="auth-screen">
+        <div class="auth-box">
+            <h2 style="margin-bottom:20px">Вход в WorkLink</h2>
+            <div class="form-group">
+                <label>Номер телефона</label>
+                <input type="text">
+            </div>
+            <div class="form-group">
+                <label>Пароль</label>
+                <input type="password">
+            </div>
+            <button class="submit-btn" style="background:var(--primary-purple)">Войти</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showPage(pageId) {
+        const pages = document.querySelectorAll('.page');
+        pages.forEach(page => page.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        window.scrollTo(0,0);
+    }
+</script>
+
+</body>
+</html>
