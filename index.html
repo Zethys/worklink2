@@ -716,6 +716,98 @@ window.applyMarketFilters = () => {
 
     window.renderMarketplace({ query, category, minPrice });
 };
+
+    /* --- МОДУЛЬ 4: FINANCIAL & XP SYSTEM --- */
+
+/**
+ * Система начисления опыта (XP) и уровней
+ */
+window.grantExperience = async (amount) => {
+    const user = window.AppState.user;
+    if (!user) return;
+
+    let newExp = (user.exp || 0) + amount;
+    let newLevel = user.level || 1;
+
+    // Расчет уровня (каждые 500 XP = новый уровень)
+    if (newExp >= 500) {
+        newLevel += Math.floor(newExp / 500);
+        newExp = newExp % 500;
+        window.systemNotification(`Уровень повышен! Теперь вы: ${newLevel} LVL`, "success");
+    }
+
+    await update(ref(db, `users/${user.phone}`), {
+        exp: newExp,
+        level: newLevel
+    });
+};
+
+/**
+ * Процесс завершения заказа и выплаты
+ */
+window.completeOrder = async (orderId) => {
+    const ordersRef = ref(db, `orders/${orderId}`);
+    const snap = await get(ordersRef);
+    const order = snap.val();
+
+    if (!order || order.status !== 'in_progress') return;
+
+    try {
+        const workerPhone = order.worker;
+        const workerSnap = await get(ref(db, `users/${workerPhone}`));
+        const workerData = workerSnap.val();
+
+        const updates = {};
+        
+        // 1. Закрываем заказ
+        updates[`/orders/${orderId}/status`] = 'completed';
+
+        // 2. Начисляем деньги исполнителю
+        const newBalance = (workerData.balance || 0) + order.price;
+        const transaction = {
+            type: 'income',
+            msg: `Оплата за: ${order.title}`,
+            amt: order.price,
+            date: Date.now()
+        };
+
+        updates[`/users/${workerPhone}/balance`] = newBalance;
+        updates[`/users/${workerPhone}/transactions`] = [...(workerData.transactions || []), transaction];
+
+        await update(ref(db), updates);
+        
+        // 3. Даем XP за работу
+        window.grantExperience(150); 
+        
+        window.systemNotification("Заказ успешно оплачен!");
+    } catch (e) {
+        console.error(e);
+        window.systemNotification("Ошибка при выплате", "error");
+    }
+};
+
+/**
+ * Пополнение баланса (Имитация платежного шлюза)
+ */
+window.depositFunds = async (amount) => {
+    const user = window.AppState.user;
+    if (!user || amount < 100) return;
+
+    const newBalance = (user.balance || 0) + amount;
+    const newTr = {
+        type: 'deposit',
+        msg: 'Пополнение через WorkLink Pay',
+        amt: amount,
+        date: Date.now()
+    };
+
+    await update(ref(db, `users/${user.phone}`), {
+        balance: newBalance,
+        transactions: [...(user.transactions || []), newTr]
+    });
+
+    window.systemNotification(`Счет пополнен на ${amount} ₸`);
+};
 </script>
     
 
