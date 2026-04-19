@@ -22,62 +22,69 @@
         /* Навигация */
         nav {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 15px 50px; background: var(--primary-purple); color: white;
+            padding: 20px 50px; background: var(--primary-purple); color: white;
             position: sticky; top: 0; z-index: 1000;
         }
-        .logo { font-weight: 800; font-size: 24px; cursor: pointer; }
-        .nav-links a { color: white; text-decoration: none; margin-left: 20px; font-size: 14px; font-weight: 600; cursor: pointer; }
+        .logo { font-weight: 800; font-size: 26px; cursor: pointer; }
+        .nav-links a { color: white; text-decoration: none; margin-left: 25px; font-size: 14px; font-weight: 600; cursor: pointer; }
 
-        .page { display: none; min-height: 100vh; padding: 40px 5%; }
+        .page { display: none; min-height: 100vh; }
         .active { display: block; }
 
         /* Уведомления */
-        #toast-container { position: fixed; top: 80px; right: 20px; z-index: 9999; }
+        #toast-container { position: fixed; top: 100px; right: 20px; z-index: 9999; }
         .toast { 
-            background: var(--text-dark); color: white; padding: 15px 25px; 
-            border-radius: 12px; margin-bottom: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            animation: slideIn 0.3s ease-out; font-size: 14px;
+            background: #333; color: white; padding: 16px 24px; border-radius: 12px; 
+            margin-bottom: 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            animation: slideIn 0.3s ease-out;
         }
 
-        /* Главная Hero */
-        .hero { display: flex; background: var(--primary-purple); color: white; min-height: calc(100vh - 80px); align-items: center; margin: -40px -5% 0 -5%; }
+        /* Hero Секция (Главная) */
+        .hero { display: flex; background: var(--primary-purple); color: white; height: calc(100vh - 80px); align-items: center; }
         .hero-content { flex: 1; padding: 0 80px; }
         .hero h1 { font-size: 56px; line-height: 1.1; margin-bottom: 30px; font-weight: 800; }
-        .features-list { list-style: none; margin-bottom: 30px; }
-        .features-list li { margin-bottom: 12px; display: flex; align-items: center; }
-
-        /* Формы и Поиск */
-        .controls { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 30px; }
-        .controls input, .controls select { padding: 14px; border-radius: 12px; border: 1px solid #ddd; flex: 1; min-width: 200px; }
+        .features-list { list-style: none; margin-bottom: 40px; }
+        .features-list li { margin-bottom: 15px; font-size: 18px; display: flex; align-items: center; }
         
-        .auth-box, .form-container { background: white; padding: 30px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); max-width: 500px; margin: 20px auto; }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 5px; }
-        .form-group input, .form-group select { width: 100%; padding: 14px; border-radius: 10px; border: 1px solid #ddd; background: var(--input-bg); }
+        .hero-image-section { flex: 1; position: relative; height: 100%; }
+        .hero-bg-img { width: 100%; height: 100%; object-fit: cover; }
+        .floating-card { 
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: white; padding: 25px; border-radius: 20px; width: 340px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3); color: var(--text-dark);
+        }
 
-        /* Карточки заказов */
+        /* Личные кабинеты и формы */
+        .container { max-width: 1100px; margin: 0 auto; padding: 60px 20px; }
+        .form-box { background: white; padding: 40px; border-radius: 24px; max-width: 500px; margin: 0 auto; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+        .form-group input, .form-group select { width: 100%; padding: 16px; border-radius: 12px; border: 1px solid #eee; background: var(--input-bg); font-size: 15px; }
+
+        /* Списки и Поиск */
+        .controls { display: flex; gap: 15px; margin-bottom: 30px; flex-wrap: wrap; }
+        .controls input, .controls select { padding: 15px; border-radius: 12px; border: 1px solid #ddd; flex: 1; min-width: 200px; }
+
         .order-card { 
             background: white; padding: 25px; border-radius: 20px; margin-bottom: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.03); border-left: 6px solid var(--primary-purple);
-            position: relative;
+            border-left: 8px solid var(--primary-purple); box-shadow: 0 5px 15px rgba(0,0,0,0.03);
         }
-        .status-tag { display: inline-block; padding: 5px 10px; border-radius: 8px; font-size: 10px; font-weight: 800; text-transform: uppercase; margin-bottom: 10px; }
+        .status-badge { display: inline-block; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 10px; }
         .status-open { background: #e3f2fd; color: #1976d2; }
         .status-taken { background: #fff3e0; color: #f57c00; }
         .status-completed { background: #e8f5e9; color: #2e7d32; }
 
-        .btn-purple { width: 100%; padding: 16px; background: var(--primary-purple); color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; }
-        .btn-success { width: 100%; padding: 12px; background: var(--success); color: white; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; }
+        .btn-action { width: 100%; padding: 18px; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .btn-purple { background: var(--primary-purple); color: white; }
+        .btn-success { background: var(--success); color: white; }
 
         @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
 
-        @media (max-width: 768px) {
-            nav { padding: 15px 20px; }
-            .hero { flex-direction: column; text-align: center; }
-            .hero-content { padding: 40px 20px; }
-            .hero h1 { font-size: 36px; }
+        @media (max-width: 900px) {
+            .hero { flex-direction: column; text-align: center; height: auto; }
+            .hero-content { padding: 60px 20px; }
+            .hero h1 { font-size: 38px; }
             .hero-image-section { display: none; }
-            .nav-links a { margin-left: 10px; font-size: 12px; }
         }
     </style>
 </head>
@@ -89,12 +96,12 @@
     <div class="logo" onclick="showPage('home')">worklink</div>
     <div class="nav-links" id="guestNav">
         <a onclick="showPage('about')">О нас</a>
-        <a onclick="showPage('business_form')">Для бизнеса</a>
+        <a onclick="showPage('business_landing')">Для бизнеса</a>
         <a onclick="showPage('login')">Вход</a>
-        <a onclick="showPage('register')" style="background:rgba(255,255,255,0.2); padding:8px 15px; border-radius:8px">Регистрация</a>
+        <a onclick="showPage('register')" style="background:rgba(255,255,255,0.2); padding:10px 20px; border-radius:10px">Регистрация</a>
     </div>
     <div class="nav-links" id="userNav" style="display:none">
-        <a id="dynamicPanelBtn">Панель управления</a>
+        <a id="panelBtn">Панель управления</a>
         <a onclick="logout()">Выйти</a>
     </div>
 </nav>
@@ -108,101 +115,119 @@
                 <li>💼 Опыт работы не нужен</li>
                 <li>🕒 Выплаты в течение недели</li>
             </ul>
-            <button class="btn-purple" style="width:auto; padding: 18px 40px; background: white; color: var(--primary-purple);" onclick="showPage('register')">Начать сейчас</button>
+            <button class="btn-action btn-purple" style="width:auto; padding:20px 40px; background:white; color:var(--primary-purple)" onclick="showPage('register')">Начать сейчас</button>
+        </div>
+        <div class="hero-image-section">
+            <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=2000" class="hero-bg-img">
+            <div class="floating-card">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px">
+                    <span style="font-weight:800; font-size:22px">13 200 ₸</span>
+                    <span style="background:#e8fdf5; color:#27ae60; padding:5px 10px; border-radius:8px; font-size:10px; font-weight:800">ПОВЫШЕННАЯ ЦЕНА</span>
+                </div>
+                <div style="color:gray; font-size:13px">🕒 08:00 - 20:00 · Сегодня</div>
+                <div style="font-weight:600; margin:10px 0">Услуги по погрузке-выгрузке</div>
+                <div style="color:var(--primary-purple); font-weight:700">📍 Заммлер Казахстан</div>
+            </div>
         </div>
     </div>
 </div>
 
 <div id="about" class="page">
-    <div class="form-container" style="max-width: 800px;">
-        <h2>Что такое WorkLink</h2>
-        <p><strong>WorkLink</strong> — это инновационный сервис для быстрого поиска исполнителей на краткосрочные задачи.</p>
-        <h3 style="margin-top:20px">Как это работает?</h3>
-        <ul>
-            <li>Бизнес публикует задачу с указанием цены и места.</li>
-            <li>Работники видят список доступных смен в реальном времени.</li>
-            <li>После выполнения система позволяет закрыть сделку и выставить рейтинг.</li>
-        </ul>
+    <div class="container">
+        <div style="background:white; padding:40px; border-radius:30px">
+            <h2>Что такое WorkLink</h2>
+            <p><strong>WorkLink</strong> — это сервис, который помогает компаниям быстро находить проверенных исполнителей на посменную работу.</p>
+            <h3 style="margin-top:25px">Как разместить заявку?</h3>
+            <ul>
+                <li>Войдите в личный кабинет по номеру телефона.</li>
+                <li>Создайте заявку, указав детали смены.</li>
+                <li>Дождитесь отклика (обычно до 30 минут).</li>
+            </ul>
+        </div>
     </div>
 </div>
 
-<div id="business_form" class="page">
-    <div class="form-container">
-        <p style="color:var(--primary-purple); font-weight:800; font-size:12px">ПАРТНЕРСТВО</p>
-        <h2 style="margin-bottom:20px">Подключайтесь к WorkLink</h2>
-        <div class="form-group"><label>Ваше Ф.И.О</label><input type="text" id="partner_fio"></div>
-        <div class="form-group"><label>Компания</label><input type="text" id="partner_comp"></div>
-        <div class="form-group"><label>Телефон</label><input type="text" id="partner_phone"></div>
-        <div class="form-group"><label>Город</label><input type="text" id="partner_city"></div>
-        <button class="btn-purple" style="background:#3d4451" id="btnPartner">Оставить заявку</button>
+<div id="business_landing" class="page">
+    <div class="container" style="display:grid; grid-template-columns: 1fr 1fr; gap:50px; align-items:center">
+        <div>
+            <p style="color:var(--primary-purple); font-weight:800; font-size:12px">ОСТАВЬТЕ ЗАЯВКУ</p>
+            <h2 style="font-size:42px; margin:15px 0">Подключайтесь к WorkLink уже завтра</h2>
+            <ul style="list-style:none; font-weight:600">
+                <li style="margin-bottom:15px">1. Заполните форму</li>
+                <li style="margin-bottom:15px">2. Получите предложение</li>
+                <li style="margin-bottom:15px">3. Создайте заявку</li>
+            </ul>
+        </div>
+        <div class="form-box" style="margin:0">
+            <div class="form-group"><label>Ваше Ф.И.О</label><input type="text" id="biz_fio" placeholder="Меня зовут..."></div>
+            <div class="form-group"><label>Компания</label><input type="text" id="biz_name" placeholder="WorkLink"></div>
+            <div class="form-group"><label>Телефон</label><input type="text" id="biz_phone" placeholder="+7 777..."></div>
+            <div class="form-group"><label>Город</label><input type="text" id="biz_city" placeholder="Алматы..."></div>
+            <button class="btn-action" style="background:#3d4451; color:white" onclick="submitPartner()">Оставить заявку</button>
+        </div>
     </div>
 </div>
 
 <div id="login" class="page">
-    <div class="auth-box">
+    <div class="container"><div class="form-box">
         <h2>Вход</h2>
         <div class="form-group"><label>Телефон</label><input type="text" id="logPhone"></div>
         <div class="form-group"><label>Пароль</label><input type="password" id="logPass"></div>
-        <button class="btn-purple" id="btnLog">Войти</button>
-    </div>
+        <button class="btn-action btn-purple" onclick="auth('log')">Войти</button>
+    </div></div>
 </div>
 
 <div id="register" class="page">
-    <div class="auth-box">
+    <div class="container"><div class="form-box">
         <h2>Регистрация</h2>
         <div class="form-group"><label>Телефон</label><input type="text" id="regPhone"></div>
         <div class="form-group"><label>Пароль</label><input type="password" id="regPass"></div>
-        <div class="form-group">
-            <label>Кто вы?</label>
-            <select id="regRole">
-                <option value="worker">Я ищу работу</option>
-                <option value="business">Я ищу сотрудников</option>
-            </select>
-        </div>
-        <button class="btn-purple" id="btnReg">Создать аккаунт</button>
-    </div>
+        <div class="form-group"><label>Роль</label><select id="regRole"><option value="worker">Работник</option><option value="business">Бизнес</option></select></div>
+        <button class="btn-action btn-purple" onclick="auth('reg')">Создать</button>
+    </div></div>
 </div>
 
 <div id="worker_panel" class="page">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px">
-        <h2>Доступные заказы</h2>
-        <button class="btn-purple" style="width:auto; padding:10px 20px" onclick="showPage('my_tasks')">Мои заказы</button>
+    <div class="container">
+        <div style="display:flex; justify-content:space-between; margin-bottom:30px">
+            <h2>Доступные смены</h2>
+            <button class="btn-action btn-purple" style="width:auto" onclick="showPage('my_jobs')">Мои задачи</button>
+        </div>
+        <div class="controls">
+            <input type="text" id="sTitle" placeholder="Поиск по названию..." oninput="renderWorker()">
+            <input type="text" id="sCity" placeholder="Город..." oninput="renderWorker()">
+            <select id="sPrice" onchange="renderWorker()"><option value="new">Новые</option><option value="exp">Дорогие</option></select>
+        </div>
+        <div id="worker_list"></div>
     </div>
-    <div class="controls">
-        <input type="text" id="searchT" placeholder="Поиск по названию..." oninput="filterOrders()">
-        <input type="text" id="searchC" placeholder="Город..." oninput="filterOrders()">
-        <select id="sortP" onchange="filterOrders()">
-            <option value="new">Сначала новые</option>
-            <option value="exp">Сначала дорогие</option>
-        </select>
-    </div>
-    <div id="worker_list"></div>
 </div>
 
-<div id="my_tasks" class="page">
-    <button onclick="showPage('worker_panel')" style="margin-bottom:20px; border:none; background:none; cursor:pointer; font-weight:700">← Назад к поиску</button>
-    <h2>Мои активные задачи</h2>
-    <div id="my_list" style="margin-top:20px"></div>
+<div id="my_jobs" class="page">
+    <div class="container">
+        <button onclick="showPage('worker_panel')" style="border:none; background:none; cursor:pointer; font-weight:700">← К поиску</button>
+        <h2 style="margin-top:20px">Мои принятые заказы</h2>
+        <div id="my_list" style="margin-top:30px"></div>
+    </div>
 </div>
 
 <div id="business_panel" class="page">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px">
-        <h2>Ваши объявления</h2>
-        <button class="btn-purple" style="width:auto; padding:10px 20px" onclick="showPage('create_order')">+ Создать</button>
+    <div class="container">
+        <div style="display:flex; justify-content:space-between; margin-bottom:30px">
+            <h2>Ваши объявления</h2>
+            <button class="btn-action btn-purple" style="width:auto" onclick="showPage('create_order_page')">+ Создать</button>
+        </div>
+        <div id="biz_list"></div>
     </div>
-    <div id="biz_list"></div>
 </div>
 
-<div id="create_order" class="page">
-    <div class="form-container">
-        <h2>Новый заказ</h2>
-        <div class="form-group"><label>Название позиции</label><input type="text" id="oTitle"></div>
+<div id="create_order_page" class="page">
+    <div class="container"><div class="form-box">
+        <h2>Детали задачи</h2>
+        <div class="form-group"><label>Название</label><input type="text" id="oTitle"></div>
         <div class="form-group"><label>Оплата (₸)</label><input type="number" id="oPrice"></div>
         <div class="form-group"><label>Город</label><input type="text" id="oCity"></div>
-        <div class="form-group"><label>Адрес</label><input type="text" id="oAddr"></div>
-        <button class="btn-success" onclick="createNewOrder()">Опубликовать заказ</button>
-        <button onclick="showPage('business_panel')" style="width:100%; margin-top:10px; background:none; border:none; cursor:pointer">Отмена</button>
-    </div>
+        <button class="btn-action btn-success" onclick="postOrder()">Опубликовать</button>
+    </div></div>
 </div>
 
 <script type="module">
@@ -220,14 +245,13 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-    let user = JSON.parse(localStorage.getItem('wl_auth')) || null;
+    let user = JSON.parse(localStorage.getItem('wl_session')) || null;
 
-    function toast(msg) {
+    function toast(txt) {
         const c = document.getElementById('toast-container');
         const t = document.createElement('div');
-        t.className = 'toast'; t.innerText = msg;
-        c.appendChild(t);
-        setTimeout(() => t.remove(), 3000);
+        t.className = 'toast'; t.innerText = txt;
+        c.appendChild(t); setTimeout(() => t.remove(), 3000);
     }
 
     window.showPage = (id) => {
@@ -236,147 +260,99 @@
         window.scrollTo(0,0);
     };
 
-    // Auth
-    document.getElementById('btnReg').onclick = async () => {
-        const p = document.getElementById('regPhone').value;
-        const s = document.getElementById('regPass').value;
-        const r = document.getElementById('regRole').value;
-        if(!p || !s) return toast("Заполните поля!");
-        await set(ref(db, 'users/' + p), { phone: p, pass: s, role: r });
-        toast("Аккаунт создан! Войдите.");
-        showPage('login');
+    window.auth = async (type) => {
+        const p = document.getElementById(type+'Phone').value;
+        const s = document.getElementById(type+'Pass').value;
+        if(type === 'reg') {
+            const r = document.getElementById('regRole').value;
+            await set(ref(db, 'users/'+p), { phone: p, pass: s, role: r });
+            toast("Успех! Теперь войдите."); showPage('login');
+        } else {
+            const sn = await get(child(ref(db), `users/${p}`));
+            if(sn.exists() && sn.val().pass === s) {
+                user = sn.val(); localStorage.setItem('wl_session', JSON.stringify(user));
+                initSession();
+            } else toast("Ошибка!");
+        }
     };
 
-    document.getElementById('btnLog').onclick = async () => {
-        const p = document.getElementById('logPhone').value;
-        const s = document.getElementById('logPass').value;
-        const sn = await get(child(ref(db), `users/${p}`));
-        if(sn.exists() && sn.val().pass === s) {
-            user = sn.val();
-            localStorage.setItem('wl_auth', JSON.stringify(user));
-            checkAuth();
-        } else toast("Ошибка входа!");
-    };
-
-    function checkAuth() {
+    function initSession() {
         if(!user) return;
         document.getElementById('guestNav').style.display = 'none';
         document.getElementById('userNav').style.display = 'flex';
-        const pBtn = document.getElementById('dynamicPanelBtn');
+        const btn = document.getElementById('panelBtn');
         if(user.role === 'business') {
-            pBtn.onclick = () => showPage('business_panel');
-            loadBizData();
+            btn.onclick = () => showPage('business_panel');
+            onValue(ref(db, 'orders'), renderBiz);
             showPage('business_panel');
         } else {
-            pBtn.onclick = () => showPage('worker_panel');
-            loadWorkerData();
+            btn.onclick = () => showPage('worker_panel');
+            onValue(ref(db, 'orders'), (sn) => { window.ordersData = sn.val(); renderWorker(); renderMy(); });
             showPage('worker_panel');
         }
     }
 
-    // Business
-    window.createNewOrder = async () => {
-        const t = document.getElementById('oTitle').value;
-        const p = Number(document.getElementById('oPrice').value);
-        const c = document.getElementById('oCity').value;
-        const a = document.getElementById('oAddr').value;
-        await push(ref(db, 'orders'), { title: t, price: p, city: c, addr: a, status: 'open', owner: user.phone, time: Date.now() });
-        toast("Заказ опубликован!");
-        showPage('business_panel');
+    window.postOrder = async () => {
+        await push(ref(db, 'orders'), {
+            title: document.getElementById('oTitle').value,
+            price: Number(document.getElementById('oPrice').value),
+            city: document.getElementById('oCity').value,
+            status: 'open', owner: user.phone, time: Date.now()
+        });
+        toast("Создано!"); showPage('business_panel');
     };
 
-    function loadBizData() {
-        onValue(ref(db, 'orders'), (sn) => {
-            const list = document.getElementById('biz_list');
-            list.innerHTML = "";
-            const data = sn.val();
-            for(let id in data) {
-                if(data[id].owner === user.phone) {
-                    const card = document.createElement('div');
-                    card.className = 'order-card';
-                    let rateBtn = (data[id].status === 'completed' && !data[id].rating) ? `<button onclick="rate('${id}')" style="margin-top:10px">⭐ Оценить работника</button>` : '';
-                    card.innerHTML = `
-                        <span class="status-tag status-${data[id].status}">${data[id].status}</span>
-                        <h3>${data[id].title}</h3>
-                        <p>${data[id].price} ₸ | ${data[id].city}</p>
-                        ${data[id].worker ? `<p style="font-size:12px; color:gray">Исполнитель: ${data[id].worker}</p>` : ''}
-                        ${rateBtn}
-                    `;
-                    list.appendChild(card);
-                }
-            }
-        });
-    }
-
-    // Worker
-    function loadWorkerData() {
-        onValue(ref(db, 'orders'), (sn) => {
-            window.rawOrders = sn.val();
-            filterOrders();
-            renderMyTasks();
-        });
-    }
-
-    window.filterOrders = () => {
-        const q = document.getElementById('searchT').value.toLowerCase();
-        const c = document.getElementById('searchC').value.toLowerCase();
-        const s = document.getElementById('sortP').value;
-        const container = document.getElementById('worker_list');
-        container.innerHTML = "";
-
-        let items = Object.keys(window.rawOrders || {}).map(id => ({id, ...window.rawOrders[id]}))
-            .filter(i => i.status === 'open' && i.title.toLowerCase().includes(q) && i.city.toLowerCase().includes(c));
-
-        if(s === 'exp') items.sort((a,b) => b.price - a.price);
-        else items.sort((a,b) => b.time - a.time);
-
-        items.forEach(i => {
-            const el = document.createElement('div');
-            el.className = 'order-card';
-            el.innerHTML = `<h3>${i.title}</h3><p style="font-weight:700; color:var(--primary-purple)">${i.price} ₸</p><p>📍 ${i.city}, ${i.addr}</p>
-            <button class="btn-success" style="margin-top:15px" onclick="take('${i.id}')">Принять работу</button>`;
-            container.appendChild(el);
-        });
-    };
-
-    function renderMyTasks() {
-        const container = document.getElementById('my_list');
-        container.innerHTML = "";
-        const data = window.rawOrders;
+    function renderBiz(sn) {
+        const list = document.getElementById('biz_list'); list.innerHTML = "";
+        const data = sn.val();
         for(let id in data) {
-            if(data[id].worker === user.phone && data[id].status === 'taken') {
-                const el = document.createElement('div');
-                el.className = 'order-card';
-                el.innerHTML = `<h3>${data[id].title}</h3><p>${data[id].price} ₸</p>
-                <button class="btn-purple" style="margin-top:15px; background:var(--text-dark)" onclick="finish('${id}')">Завершить работу</button>`;
-                container.appendChild(el);
+            if(data[id].owner === user.phone) {
+                const el = document.createElement('div'); el.className = 'order-card';
+                el.innerHTML = `<span class="status-badge status-${data[id].status}">${data[id].status}</span>
+                <h3>${data[id].title}</h3><p>${data[id].price} ₸</p>
+                ${data[id].status === 'completed' && !data[id].rating ? `<button onclick="rate('${id}')">⭐ Оценить</button>` : ''}`;
+                list.appendChild(el);
             }
         }
     }
 
-    window.take = async (id) => {
-        await update(ref(db, `orders/${id}`), { status: 'taken', worker: user.phone });
-        toast("Заказ принят!");
+    window.renderWorker = () => {
+        const list = document.getElementById('worker_list'); list.innerHTML = "";
+        const q = document.getElementById('sTitle').value.toLowerCase();
+        const c = document.getElementById('sCity').value.toLowerCase();
+        let items = Object.keys(window.ordersData || {}).map(id => ({id, ...window.ordersData[id]}))
+            .filter(i => i.status === 'open' && i.title.toLowerCase().includes(q) && i.city.toLowerCase().includes(c));
+        
+        if(document.getElementById('sPrice').value === 'exp') items.sort((a,b) => b.price - a.price);
+        
+        items.forEach(i => {
+            const el = document.createElement('div'); el.className = 'order-card';
+            el.innerHTML = `<h3>${i.title}</h3><p style="color:var(--primary-purple); font-weight:800">${i.price} ₸</p><p>📍 ${i.city}</p>
+            <button class="btn-action btn-success" style="margin-top:15px" onclick="take('${i.id}')">Принять</button>`;
+            list.appendChild(el);
+        });
     };
 
-    window.finish = async (id) => {
-        await update(ref(db, `orders/${id}`), { status: 'completed' });
-        toast("Работа выполнена!");
-    };
+    function renderMy() {
+        const list = document.getElementById('my_list'); list.innerHTML = "";
+        const d = window.ordersData;
+        for(let id in d) {
+            if(d[id].worker === user.phone && d[id].status === 'taken') {
+                const el = document.createElement('div'); el.className = 'order-card';
+                el.innerHTML = `<h3>${d[id].title}</h3><p>${d[id].price} ₸</p>
+                <button class="btn-action btn-purple" onclick="finish('${id}')">Завершить</button>`;
+                list.appendChild(el);
+            }
+        }
+    }
 
-    window.rate = async (id) => {
-        const r = prompt("Оцените работу (1-5):");
-        if(r) { await update(ref(db, `orders/${id}`), { rating: r }); toast("Спасибо!"); }
-    };
-
-    document.getElementById('btnPartner').onclick = async () => {
-        const data = { fio: document.getElementById('partner_fio').value, comp: document.getElementById('partner_comp').value, phone: document.getElementById('partner_phone').value };
-        await push(ref(db, 'partners'), data);
-        toast("Заявка отправлена!");
-    };
-
+    window.take = (id) => update(ref(db, `orders/${id}`), { status: 'taken', worker: user.phone });
+    window.finish = (id) => update(ref(db, `orders/${id}`), { status: 'completed' });
+    window.rate = (id) => { const r = prompt("Оценка 1-5:"); if(r) update(ref(db, `orders/${id}`), { rating: r }); };
+    window.submitPartner = () => { push(ref(db, 'partners'), { fio: document.getElementById('biz_fio').value }); toast("Отправлено!"); };
     window.logout = () => { localStorage.clear(); location.reload(); };
-    if(user) checkAuth();
+
+    if(user) initSession();
 </script>
 </body>
 </html>
