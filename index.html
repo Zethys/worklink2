@@ -210,6 +210,111 @@
         }
 
         .animate { animation: slideIn 0.5s ease forwards; }
+
+        /* --- MARKETPLACE STYLES --- */
+.job-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 25px;
+    margin-top: 30px;
+}
+
+.job-card {
+    cursor: pointer;
+    transition: var(--transition);
+    border-left: 5px solid transparent;
+}
+
+.job-card:hover {
+    transform: translateY(-5px);
+    border-left-color: var(--primary);
+}
+
+.job-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    background: var(--bg-input);
+    color: var(--primary);
+    border-radius: 50px;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+}
+
+.job-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+}
+
+.job-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.job-price {
+    font-size: 20px;
+    font-weight: 900;
+    color: var(--success);
+}
+
+.job-excerpt {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+    height: 44px;
+    overflow: hidden;
+}
+
+.job-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 15px;
+    border-top: 1px solid var(--border-color);
+}
+
+.job-meta {
+    font-size: 12px;
+    color: var(--text-muted);
+    display: flex;
+    gap: 15px;
+}
+
+.job-owner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.owner-avatar {
+    width: 24px;
+    height: 24px;
+    background: var(--primary-light);
+    border-radius: 6px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+}
+
+.status-tag {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 10px;
+    font-weight: 900;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.status-tag.busy { background: var(--warning); color: #000; }
     </style>
 </head>
 <body>
@@ -270,9 +375,349 @@
         document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
         event.currentTarget.classList.add('active');
         document.getElementById('page-title').innerText = name.charAt(0).toUpperCase() + name.slice(1);
-        // Здесь будет подгрузка контента из Модуля 2
+        /* --- МОДУЛЬ 2: CORE BACKEND & AUTH --- */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { 
+    getDatabase, ref, set, get, child, onValue, update, push 
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+// Конфигурация инфраструктуры
+const firebaseConfig = {
+    apiKey: "AIzaSyAjSLp9bkzKz71GytZU1Jz5bQoNMKB5Fxo",
+    authDomain: "worklink-5384c.firebaseapp.com",
+    databaseURL: "https://worklink-5384c-default-rtdb.firebaseio.com/",
+    projectId: "worklink-5384c",
+    storageBucket: "worklink-5384c.firebasestorage.app",
+    appId: "1:582114312352:web:08dea19f81f35abfe649c5"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// Глобальное состояние приложения
+window.AppState = {
+    user: JSON.parse(localStorage.getItem('wl_pro_session')) || null,
+    isLoaded: false,
+    activeSection: 'dashboard',
+    cache: {
+        orders: [],
+        users: {}
     }
+};
+
+/**
+ * Инициализация пользовательской сессии
+ * Выполняется при каждой загрузке страницы
+ */
+window.initSession = () => {
+    const session = window.AppState.user;
+    if (!session) {
+        console.log("[System] Сессия не найдена. Режим гостя.");
+        updateNavigation('guest');
+        return;
+    }
+
+    // Слушатель данных пользователя в реальном времени
+    const userRef = ref(db, `users/${session.phone}`);
+    onValue(userRef, (snapshot) => {
+        const userData = snapshot.val();
+        if (userData) {
+            window.AppState.user = userData;
+            localStorage.setItem('wl_pro_session', JSON.stringify(userData));
+            syncUI(userData);
+            updateNavigation('user');
+        } else {
+            console.error("[System] Ошибка синхронизации профиля.");
+            window.logout();
+        }
+    });
+};
+
+/**
+ * Синхронизация интерфейса с данными БД
+ */
+function syncUI(data) {
+    // Навигация
+    const navName = document.getElementById('nav-name');
+    const navAvatar = document.getElementById('nav-avatar');
+    const navBalance = document.getElementById('nav-balance');
+
+    if (navName) navName.innerText = data.phone;
+    if (navAvatar) navAvatar.innerText = data.phone[0].toUpperCase();
+    if (navBalance) navBalance.innerText = `${data.balance || 0} ₸`;
+
+    // Если мы в профиле, обновляем и там
+    const profName = document.getElementById('prof-name');
+    if (profName) profName.innerText = data.phone;
+}
+
+/**
+ * Управление навигационными панелями
+ */
+function updateNavigation(mode) {
+    const guestUI = document.getElementById('guest-ui');
+    const userUI = document.getElementById('user-ui');
+
+    if (mode === 'user') {
+        if (guestUI) guestUI.style.display = 'none';
+        if (userUI) userUI.style.display = 'flex';
+    } else {
+        if (guestUI) guestUI.style.display = 'flex';
+        if (userUI) userUI.style.display = 'none';
+    }
+}
+
+/**
+ * Глобальная авторизация (Вход / Регистрация)
+ */
+window.handleAuth = async (mode) => {
+    console.log(`[Auth] Запуск процесса: ${mode}`);
+    
+    const phoneInput = document.getElementById(`${mode === 'reg' ? 'reg' : 'log'}-phone`);
+    const passInput = document.getElementById(`${mode === 'reg' ? 'reg' : 'log'}-pass`);
+
+    if (!phoneInput || !passInput) return;
+
+    const phone = phoneInput.value.trim();
+    const pass = passInput.value.trim();
+
+    if (phone.length < 5 || pass.length < 4) {
+        window.systemNotification("Некорректные данные", "error");
+        return;
+    }
+
+    try {
+        if (mode === 'reg') {
+            const role = document.getElementById('reg-role').value;
+            // Проверка на существование
+            const checkSn = await get(child(ref(db), `users/${phone}`));
+            if (checkSn.exists()) {
+                window.systemNotification("Номер уже занят", "error");
+                return;
+            }
+
+            const newUser = {
+                phone,
+                pass,
+                role,
+                balance: 0,
+                exp: 0,
+                level: 1,
+                isVerified: false,
+                createdAt: Date.now(),
+                lastLogin: Date.now(),
+                transactions: [
+                    { type: 'system', msg: 'Активация аккаунта', amt: 0, date: Date.now() }
+                ],
+                stats: { completed: 0, created: 0, rating: 5.0 }
+            };
+
+            await set(ref(db, `users/${phone}`), newUser);
+            window.systemNotification("Регистрация успешна!");
+            window.showPage('login');
+        } else {
+            const sn = await get(child(ref(db), `users/${phone}`));
+            if (sn.exists() && sn.val().pass === pass) {
+                const userData = sn.val();
+                
+                // Обновляем время входа
+                await update(ref(db, `users/${phone}`), { lastLogin: Date.now() });
+                
+                window.AppState.user = userData;
+                localStorage.setItem('wl_pro_session', JSON.stringify(userData));
+                
+                window.initSession();
+                window.systemNotification(`Добро пожаловать, ${phone}`);
+                window.showPage('dashboard');
+            } else {
+                window.systemNotification("Неверный логин или пароль", "error");
+            }
+        }
+    } catch (e) {
+        console.error(e);
+        window.systemNotification("Ошибка сервера", "error");
+    }
+};
+
+/**
+ * Безопасный выход из системы
+ */
+window.logout = () => {
+    localStorage.removeItem('wl_pro_session');
+    window.AppState.user = null;
+    window.location.reload();
+};
+
+/**
+ * Системные уведомления (Улучшенная версия)
+ */
+window.systemNotification = (msg, type = "success") => {
+    const container = document.getElementById('toast-box');
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.innerHTML = `
+        <div class="toast-icon">${type === 'success' ? '✅' : '❌'}</div>
+        <div class="toast-body">
+            <div class="toast-title">${type === 'success' ? 'Успешно' : 'Внимание'}</div>
+            <div class="toast-msg">${msg}</div>
+        </div>
+    `;
+    
+    container.appendChild(toast);
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(50px)';
+        setTimeout(() => toast.remove(), 500);
+    }, 4000);
+};
+
+// Запуск при старте
+document.addEventListener('DOMContentLoaded', () => {
+    window.initSession();
+});
+    }
+
+window.renderMarketplace = (filterData = null) => {
+    const container = document.getElementById('market-grid');
+    if (!container) return;
+
+    // Скелетная загрузка (UX)
+    container.innerHTML = '<div class="loader-skeleton">Загрузка актуальных предложений...</div>';
+
+    const ordersRef = ref(db, 'orders');
+    onValue(ordersRef, (snapshot) => {
+        const data = snapshot.val();
+        if (!data) {
+            container.innerHTML = '<div class="empty-state">Пока задач нет. Станьте первым заказчиком!</div>';
+            return;
+        }
+
+        let orders = Object.entries(data).map(([id, val]) => ({ id, ...val }));
+
+        // Продвинутая фильтрация
+        if (filterData) {
+            if (filterData.query) {
+                orders = orders.filter(o => o.title.toLowerCase().includes(filterData.query.toLowerCase()));
+            }
+            if (filterData.category && filterData.category !== 'all') {
+                orders = orders.filter(o => o.category === filterData.category);
+            }
+            if (filterData.minPrice) {
+                orders = orders.filter(o => o.price >= parseInt(filterData.minPrice));
+            }
+        }
+
+        // Сортировка: Сначала новые
+        orders.sort((a, b) => b.date - a.date);
+
+        container.innerHTML = orders.map(job => `
+            <div class="glass-card job-card animate" onclick="window.openOrderDetails('${job.id}')">
+                <div class="job-badge">${job.category}</div>
+                <div class="job-header">
+                    <h3 class="job-title">${job.title}</h3>
+                    <div class="job-price">${new Intl.NumberFormat('ru-RU').format(job.price)} ₸</div>
+                </div>
+                <p class="job-excerpt">${job.description.substring(0, 100)}${job.description.length > 100 ? '...' : ''}</p>
+                <div class="job-footer">
+                    <div class="job-meta">
+                        <span>📍 ${job.city || 'Удаленно'}</span>
+                        <span>🕒 ${window.formatTimeAgo(job.date)}</span>
+                    </div>
+                    <div class="job-owner">
+                        <div class="owner-avatar">${job.owner[0]}</div>
+                        <span>ID: ${job.owner.slice(-4)}</span>
+                    </div>
+                </div>
+                ${job.status === 'in_progress' ? '<div class="status-tag busy">В работе</div>' : ''}
+            </div>
+        `).join('');
+    });
+};
+
+/**
+ * Создание нового заказа (Бизнес-логика)
+ */
+window.publishOrder = async () => {
+    const user = window.AppState.user;
+    if (!user || user.role !== 'business') {
+        return window.systemNotification("Только заказчики могут публиковать задачи", "error");
+    }
+
+    const title = document.getElementById('new-job-title').value.trim();
+    const price = parseInt(document.getElementById('new-job-price').value);
+    const category = document.getElementById('new-job-cat').value;
+    const desc = document.getElementById('new-job-desc').value.trim();
+
+    // Валидация
+    if (title.length < 10) return window.systemNotification("Заголовок слишком короткий", "error");
+    if (isNaN(price) || price < 500) return window.systemNotification("Минимальный бюджет: 500 ₸", "error");
+    if (user.balance < price) return window.systemNotification("Недостаточно средств для публикации", "error");
+
+    try {
+        const orderId = push(child(ref(db), 'orders')).key;
+        const orderData = {
+            title,
+            price,
+            category,
+            description: desc,
+            owner: user.phone,
+            status: 'open',
+            date: Date.now(),
+            city: 'Алматы',
+            candidates: 0
+        };
+
+        // Атомарное обновление: создание заказа + списание баланса
+        const updates = {};
+        updates[`/orders/${orderId}`] = orderData;
+        
+        const newBalance = user.balance - price;
+        const newTransaction = {
+            type: 'hold',
+            msg: `Залог за проект: ${title}`,
+            amt: -price,
+            date: Date.now()
+        };
+
+        updates[`/users/${user.phone}/balance`] = newBalance;
+        updates[`/users/${user.phone}/transactions`] = [...(user.transactions || []), newTransaction];
+
+        await update(ref(db), updates);
+        
+        window.systemNotification("Заказ успешно опубликован!");
+        window.closeModals();
+        window.showSection('market');
+    } catch (e) {
+        console.error(e);
+        window.systemNotification("Ошибка при публикации", "error");
+    }
+};
+
+/**
+ * Хелпер: Форматирование времени (типа "2 часа назад")
+ */
+window.formatTimeAgo = (timestamp) => {
+    const diff = Math.floor((Date.now() - timestamp) / 1000);
+    if (diff < 60) return 'только что';
+    if (diff < 3600) return `${Math.floor(diff / 60)} мин. назад`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)} ч. назад`;
+    return new Date(timestamp).toLocaleDateString();
+};
+
+/**
+ * Динамическая фильтрация с главной страницы
+ */
+window.applyMarketFilters = () => {
+    const query = document.getElementById('market-search-input').value;
+    const category = document.getElementById('market-cat-select').value;
+    const minPrice = document.getElementById('market-price-min').value;
+
+    window.renderMarketplace({ query, category, minPrice });
+};
 </script>
+    
 
 </body>
 </html>
