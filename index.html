@@ -17,7 +17,6 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-
         body { background: var(--bg-cream); color: var(--text-dark); line-height: 1.6; }
 
         /* Навигация */
@@ -32,84 +31,57 @@
             top: 0;
             z-index: 1000;
         }
-
         .logo { font-weight: 800; font-size: 26px; cursor: pointer; }
-
         .nav-links { display: flex; align-items: center; }
-        .nav-links a { 
-            color: white; 
-            text-decoration: none; 
-            margin-left: 30px; 
-            font-size: 14px; 
-            font-weight: 600;
-            cursor: pointer; 
-        }
+        .nav-links a { color: white; text-decoration: none; margin-left: 30px; font-size: 14px; font-weight: 600; cursor: pointer; }
 
         .page { display: none; min-height: 100vh; }
         .active { display: block; }
 
-        /* Секция Бизнеса */
-        .business-section {
-            padding: 80px 10%;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 50px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .business-info h2 { font-size: 48px; font-weight: 800; margin-bottom: 40px; line-height: 1.1; }
-        .business-steps { list-style: none; font-size: 18px; font-weight: 600; }
-        .business-steps li { margin-bottom: 20px; }
-
-        .biz-form-container { background: transparent; }
-        .biz-form-group { margin-bottom: 20px; }
-        .biz-form-group label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 8px; }
-        .biz-form-group input {
-            width: 100%;
-            padding: 18px;
-            border: 1px solid rgba(0,0,0,0.1);
-            border-radius: 12px;
-            background: var(--input-bg);
-            font-size: 15px;
-        }
-
-        .btn-submit-biz {
-            width: 100%;
-            padding: 20px;
-            background: #3d4451;
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        /* Геройская секция (Главная) */
-        .hero { display: flex; background: var(--primary-purple); color: white; min-height: calc(100vh - 80px); align-items: center; }
+        /* Главная */
+        .hero { display: flex; background: var(--primary-purple); color: white; min-height: calc(100vh - 80px); align-items: center; overflow: hidden; }
         .hero-content { flex: 1; padding: 0 80px; }
         .hero h1 { font-size: 56px; line-height: 1.1; margin-bottom: 30px; font-weight: 800; }
-
         .features-list { list-style: none; margin-bottom: 40px; }
-        .features-list li { 
-            margin-bottom: 15px; 
-            font-size: 18px; 
-            display: flex; 
-            align-items: center;
-        }
+        .features-list li { margin-bottom: 15px; font-size: 18px; display: flex; align-items: center; background: rgba(255,255,255,0.1); padding: 10px 20px; border-radius: 12px; width: fit-content; }
+        .hero-image-section { flex: 1; position: relative; height: 100%; display: flex; justify-content: center; }
+        .hero-bg-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.9; }
+        .floating-card { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 25px; border-radius: 20px; width: 320px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); color: var(--text-dark); }
+
+        /* "О нас" */
+        .about-section { padding: 80px 10%; max-width: 1200px; margin: 0 auto; }
+        .info-block { background: white; padding: 40px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .info-block h2 { font-size: 32px; margin-bottom: 20px; color: var(--primary-purple); }
+        .info-block h3 { margin: 25px 0 10px; font-size: 20px; }
+
+        /* "Для бизнеса" (Форма) */
+        .business-section { padding: 80px 10%; display: grid; grid-template-columns: 1fr 1fr; gap: 50px; max-width: 1400px; margin: 0 auto; }
+        .biz-form-group { margin-bottom: 20px; }
+        .biz-form-group label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+        .biz-form-group input { width: 100%; padding: 18px; border: 1px solid rgba(0,0,0,0.1); border-radius: 12px; background: var(--input-bg); font-size: 15px; }
+
+        /* Личные кабинеты */
+        .auth-box { background: white; padding: 40px; border-radius: 20px; width: 400px; margin: 100px auto; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .container { max-width: 900px; margin: 0 auto; padding: 60px 20px; }
+        .order-card { background: white; padding: 30px; border-radius: 20px; margin-bottom: 20px; border-left: 8px solid var(--primary-purple); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+
+        .btn-purple { width: 100%; padding: 18px; background: var(--primary-purple); color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; }
+        .btn-dark { width: 100%; padding: 18px; background: #3d4451; color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <nav>
     <div class="logo" onclick="showPage('home')">worklink</div>
-    <div class="nav-links">
-        <a onclick="showPage('home')">Главная</a>
+    <div class="nav-links" id="mainNav">
         <a onclick="showPage('about')">О нас</a>
-        <a onclick="showPage('business_form_page')">Для бизнеса</a>
-        <a onclick="showPage('login')" style="background: rgba(255,255,255,0.2); padding: 8px 18px; border-radius: 10px;">Вход</a>
+        <a onclick="showPage('business_form')">Для бизнеса</a>
+        <a onclick="showPage('login')">Вход</a>
+        <a onclick="showPage('register')" style="background: rgba(255,255,255,0.2); padding: 8px 18px; border-radius: 10px;">Регистрация</a>
+    </div>
+    <div id="userNav" style="display:none">
+        <span id="userName" style="font-size:12px; margin-right:15px"></span>
+        <a onclick="logout()" style="cursor:pointer">Выйти</a>
     </div>
 </nav>
 
@@ -118,70 +90,99 @@
         <div class="hero-content">
             <h1>Найти подработку<br>с помощью WorkLink</h1>
             <ul class="features-list">
-                <li>💵 Доход до 45 000 тг в день</li>
-                <li>💼 Опыт работы не нужен</li>
-                <li>📖 Компенсация сан.книжки — 3000 тг</li>
-                <li>🕒 Выплаты в течение недели</li>
+                <li>💰 Доход до 45 000 тг в день</li>
+                <li>✅ Опыт работы не нужен</li>
+                <li>🏥 Компенсация сан.книжки</li>
             </ul>
         </div>
-    </div>
-</div>
-
-<div id="business_form_page" class="page">
-    <div class="business-section">
-        <div class="business-info">
-            <p style="color: #d4a017; font-weight: 700; font-size: 12px; margin-bottom: 10px;">Оставьте заявку</p>
-            <h2>Подключайтесь к WorkLink уже завтра</h2>
-            <ul class="business-steps">
-                <li>1. Заполните форму</li>
-                <li>2. Получите коммерческое предложение</li>
-                <li>3. Создайте заявку</li>
-                <li>4. Улыбнитесь — Исполнители уже в пути</li>
-            </ul>
-        </div>
-
-        <div class="biz-form-container">
-            <div class="biz-form-group">
-                <label>*Ваше Ф.И.О</label>
-                <input type="text" id="biz_fio" placeholder="Меня зовут...">
+        <div class="hero-image-section">
+            <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=2000" class="hero-bg-img">
+            <div class="floating-card">
+                <div style="font-weight: 800; font-size: 20px; margin-bottom: 10px;">13 200 ₸</div>
+                <div style="font-size: 13px; color: gray;">🕒 Сегодня · 08:00 - 20:00</div>
+                <div style="font-weight: 600; margin-top: 10px;">Услуги по погрузке-выгрузке</div>
+                <div style="color: var(--primary-purple); font-size: 13px;">📍 Заммлер Казахстан</div>
             </div>
-            <div class="biz-form-group">
-                <label>*Название компании</label>
-                <input type="text" id="biz_company" placeholder="WorkLink">
-            </div>
-            <div class="biz-form-group">
-                <label>*Ваша должность</label>
-                <input type="text" id="biz_role" placeholder="HR-рекрутер">
-            </div>
-            <div class="biz-form-group">
-                <label>*Контактный телефон</label>
-                <input type="text" id="biz_phone" placeholder="+7 775 876 74 75">
-            </div>
-            <div class="biz-form-group">
-                <label>*Позиции, на которые нужны исполнители</label>
-                <input type="text" id="biz_positions" placeholder="Фасовщик, курьер и.т.д.">
-            </div>
-            <div class="biz-form-group">
-                <label>*Город, в котором нужны исполнители</label>
-                <input type="text" id="biz_city" placeholder="Алматы, Ташкент, Бишкек...">
-            </div>
-            <button class="btn-submit-biz" id="btnSubmitBiz">Оставить заявку</button>
         </div>
     </div>
 </div>
 
 <div id="about" class="page">
-    <div style="padding: 80px 10%; max-width: 1000px;">
-        <h2 style="font-size: 36px; margin-bottom: 20px;">Что такое WorkLink</h2>
-        <p><strong>WorkLink</strong> — это сервис, который помогает компаниям быстро находить проверенных исполнителей на посменную работу.</p>
+    <div class="about-section">
+        <div class="info-block">
+            <h2>Что такое WorkLink</h2>
+            <p><strong>WorkLink</strong> — это сервис, который помогает компаниям быстро находить проверенных исполнителей на посменную работу.</p>
+            <h3>Как разместить заявку?</h3>
+            <p>Войдите в личный кабинет по номеру телефона и создайте заявку, указав детали смены.</p>
         </div>
+    </div>
+</div>
+
+<div id="business_form" class="page">
+    <div class="business-section">
+        <div class="business-info">
+            <h2>Подключайтесь к WorkLink уже завтра</h2>
+            <ul style="list-style:none; font-weight:600">
+                <li>1. Заполните форму</li>
+                <li>2. Получите предложение</li>
+                <li>3. Создайте заявку</li>
+            </ul>
+        </div>
+        <div class="biz-form-container">
+            <div class="biz-form-group"><label>*Ваше Ф.И.О</label><input type="text" id="biz_fio"></div>
+            <div class="biz-form-group"><label>*Название компании</label><input type="text" id="biz_company"></div>
+            <div class="biz-form-group"><label>*Ваша должность</label><input type="text" id="biz_role"></div>
+            <div class="biz-form-group"><label>*Контактный телефон</label><input type="text" id="biz_phone"></div>
+            <div class="biz-form-group"><label>*Позиции</label><input type="text" id="biz_pos"></div>
+            <div class="biz-form-group"><label>*Город</label><input type="text" id="biz_city"></div>
+            <button class="btn-dark" id="submitPartner">Оставить заявку</button>
+        </div>
+    </div>
+</div>
+
+<div id="register" class="page">
+    <div class="auth-box">
+        <h2>Регистрация</h2>
+        <div class="biz-form-group"><label>Телефон</label><input type="text" id="regPhone"></div>
+        <div class="biz-form-group"><label>Пароль</label><input type="password" id="regPass"></div>
+        <div class="biz-form-group"><label>Тип</label><select id="regRole" style="width:100%; padding:15px; border-radius:12px; border:1px solid #ddd"><option value="worker">Работник</option><option value="business">Бизнес</option></select></div>
+        <button class="btn-purple" id="btnDoReg">Создать</button>
+    </div>
+</div>
+
+<div id="login" class="page">
+    <div class="auth-box">
+        <h2>Вход</h2>
+        <div class="biz-form-group"><label>Телефон</label><input type="text" id="logPhone"></div>
+        <div class="biz-form-group"><label>Пароль</label><input type="password" id="logPass"></div>
+        <button class="btn-purple" id="btnDoLog">Войти</button>
+    </div>
+</div>
+
+<div id="biz_panel" class="page">
+    <div class="container">
+        <h2>Панель управления заказами</h2>
+        <div class="info-block" style="margin-top:20px">
+            <h3>Опубликовать новый заказ</h3>
+            <div class="biz-form-group"><label>Название</label><input type="text" id="order_title"></div>
+            <div class="biz-form-group"><label>Оплата (₸)</label><input type="number" id="order_price"></div>
+            <div class="biz-form-group"><label>Адрес</label><input type="text" id="order_addr"></div>
+            <button class="btn-purple" id="btnCreateOrder">Создать заказ</button>
+        </div>
+    </div>
+</div>
+
+<div id="worker_panel" class="page">
+    <div class="container">
+        <h2>Доступные заказы</h2>
+        <div id="orders_list" style="margin-top:20px"></div>
+    </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, push, set, get, child, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // Используйте ваши конфиги Firebase из предыдущих шагов
     const firebaseConfig = {
         apiKey: "AIzaSyAjSLp9bkzKz71GytZU1Jz5bQoNMKB5Fxo",
         authDomain: "worklink-5384c.firebaseapp.com",
@@ -193,32 +194,80 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
+    let currentUser = null;
 
-    // Логика переключения страниц
+    // Навигация
     window.showPage = (id) => {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         window.scrollTo(0,0);
     };
 
-    // Отправка формы бизнеса в Firebase
-    document.getElementById('btnSubmitBiz').onclick = async () => {
-        const data = {
-            fio: document.getElementById('biz_fio').value,
-            company: document.getElementById('biz_company').value,
-            role: document.getElementById('biz_role').value,
-            phone: document.getElementById('biz_phone').value,
-            positions: document.getElementById('biz_positions').value,
-            city: document.getElementById('biz_city').value,
-            timestamp: Date.now()
-        };
-
-        if(!data.fio || !data.phone) return alert("Пожалуйста, заполните обязательные поля");
-
-        const newRef = push(ref(db, 'partner_requests'));
-        await set(newRef, data);
-        alert("Заявка успешно отправлена! Мы свяжемся с вами.");
+    // Регистрация
+    document.getElementById('btnDoReg').onclick = async () => {
+        const phone = document.getElementById('regPhone').value;
+        const pass = document.getElementById('regPass').value;
+        const role = document.getElementById('regRole').value;
+        if(!phone || !pass) return alert("Заполните поля");
+        await set(ref(db, 'users/' + phone), { phone, password: pass, role });
+        alert("Готово! Войдите.");
+        showPage('login');
     };
+
+    // Вход
+    document.getElementById('btnDoLog').onclick = async () => {
+        const phone = document.getElementById('logPhone').value;
+        const pass = document.getElementById('logPass').value;
+        const snap = await get(child(ref(db), `users/${phone}`));
+        if(snap.exists() && snap.val().password === pass) {
+            currentUser = snap.val();
+            document.getElementById('mainNav').style.display = 'none';
+            document.getElementById('userNav').style.display = 'flex';
+            document.getElementById('userName').innerText = phone;
+            if(currentUser.role === 'business') showPage('biz_panel');
+            else { showPage('worker_panel'); loadOrders(); }
+        } else alert("Ошибка входа");
+    };
+
+    // Создание заказа (Бизнес)
+    document.getElementById('btnCreateOrder').onclick = async () => {
+        const title = document.getElementById('order_title').value;
+        const price = document.getElementById('order_price').value;
+        const addr = document.getElementById('order_addr').value;
+        await push(ref(db, 'orders'), { title, price, addr, status: 'open', owner: currentUser.phone });
+        alert("Заказ создан!");
+    };
+
+    // Форма партнера (Для бизнеса)
+    document.getElementById('submitPartner').onclick = async () => {
+        const data = { fio: document.getElementById('biz_fio').value, company: document.getElementById('biz_company').value, phone: document.getElementById('biz_phone').value };
+        await push(ref(db, 'partner_requests'), data);
+        alert("Заявка отправлена!");
+    };
+
+    // Список заказов (Работник)
+    function loadOrders() {
+        onValue(ref(db, 'orders'), (snap) => {
+            const list = document.getElementById('orders_list');
+            list.innerHTML = "";
+            const data = snap.val();
+            for(let id in data) {
+                if(data[id].status === 'open') {
+                    const el = document.createElement('div');
+                    el.className = 'order-card';
+                    el.innerHTML = `<h3>${data[id].title}</h3><p>${data[id].price} ₸</p><p>📍 ${data[id].addr}</p><button class="btn-purple" style="margin-top:15px; background:#27ae60" onclick="takeOrder('${id}')">Принять</button>`;
+                    list.appendChild(el);
+                }
+            }
+        });
+    }
+
+    window.takeOrder = async (id) => {
+        await update(ref(db, `orders/${id}`), { status: 'taken', worker: currentUser.phone });
+        alert("Заказ принят!");
+    };
+
+    window.logout = () => location.reload();
 </script>
 </body>
 </html>
