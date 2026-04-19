@@ -17,7 +17,7 @@
         <a onclick="showPage('about')">О нас</a>
         <a onclick="showPage('business_landing')">Для бизнеса</a>
         <a onclick="showPage('login')">Вход</a>
-        <a onclick="showPage('register')" class="reg-btn">Регистрация</a>
+        <a onclick="showPage('register')" style="background:rgba(255,255,255,0.2); padding:10px 20px; border-radius:10px">Регистрация</a>
     </div>
     <div class="nav-links" id="userNav" style="display:none">
         <a id="panelBtn">Панель управления</a>
@@ -25,9 +25,130 @@
     </div>
 </nav>
 
-<div id="home" class="page active">...</div>
-<div id="login" class="page">...</div>
-<script type="module" src="firebase-config.js"></script>
+<div id="home" class="page active">
+    <div class="hero">
+        <div class="hero-content">
+            <h1>Найти подработку<br>с помощью WorkLink</h1>
+            <ul class="features-list">
+                <li>💵 Доход до 45 000 тг в день</li>
+                <li>💼 Опыт работы не нужен</li>
+                <li>🕒 Выплаты в течение недели</li>
+            </ul>
+            <button class="btn-action btn-purple" style="width:auto; padding:20px 40px; background:white; color:var(--primary-purple)" onclick="showPage('register')">Начать сейчас</button>
+        </div>
+        <div class="hero-image-section">
+            <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=2000" class="hero-bg-img">
+            <div class="floating-card">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px">
+                    <span style="font-weight:800; font-size:22px">13 200 ₸</span>
+                    <span style="background:#e8fdf5; color:#27ae60; padding:5px 10px; border-radius:8px; font-size:10px; font-weight:800">ПОВЫШЕННАЯ ЦЕНА</span>
+                </div>
+                <div style="color:gray; font-size:13px">🕒 08:00 - 20:00 · Сегодня</div>
+                <div style="font-weight:600; margin:10px 0">Услуги по погрузке-выгрузке</div>
+                <div style="color:var(--primary-purple); font-weight:700">📍 Заммлер Казахстан</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="about" class="page">
+    <div class="container">
+        <div style="background:white; padding:40px; border-radius:30px">
+            <h2>Что такое WorkLink</h2>
+            <p><strong>WorkLink</strong> — это сервис, который помогает компаниям быстро находить проверенных исполнителей на посменную работу.</p>
+            <h3 style="margin-top:25px">Как разместить заявку?</h3>
+            <ul>
+                <li>Войдите в личный кабинет по номеру телефона.</li>
+                <li>Создайте заявку, указав детали смены.</li>
+                <li>Дождитесь отклика (обычно до 30 минут).</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div id="business_landing" class="page">
+    <div class="container" style="display:grid; grid-template-columns: 1fr 1fr; gap:50px; align-items:center">
+        <div>
+            <p style="color:var(--primary-purple); font-weight:800; font-size:12px">ОСТАВЬТЕ ЗАЯВКУ</p>
+            <h2 style="font-size:42px; margin:15px 0">Подключайтесь к WorkLink уже завтра</h2>
+            <ul style="list-style:none; font-weight:600">
+                <li style="margin-bottom:15px">1. Заполните форму</li>
+                <li style="margin-bottom:15px">2. Получите предложение</li>
+                <li style="margin-bottom:15px">3. Создайте заявку</li>
+            </ul>
+        </div>
+        <div class="form-box" style="margin:0">
+            <div class="form-group"><label>Ваше Ф.И.О</label><input type="text" id="biz_fio" placeholder="Меня зовут..."></div>
+            <div class="form-group"><label>Компания</label><input type="text" id="biz_name" placeholder="WorkLink"></div>
+            <div class="form-group"><label>Телефон</label><input type="text" id="biz_phone" placeholder="+7 777..."></div>
+            <div class="form-group"><label>Город</label><input type="text" id="biz_city" placeholder="Алматы..."></div>
+            <button class="btn-action" style="background:#3d4451; color:white" onclick="submitPartner()">Оставить заявку</button>
+        </div>
+    </div>
+</div>
+
+<div id="login" class="page">
+    <div class="container"><div class="form-box">
+        <h2>Вход</h2>
+        <div class="form-group"><label>Телефон</label><input type="text" id="logPhone"></div>
+        <div class="form-group"><label>Пароль</label><input type="password" id="logPass"></div>
+        <button class="btn-action btn-purple" onclick="auth('log')">Войти</button>
+    </div></div>
+</div>
+
+<div id="register" class="page">
+    <div class="container"><div class="form-box">
+        <h2>Регистрация</h2>
+        <div class="form-group"><label>Телефон</label><input type="text" id="regPhone"></div>
+        <div class="form-group"><label>Пароль</label><input type="password" id="regPass"></div>
+        <div class="form-group"><label>Роль</label><select id="regRole"><option value="worker">Работник</option><option value="business">Бизнес</option></select></div>
+        <button class="btn-action btn-purple" onclick="auth('reg')">Создать</button>
+    </div></div>
+</div>
+
+<div id="worker_panel" class="page">
+    <div class="container">
+        <div style="display:flex; justify-content:space-between; margin-bottom:30px">
+            <h2>Доступные смены</h2>
+            <button class="btn-action btn-purple" style="width:auto" onclick="showPage('my_jobs')">Мои задачи</button>
+        </div>
+        <div class="controls">
+            <input type="text" id="sTitle" placeholder="Поиск по названию..." oninput="renderWorker()">
+            <input type="text" id="sCity" placeholder="Город..." oninput="renderWorker()">
+            <select id="sPrice" onchange="renderWorker()"><option value="new">Новые</option><option value="exp">Дорогие</option></select>
+        </div>
+        <div id="worker_list"></div>
+    </div>
+</div>
+
+<div id="my_jobs" class="page">
+    <div class="container">
+        <button onclick="showPage('worker_panel')" style="border:none; background:none; cursor:pointer; font-weight:700">← К поиску</button>
+        <h2 style="margin-top:20px">Мои принятые заказы</h2>
+        <div id="my_list" style="margin-top:30px"></div>
+    </div>
+</div>
+
+<div id="business_panel" class="page">
+    <div class="container">
+        <div style="display:flex; justify-content:space-between; margin-bottom:30px">
+            <h2>Ваши объявления</h2>
+            <button class="btn-action btn-purple" style="width:auto" onclick="showPage('create_order_page')">+ Создать</button>
+        </div>
+        <div id="biz_list"></div>
+    </div>
+</div>
+
+<div id="create_order_page" class="page">
+    <div class="container"><div class="form-box">
+        <h2>Детали задачи</h2>
+        <div class="form-group"><label>Название</label><input type="text" id="oTitle"></div>
+        <div class="form-group"><label>Оплата (₸)</label><input type="number" id="oPrice"></div>
+        <div class="form-group"><label>Город</label><input type="text" id="oCity"></div>
+        <button class="btn-action btn-success" onclick="postOrder()">Опубликовать</button>
+    </div></div>
+</div>
+
 <script type="module" src="app.js"></script>
 </body>
 </html>
