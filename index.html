@@ -108,6 +108,29 @@
 
 <div id="worker_panel" class="page">
     <div class="container">
+        <div class="container">
+    <div class="wallet-card">
+        <div>
+            <p style="opacity: 0.8; font-size: 14px;">Мой баланс</p>
+            <div class="balance-amount"><span id="wBalance">0</span> ₸</div>
+        </div>
+        <button class="btn-action" style="width:auto; background:white; color:var(--primary-purple); padding:10px 20px">Вывести</button>
+    </div>
+    </div>
+
+<div id="ratingModal" class="page" style="position:fixed; background:rgba(0,0,0,0.8); z-index:10000; align-items:center; justify-content:center; display:none">
+    <div class="form-box" style="text-align:center">
+        <h3>Оцените работу</h3>
+        <div class="rating-input" id="starContainer">
+            <span class="star-btn" onclick="setRating(1)">★</span>
+            <span class="star-btn" onclick="setRating(2)">★</span>
+            <span class="star-btn" onclick="setRating(3)">★</span>
+            <span class="star-btn" onclick="setRating(4)">★</span>
+            <span class="star-btn" onclick="setRating(5)">★</span>
+        </div>
+        <button class="btn-action btn-purple" onclick="submitRating()">Подтвердить</button>
+    </div>
+</div>
         <div style="display:flex; justify-content:space-between; margin-bottom:30px">
             <h2>Доступные смены</h2>
             <button class="btn-action btn-purple" style="width:auto" onclick="showPage('my_jobs')">Мои задачи</button>
@@ -131,6 +154,29 @@
 
 <div id="business_panel" class="page">
     <div class="container">
+        <div class="container">
+    <div class="wallet-card">
+        <div>
+            <p style="opacity: 0.8; font-size: 14px;">Мой баланс</p>
+            <div class="balance-amount"><span id="wBalance">0</span> ₸</div>
+        </div>
+        <button class="btn-action" style="width:auto; background:white; color:var(--primary-purple); padding:10px 20px">Вывести</button>
+    </div>
+    </div>
+
+<div id="ratingModal" class="page" style="position:fixed; background:rgba(0,0,0,0.8); z-index:10000; align-items:center; justify-content:center; display:none">
+    <div class="form-box" style="text-align:center">
+        <h3>Оцените работу</h3>
+        <div class="rating-input" id="starContainer">
+            <span class="star-btn" onclick="setRating(1)">★</span>
+            <span class="star-btn" onclick="setRating(2)">★</span>
+            <span class="star-btn" onclick="setRating(3)">★</span>
+            <span class="star-btn" onclick="setRating(4)">★</span>
+            <span class="star-btn" onclick="setRating(5)">★</span>
+        </div>
+        <button class="btn-action btn-purple" onclick="submitRating()">Подтвердить</button>
+    </div>
+</div>
         <div style="display:flex; justify-content:space-between; margin-bottom:30px">
             <h2>Ваши объявления</h2>
             <button class="btn-action btn-purple" style="width:auto" onclick="showPage('create_order_page')">+ Создать</button>
