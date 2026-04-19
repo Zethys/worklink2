@@ -115,5 +115,95 @@ window.rate = (id) => { const r = prompt("Оценка 1-5:"); if(r) update(ref(
 window.submitPartner = () => { push(ref(db, 'partners'), { fio: document.getElementById('biz_fio').value }); toast("Отправлено!"); };
 window.logout = () => { localStorage.clear(); location.reload(); };
 
+// ... (начало файла с импортами без изменений)
+
+let currentOrderForRate = null;
+let selectedRating = 0;
+
+// Функция для обновления баланса в БД
+window.updateBalance = async (phone, amount) => {
+    const sn = await get(child(ref(db), `users/${phone}`));
+    const currentBalance = sn.val().balance || 0;
+    await update(ref(db, `users/${phone}`), { balance: currentBalance + amount });
+};
+
+// Обновленная инициализация сессии (подтягиваем баланс)
+window.initSession = () => {
+    if(!user) return;
+    document.getElementById('guestNav').style.display = 'none';
+    document.getElementById('userNav').style.display = 'flex';
+    
+    // Следим за данными пользователя (баланс)
+    onValue(ref(db, `users/${user.phone}`), (sn) => {
+        const userData = sn.val();
+        if(document.getElementById('wBalance')) document.getElementById('wBalance').innerText = userData.balance || 0;
+    });
+
+    const btn = document.getElementById('panelBtn');
+    if(user.role === 'business') {
+        btn.onclick = () => showPage('business_panel');
+        onValue(ref(db, 'orders'), window.renderBiz);
+        showPage('business_panel');
+    } else {
+        btn.onclick = () => showPage('worker_panel');
+        onValue(ref(db, 'orders'), (sn) => { window.ordersData = sn.val(); window.renderWorker(); window.renderMy(); });
+        showPage('worker_panel');
+    }
+};
+
+// Красивый рейтинг
+window.openRating = (id) => {
+    currentOrderForRate = id;
+    selectedRating = 0;
+    document.querySelectorAll('.star-btn').forEach(s => s.classList.remove('active'));
+    document.getElementById('ratingModal').style.display = 'flex';
+};
+
+window.setRating = (val) => {
+    selectedRating = val;
+    document.querySelectorAll('.star-btn').forEach((s, i) => {
+        i < val ? s.classList.add('active') : s.classList.remove('active');
+    });
+};
+
+window.submitRating = async () => {
+    if(selectedRating === 0) return toast("Выберите оценку!");
+    await update(ref(db, `orders/${currentOrderForRate}`), { rating: selectedRating });
+    document.getElementById('ratingModal').style.display = 'none';
+    toast("Спасибо за оценку!");
+};
+
+// Завершение заказа с начислением денег
+window.finish = async (id) => {
+    const order = window.ordersData[id];
+    await update(ref(db, `orders/${id}`), { status: 'completed' });
+    await window.updateBalance(user.phone, order.price); // Начисляем деньги исполнителю
+    toast(`Задание выполнено! +${order.price} ₸`);
+};
+
+window.renderBiz = (sn) => {
+    const list = document.getElementById('biz_list');
+    if(!list) return;
+    list.innerHTML = "";
+    const data = sn.val();
+    for(let id in data) {
+        if(data[id].owner === user.phone) {
+            const stars = data[id].rating ? '★'.repeat(data[id].rating) + '☆'.repeat(5-data[id].rating) : '';
+            const el = document.createElement('div'); el.className = 'order-card';
+            el.innerHTML = `
+                <span class="status-badge status-${data[id].status}">${data[id].status}</span>
+                <h3>${data[id].title}</h3>
+                <p>${data[id].price} ₸</p>
+                <div class="stars">${stars}</div>
+                ${data[id].status === 'completed' && !data[id].rating ? 
+                `<button class="btn-action btn-purple" style="margin-top:10px" onclick="window.openRating('${id}')">⭐ Оценить исполнителя</button>` : ''}
+            `;
+            list.appendChild(el);
+        }
+    }
+};
+
+// ... (остальные функции window.take, window.logout и т.д. остаются прежними)
+
 // Запуск сессии при загрузке
 if(user) window.initSession();
