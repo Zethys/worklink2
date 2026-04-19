@@ -3,67 +3,214 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WorkLink — upgraded</title>
+<title>WorkLink</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
 <style>
 :root{
 --primary:#6c38ff;
+--primary-dark:#562cd9;
 --bg:#fdf6e3;
 --card:#fff;
 --text:#2d3436;
 --success:#27ae60;
+--input:#fff9e6;
+--star:#f1c40f;
 }
 
 *{margin:0;padding:0;box-sizing:border-box;font-family:Inter}
-body{background:var(--bg);color:var(--text)}
+body{background:var(--bg);color:var(--text);overflow-x:hidden}
 
+/* NAV */
 nav{
 display:flex;justify-content:space-between;align-items:center;
-padding:18px 40px;
-background:var(--primary);color:white;
+padding:20px 50px;
+background:var(--primary);
+color:white;
 position:sticky;top:0;z-index:1000
 }
 
-.logo{font-weight:800;cursor:pointer}
+.logo{font-weight:800;font-size:28px;cursor:pointer}
 
-.nav-links a{color:white;margin-left:20px;cursor:pointer;text-decoration:none}
-
-.page{display:none;padding:30px}
-.active{display:block}
-
-.container{max-width:1000px;margin:auto}
-
-.card{
-background:white;padding:20px;border-radius:20px;
-margin-bottom:15px;box-shadow:0 10px 25px rgba(0,0,0,0.05)
+.nav-links a{
+color:white;margin-left:20px;
+text-decoration:none;font-weight:600;
+cursor:pointer
 }
 
+/* PAGES */
+.page{display:none;min-height:100vh}
+.active{display:block}
+
+/* HERO (ВОЗВРАЩЕН КАК У ТЕБЯ) */
+.hero{
+display:flex;
+background:var(--primary);
+color:white;
+height:calc(100vh - 80px);
+align-items:center;
+}
+
+.hero-content{
+flex:1;
+padding:0 80px;
+}
+
+.hero h1{
+font-size:64px;
+font-weight:800;
+line-height:1.1;
+margin-bottom:30px;
+}
+
+.hero-image{
+flex:1;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+.hero-img-main{
+width:80%;
+border-radius:30px;
+box-shadow:20px 20px 60px rgba(0,0,0,0.3);
+transform:rotate(-2deg);
+}
+
+/* CONTAINER */
+.container{max-width:1200px;margin:auto;padding:40px 20px}
+
+/* CARD */
+.card{
+background:white;
+padding:30px;
+border-radius:24px;
+margin-bottom:20px;
+box-shadow:0 10px 30px rgba(0,0,0,0.03);
+border:1px solid rgba(0,0,0,0.05)
+}
+
+/* BUTTON */
 .btn{
-padding:12px 18px;border:none;border-radius:12px;
-cursor:pointer;font-weight:700
+padding:18px 30px;
+border-radius:16px;
+border:none;
+font-weight:700;
+cursor:pointer
 }
 
 .btn-main{background:var(--primary);color:white}
+.btn-white{background:white;color:var(--primary)}
 .btn-success{background:var(--success);color:white}
 
+/* INPUT */
 input,select{
-width:100%;padding:12px;margin-top:8px;
-border-radius:10px;border:1px solid #ddd
+width:100%;
+padding:16px;
+border-radius:14px;
+border:1.5px solid #eee;
+background:var(--input);
+margin-top:8px
 }
 
-.hero{
+/* FORM */
+.form-box{
+background:white;
+padding:40px;
+border-radius:30px;
+max-width:500px;
+margin:auto
+}
+
+/* BUSINESS */
+.biz-hero{
+text-align:center;
+padding:100px 20px;
+background:white;
+border-radius:50px;
+margin:40px
+}
+
+.biz-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+gap:30px;
+margin-top:40px
+}
+
+.biz-card{
+background:var(--bg);
+padding:40px;
+border-radius:30px;
+transition:.3s
+}
+
+.biz-card:hover{transform:translateY(-10px)}
+
+/* PROFILE */
+.avatar{
+width:80px;height:80px;
 background:var(--primary);
-color:white;padding:80px 30px;
-border-radius:30px;margin:20px
+color:white;
+display:flex;
+align-items:center;
+justify-content:center;
+border-radius:25px;
+font-size:30px;
+font-weight:800
 }
 
+.balance-box{
+background:linear-gradient(135deg,#6c38ff,#a285ff);
+color:white;
+padding:30px;
+border-radius:30px;
+margin-bottom:30px
+}
+
+/* MODAL */
+.modal{
+display:none;
+position:fixed;
+inset:0;
+background:rgba(0,0,0,0.6);
+align-items:center;
+justify-content:center
+}
+
+.modal-content{
+background:white;
+padding:40px;
+border-radius:30px;
+width:90%;
+max-width:400px;
+text-align:center
+}
+
+.star{
+font-size:35px;
+cursor:pointer;
+color:#ddd
+}
+
+.star.active{color:var(--star)}
+
+/* TOAST */
+#toasts{position:fixed;top:100px;right:20px}
 .toast{
-position:fixed;top:90px;right:20px;
-background:#111;color:white;
-padding:12px 18px;border-radius:12px;
-margin-top:10px
+background:#2d3436;
+color:white;
+padding:14px 20px;
+border-radius:15px;
+margin-bottom:10px
+}
+
+@media(max-width:900px){
+.hero{flex-direction:column;height:auto}
+.hero-content{padding:40px;text-align:center}
+.hero h1{font-size:40px}
+.hero-image{display:none}
 }
 </style>
 </head>
@@ -72,17 +219,37 @@ margin-top:10px
 
 <div id="toasts"></div>
 
+<!-- MODAL -->
+<div id="ratingModal" class="modal">
+<div class="modal-content">
+<h2>Как всё прошло?</h2>
+<p>Оцените работу</p>
+
+<div id="stars">
+<span class="star">★</span>
+<span class="star">★</span>
+<span class="star">★</span>
+<span class="star">★</span>
+<span class="star">★</span>
+</div>
+
+<button class="btn btn-main">Ок</button>
+</div>
+</div>
+
+<!-- NAV -->
 <nav>
 <div class="logo" onclick="show('home')">worklink</div>
 
 <div class="nav-links" id="guest">
+<a onclick="show('business')">Бизнесу</a>
 <a onclick="show('login')">Вход</a>
 <a onclick="show('register')">Регистрация</a>
 </div>
 
 <div class="nav-links" id="user" style="display:none">
 <a onclick="show('worker')">Работа</a>
-<a onclick="show('business')">Бизнес</a>
+<a onclick="show('profile')">Профиль</a>
 <a onclick="logout()">Выход</a>
 </div>
 </nav>
@@ -90,187 +257,51 @@ margin-top:10px
 <!-- HOME -->
 <div id="home" class="page active">
 <div class="hero">
-<h1>Работа за 1 клик 💼</h1>
-<p>Быстрые смены · Реальные выплаты</p>
+<div class="hero-content">
+<h1>Твоя работа здесь</h1>
+<p>Быстрые смены · реальные деньги</p>
+<button class="btn btn-white" onclick="show('register')">Начать</button>
+</div>
+
+<div class="hero-image">
+<img class="hero-img-main" src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f">
+</div>
 </div>
 </div>
 
 <!-- LOGIN -->
 <div id="login" class="page container">
-<div class="card">
+<div class="form-box">
 <h2>Вход</h2>
 <input id="l_phone" placeholder="Телефон">
 <input id="l_pass" type="password" placeholder="Пароль">
-<button class="btn btn-main" onclick="login()">Войти</button>
+<button class="btn btn-main">Войти</button>
 </div>
 </div>
 
 <!-- REGISTER -->
 <div id="register" class="page container">
-<div class="card">
+<div class="form-box">
 <h2>Регистрация</h2>
-
-<input id="r_phone" placeholder="Телефон">
-<input id="r_pass" type="password" placeholder="Пароль">
-
+<input id="r_phone">
+<input id="r_pass">
 <select id="r_role">
-<option value="worker">Работник</option>
-<option value="business">Бизнес</option>
+<option>worker</option>
+<option>business</option>
 </select>
-
-<button class="btn btn-main" onclick="register()">Создать</button>
+<button class="btn btn-main">Создать</button>
 </div>
-</div>
-
-<!-- WORKER -->
-<div id="worker" class="page container">
-<h2>Смены</h2>
-<div id="jobs"></div>
-</div>
-
-<!-- BUSINESS -->
-<div id="business" class="page container">
-<h2>Создать задачу</h2>
-
-<div class="card">
-<input id="t_title" placeholder="Название">
-<input id="t_price" type="number" placeholder="Цена">
-<input id="t_city" placeholder="Город">
-
-<button class="btn btn-main" onclick="createJob()">Создать</button>
-</div>
-
-<h2>Мои задачи</h2>
-<div id="myjobs"></div>
 </div>
 
 <script>
-let user = JSON.parse(localStorage.getItem("wl")) || null;
-
-function toast(m){
-const t=document.createElement("div");
-t.className="toast";
-t.innerText=m;
-document.getElementById("toasts").appendChild(t);
-setTimeout(()=>t.remove(),2500);
-}
-
 function show(id){
-document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-document.getElementById(id).classList.add("active");
-}
-
-function updateUI(){
-if(user){
-document.getElementById("guest").style.display="none";
-document.getElementById("user").style.display="flex";
-}
-}
-
-function register(){
-const u={
-phone:r_phone.value,
-pass:r_pass.value,
-role:r_role.value,
-balance:0,
-jobs:[]
-};
-localStorage.setItem(u.phone,JSON.stringify(u));
-toast("создано");
-show("login");
-}
-
-function login(){
-const u=JSON.parse(localStorage.getItem(l_phone.value));
-if(!u || u.pass!==l_pass.value){
-toast("ошибка");
-return;
-}
-user=u;
-localStorage.setItem("wl",JSON.stringify(u));
-updateUI();
-loadJobs();
-show(u.role==="worker"?"worker":"business");
+document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+document.getElementById(id).classList.add('active');
 }
 
 function logout(){
-localStorage.clear();
 location.reload();
 }
-
-function createJob(){
-let job={
-id:Date.now(),
-title:t_title.value,
-price:+t_price.value,
-city:t_city.value,
-status:"open",
-owner:user.phone,
-worker:null
-};
-
-let arr=JSON.parse(localStorage.getItem("jobs")||"[]");
-arr.push(job);
-localStorage.setItem("jobs",JSON.stringify(arr));
-
-toast("создано");
-loadJobs();
-}
-
-function loadJobs(){
-let jobs=JSON.parse(localStorage.getItem("jobs")||"[]");
-
-jobsContainer(jobs);
-myJobs(jobs);
-}
-
-function jobsContainer(jobs){
-if(!jobs) return;
-let el=document.getElementById("jobs");
-el.innerHTML="";
-
-jobs.forEach(j=>{
-if(j.status==="open"){
-el.innerHTML+=`
-<div class="card">
-<h3>${j.title}</h3>
-<p>${j.price} ₸ · ${j.city}</p>
-<button class="btn btn-main" onclick="take(${j.id})">взять</button>
-</div>`;
-}
-});
-}
-
-function myJobs(jobs){
-let el=document.getElementById("myjobs");
-el.innerHTML="";
-
-jobs.filter(j=>j.owner===user.phone).forEach(j=>{
-el.innerHTML+=`
-<div class="card">
-<h3>${j.title}</h3>
-<p>${j.status}</p>
-</div>`;
-});
-}
-
-function take(id){
-let jobs=JSON.parse(localStorage.getItem("jobs"));
-let j=jobs.find(x=>x.id==id);
-
-if(j.status!=="open") return;
-
-j.status="done";
-j.worker=user.phone;
-
-localStorage.setItem("jobs",JSON.stringify(jobs));
-
-toast("взято");
-loadJobs();
-}
-
-updateUI();
-if(user) loadJobs();
 </script>
 
 </body>
