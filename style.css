@@ -1,0 +1,20 @@
+:root {
+    --primary-purple: #6c38ff;
+    --light-purple: #f0ebff;
+    --bg-cream: #fdf6e3;
+    --text-dark: #2d3436;
+    --white: #ffffff;
+    --success: #27ae60;
+    --input-bg: #fff9e6;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+body { background: var(--bg-cream); color: var(--text-dark); overflow-x: hidden; line-height: 1.6; }
+
+/* ... весь остальной CSS ... */
+
+.reg-btn {
+    background: rgba(255,255,255,0.2); 
+    padding: 10px 20px; 
+    border-radius: 10px;
+}
