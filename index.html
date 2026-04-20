@@ -536,7 +536,7 @@
         if(order.status !== 'taken') { toast('Заказ не принят исполнителем'); return; }
         if(currentUser.balance < order.price) { toast('Недостаточно средств на балансе! Пополните счёт'); return; }
         
-        await update(ref(db, `users/${currentUser.id}/balance`), currentUser.balance - order.price);
+        if(worker) await update(ref(db, `users/${order.takenBy}`), { balance: (worker.balance || 0) + order.price });
         
         const workerSnapshot = await get(ref(db, `users/${order.takenBy}`)); 
         const worker = workerSnapshot.val(); 
@@ -598,8 +598,8 @@
             await set(reviewRef, { 
                 targetId: pendingRating.workerId, 
                 targetType: 'worker', 
-                fromId: currentUser?.id || 'system',
-                fromName: currentUser?.name || 'Пользователь',
+                fromId: User?.id || 'system',
+                fromName: User?.name || 'Пользователь',
                 rating: rate, 
                 comment: comment, 
                 date: new Date().toLocaleString() 
@@ -614,13 +614,13 @@
     }
     
     async function withdrawMoneyWorker() { 
-        if(!currentUser || currentUser.role !== 'worker') return;
-        if(currentUser.balance > 0) { 
-            let amount = currentUser.balance; 
-            await update(ref(db, `users/${currentUser.id}/balance`), 0); 
+        if(!User || User.role !== 'worker') return;
+        if(User.balance > 0) { 
+            let amount = User.balance; 
+            await update(ref(db, `users/${currentUser.id}`), { balance: 0 }); 
             const txRef = push(ref(db, 'transactions')); 
-            await set(txRef, { userId: currentUser.id, amount: amount, type: 'withdraw', desc: `Вывод средств ${amount}₸`, date: new Date().toLocaleString() }); 
-            currentUser.balance = 0; 
+            await set(txRef, { userId: User.id, amount: amount, type: 'withdraw', desc: `Вывод средств ${amount}₸`, date: new Date().toLocaleString() }); 
+            User.balance = 0; 
             toast(`Выведено ${amount.toLocaleString()}₸`); 
             renderWorker(); 
         } else toast('Баланс нулевой'); 
@@ -642,7 +642,7 @@
     }
     
     function renderWorker() { 
-        if(!currentUser || currentUser.role !== 'worker') return; 
+        if(!User || User.role !== 'worker') return; 
         let filterTitle = document.getElementById('sTitle')?.value.toLowerCase() || ''; 
         let filterCity = document.getElementById('sCity')?.value.toLowerCase() || ''; 
         let available = allOrders.filter(o => o.status === 'open' && 
@@ -675,7 +675,7 @@
         let ratingStarsElem = document.getElementById('wRatingStars');
         let balanceElem = document.getElementById('wBalance');
         
-        if(nameElem) nameElem.innerHTML = `<i class="fas fa-user"></i> ${escapeHtml(currentUser.name)}`;
+        if(nameElem) nameElem.innerHTML = `<i class="fas fa-user"></i> ${escapeHtml(User.name)}`;
         if(ratingElem) ratingElem.innerHTML = currentUser.rating || 5.0;
         if(ratingCountElem) ratingCountElem.innerHTML = `(${currentUser.ratingCount || 0} оценок)`;
         if(ratingStarsElem) ratingStarsElem.innerHTML = renderStars(currentUser.rating || 5.0);
