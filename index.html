@@ -90,6 +90,8 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid var(--border-light);
+            flex-wrap: wrap;
+            gap: 16px;
         }
         .logo {
             font-size: 1.8rem;
@@ -159,7 +161,7 @@
         .btn-main { background: var(--accent); color: white; border: none; padding: 14px 32px; border-radius: 60px; font-weight: 700; cursor: pointer; transition: transform 0.2s; }
         .btn-main:hover { transform: translateY(-2px); background: var(--accent-hover); }
         .btn-outline-white { background: transparent; border: 1.5px solid var(--accent); color: var(--accent); padding: 14px 32px; border-radius: 60px; font-weight: 600; cursor: pointer; }
-        .hero-stats { display: flex; gap: 32px; background: var(--bg-page); padding: 20px 32px; border-radius: 48px; border: 1px solid var(--border-light); }
+        .hero-stats { display: flex; gap: 32px; background: var(--bg-page); padding: 20px 32px; border-radius: 48px; border: 1px solid var(--border-light); flex-wrap: wrap; justify-content: center; }
         .stat-card b { font-size: 2rem; display: block; color: var(--accent); }
 
         .info-card, .order-card, .form-box, .profile-header, .order-item {
@@ -169,7 +171,7 @@
             border: 1px solid var(--border-light);
             box-shadow: var(--shadow-md);
         }
-        .profile-header { display: flex; justify-content: space-between; flex-wrap: wrap; margin-bottom: 32px; align-items: center; }
+        .profile-header { display: flex; justify-content: space-between; flex-wrap: wrap; margin-bottom: 32px; align-items: center; gap: 20px; }
         .wallet-card { background: linear-gradient(135deg, var(--accent-light), var(--card-bg)); border-radius: 20px; padding: 20px 28px; text-align: right; }
         .balance-amount { font-size: 2.2rem; font-weight: 800; color: var(--accent); }
         .btn-action { background: var(--accent); border: none; padding: 10px 24px; border-radius: 40px; color: white; font-weight: 600; cursor: pointer; transition: all 0.2s; }
@@ -178,13 +180,13 @@
         .btn-success { background: var(--success); }
         .btn-sm { padding: 6px 18px; font-size: 0.8rem; }
         .controls { display: flex; gap: 14px; margin: 20px 0; flex-wrap: wrap; }
-        .controls input { padding: 12px 16px; border-radius: 48px; border: 1px solid var(--border-light); background: var(--card-bg); color: var(--text-primary); flex: 1; }
+        .controls input { padding: 12px 16px; border-radius: 48px; border: 1px solid var(--border-light); background: var(--card-bg); color: var(--text-primary); flex: 1; min-width: 150px; }
         .order-item { margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
         .panel-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 28px; }
         @media (max-width: 800px) { .panel-grid { grid-template-columns: 1fr; } nav { padding: 12px 20px; } .hero-text h1 { font-size: 2rem; } .hero-inner { padding: 24px; } }
         
         .rating-input { font-size: 2rem; letter-spacing: 8px; margin: 20px 0; }
-        .star-btn { cursor: pointer; color: #cbd5e1; transition: 0.1s; font-size: 2rem; }
+        .star-btn { cursor: pointer; color: #cbd5e1; transition: 0.1s; font-size: 2rem; display: inline-block; }
         .star-btn.active, .star-btn:hover { color: #fbbf24; }
         .tx-list { max-height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
         .tx-item { padding: 12px; border-bottom: 1px solid var(--border-light); font-size: 0.9rem; }
@@ -273,7 +275,7 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     
-    // Делаем Firebase функции глобальными для onclick обработчиков
+    // Делаем функции глобальными для onclick
     window.db = db;
     window.ref = ref;
     window.get = get;
@@ -288,44 +290,71 @@
     let allOrders = [];
     let allUsers = [];
     let filterTimeout = null;
+    let pendingRating = null;
     
-    function toast(msg) { let c=document.getElementById('toast-container'); let t=document.createElement('div'); t.className='toast'; t.innerHTML=`<i class="fas fa-bell"></i> ${msg}`; c.appendChild(t); setTimeout(()=>t.remove(),2500); }
+    function toast(msg) { 
+        let c = document.getElementById('toast-container'); 
+        let t = document.createElement('div'); 
+        t.className = 'toast'; 
+        t.innerHTML = `<i class="fas fa-bell"></i> ${msg}`; 
+        c.appendChild(t); 
+        setTimeout(() => t.remove(), 2500); 
+    }
     
     // Theme
-    function initTheme(){ let saved=localStorage.getItem('wl_theme'); if(saved==='dark') document.body.classList.add('dark'); else document.body.classList.remove('dark'); }
-    function toggleTheme(){ document.body.classList.toggle('dark'); localStorage.setItem('wl_theme', document.body.classList.contains('dark')?'dark':'light'); }
+    function initTheme() { 
+        let saved = localStorage.getItem('wl_theme'); 
+        if(saved === 'dark') document.body.classList.add('dark'); 
+        else document.body.classList.remove('dark'); 
+    }
+    
+    function toggleTheme() { 
+        document.body.classList.toggle('dark'); 
+        localStorage.setItem('wl_theme', document.body.classList.contains('dark') ? 'dark' : 'light'); 
+    }
+    
     document.getElementById('themeToggle').addEventListener('click', toggleTheme);
     
-    function renderStars(rating){ let full=Math.floor(rating); let html=''; for(let i=1;i<=5;i++){ if(i<=full) html+='<i class="fas fa-star" style="color:#fbbf24"></i>'; else if(i===full+1 && rating%1>=0.5) html+='<i class="fas fa-star-half-alt" style="color:#fbbf24"></i>'; else html+='<i class="far fa-star" style="color:#cbd5e1"></i>'; } return html; }
+    function renderStars(rating) { 
+        let full = Math.floor(rating); 
+        let html = ''; 
+        for(let i = 1; i <= 5; i++) { 
+            if(i <= full) html += '<i class="fas fa-star" style="color:#fbbf24"></i>'; 
+            else if(i === full+1 && rating % 1 >= 0.5) html += '<i class="fas fa-star-half-alt" style="color:#fbbf24"></i>'; 
+            else html += '<i class="far fa-star" style="color:#cbd5e1"></i>'; 
+        } 
+        return html; 
+    }
     
-    function showPage(pageId){ 
-        document.querySelectorAll('.page').forEach(p=>p.style.display='none'); 
-        document.getElementById(pageId).style.display='block';
-        if(pageId==='worker_panel' && currentUser?.role==='worker') renderWorker(); 
-        if(pageId==='business_panel' && currentUser?.role==='business') renderBusiness(); 
-        if(pageId==='my_jobs') renderMyJobs(); 
+    function showPage(pageId) { 
+        document.querySelectorAll('.page').forEach(p => p.style.display = 'none'); 
+        document.getElementById(pageId).style.display = 'block';
+        if(pageId === 'worker_panel' && currentUser?.role === 'worker') renderWorker(); 
+        if(pageId === 'business_panel' && currentUser?.role === 'business') renderBusiness(); 
+        if(pageId === 'my_jobs') renderMyJobs(); 
+        if(pageId === 'home') { loadUsers(); loadOrders(); }
     }
     window.showPage = showPage;
     
-    function updateNav(){ 
-        let guest=document.getElementById('guestNav'); 
-        let userDiv=document.getElementById('userNav'); 
-        let panelBtn=document.getElementById('panelBtn'); 
-        if(currentUser){ 
-            guest.style.display='none'; 
-            userDiv.style.display='flex'; 
-            panelBtn.innerHTML=`<i class="fas fa-tachometer-alt"></i> ${currentUser.role==='worker'?'Мои смены':'Бизнес-кабинет'}`; 
-            panelBtn.onclick=()=>showPage(currentUser.role==='worker'?'worker_panel':'business_panel'); 
+    function updateNav() { 
+        let guest = document.getElementById('guestNav'); 
+        let userDiv = document.getElementById('userNav'); 
+        let panelBtn = document.getElementById('panelBtn'); 
+        if(currentUser) { 
+            guest.style.display = 'none'; 
+            userDiv.style.display = 'flex'; 
+            panelBtn.innerHTML = `<i class="fas fa-tachometer-alt"></i> ${currentUser.role === 'worker' ? 'Мои смены' : 'Бизнес-кабинет'}`; 
+            panelBtn.onclick = () => showPage(currentUser.role === 'worker' ? 'worker_panel' : 'business_panel'); 
         } else { 
-            guest.style.display='flex'; 
-            userDiv.style.display='none'; 
+            guest.style.display = 'flex'; 
+            userDiv.style.display = 'none'; 
         } 
     }
     
     // Load data from Firebase
-    async function loadUsers(){ 
+    async function loadUsers() { 
         const snapshot = await get(ref(db, 'users')); 
-        if(snapshot.exists()){
+        if(snapshot.exists()) {
             const usersObj = snapshot.val();
             allUsers = Object.entries(usersObj).map(([id, user]) => ({ id, ...user }));
         } else { 
@@ -336,9 +365,9 @@
         renderBusiness();
     }
     
-    async function loadOrders(){ 
+    async function loadOrders() { 
         const snapshot = await get(ref(db, 'orders')); 
-        if(snapshot.exists()){
+        if(snapshot.exists()) {
             const ordersObj = snapshot.val();
             allOrders = Object.entries(ordersObj).map(([id, order]) => ({ id, ...order }));
         } else { 
@@ -350,53 +379,53 @@
         renderMyJobs();
     }
     
-    async function updateStats(){ 
-        document.getElementById('statCompanies').innerHTML = (allUsers.filter(u=>u.role==='business').length || 0)+'+'; 
-        document.getElementById('statWorkers').innerHTML = (allUsers.filter(u=>u.role==='worker').length || 0)+'+'; 
-        document.getElementById('statOrders').innerHTML = allOrders.filter(o=>o.status==='open').length || 0; 
+    async function updateStats() { 
+        let companies = document.getElementById('statCompanies');
+        let workers = document.getElementById('statWorkers');
+        let orders = document.getElementById('statOrders');
+        if(companies) companies.innerHTML = (allUsers.filter(u => u.role === 'business').length || 0) + '+'; 
+        if(workers) workers.innerHTML = (allUsers.filter(u => u.role === 'worker').length || 0) + '+'; 
+        if(orders) orders.innerHTML = allOrders.filter(o => o.status === 'open').length || 0; 
     }
     
-    async function authLogin(){ 
-        let phone=document.getElementById('logPhone').value; 
-        let pwd=document.getElementById('logPass').value; 
-        if(!phone||!pwd){toast('Заполните поля');return;} 
+    async function authLogin() { 
+        let phone = document.getElementById('logPhone').value; 
+        let pwd = document.getElementById('logPass').value; 
+        if(!phone || !pwd) { toast('Заполните поля'); return; } 
         const snapshot = await get(ref(db, 'users')); 
-        if(snapshot.exists()){ 
+        if(snapshot.exists()) { 
             const users = snapshot.val(); 
-            const userEntry = Object.entries(users).find(([id,u])=>u.phone===phone && u.password===pwd); 
-            if(userEntry){ 
-                currentUser = {id:userEntry[0], ...userEntry[1]}; 
+            const userEntry = Object.entries(users).find(([id, u]) => u.phone === phone && u.password === pwd); 
+            if(userEntry) { 
+                currentUser = { id: userEntry[0], ...userEntry[1] }; 
                 sessionStorage.setItem('wl_current', JSON.stringify(currentUser)); 
                 updateNav(); 
                 toast(`Добро пожаловать, ${currentUser.name}!`); 
-                if(currentUser.role==='worker') showPage('worker_panel'); 
+                if(currentUser.role === 'worker') showPage('worker_panel'); 
                 else showPage('business_panel'); 
                 renderWorker(); 
                 renderBusiness(); 
             } else toast('Неверные данные'); 
         } else toast('Нет пользователей'); 
     }
+    window.authLogin = authLogin;
     
-    async function authRegister(){ 
-        let phone=document.getElementById('regPhone').value; 
-        let pwd=document.getElementById('regPass').value; 
-        let name=document.getElementById('regName').value; 
-        let role=document.getElementById('regRole').value; 
-        if(!phone||!pwd){toast('Заполните поля');return;} 
+    async function authRegister() { 
+        let phone = document.getElementById('regPhone').value; 
+        let pwd = document.getElementById('regPass').value; 
+        let name = document.getElementById('regName').value; 
+        let role = document.getElementById('regRole').value; 
+        if(!phone || !pwd) { toast('Заполните поля'); return; } 
         const snapshot = await get(ref(db, 'users')); 
-        if(snapshot.exists()){ 
+        if(snapshot.exists()) { 
             const users = snapshot.val(); 
-            if(Object.values(users).some(u=>u.phone===phone)){toast('Пользователь существует');return;} 
+            if(Object.values(users).some(u => u.phone === phone)) { toast('Пользователь существует'); return; } 
         } 
         const newUser = { 
-            phone, 
-            password:pwd, 
-            role, 
-            name:name||(role==='worker'?`Исполнитель ${phone.slice(-4)}`:`Компания ${phone.slice(-4)}`), 
-            balance:0, 
-            rating:5.0, 
-            ratingCount:0, 
-            createdAt:new Date().toISOString() 
+            phone, password: pwd, role, 
+            name: name || (role === 'worker' ? `Исполнитель ${phone.slice(-4)}` : `Компания ${phone.slice(-4)}`), 
+            balance: 0, rating: 5.0, ratingCount: 0, 
+            createdAt: new Date().toISOString() 
         }; 
         const newRef = push(ref(db, 'users')); 
         await set(newRef, newUser); 
@@ -404,12 +433,10 @@
         showPage('login'); 
         loadUsers(); 
     }
-    
-    window.authLogin = authLogin; 
     window.authRegister = authRegister;
     
-    async function logout(){ 
-        currentUser=null; 
+    async function logout() { 
+        currentUser = null; 
         sessionStorage.removeItem('wl_current'); 
         updateNav(); 
         showPage('home'); 
@@ -417,36 +444,30 @@
     }
     window.logout = logout;
     
-    async function addMoney(){ 
-        if(!currentUser||currentUser.role!=='business') return; 
-        let add=10000; 
-        await update(ref(db, `users/${currentUser.id}/balance`), currentUser.balance+add); 
+    async function addMoney() { 
+        if(!currentUser || currentUser.role !== 'business') return; 
+        let add = 10000; 
+        await update(ref(db, `users/${currentUser.id}/balance`), currentUser.balance + add); 
         const txRef = push(ref(db, 'transactions')); 
-        await set(txRef, { userId:currentUser.id, amount:add, type:'income', desc:`Пополнение на ${add}₸`, date:new Date().toLocaleString() }); 
+        await set(txRef, { userId: currentUser.id, amount: add, type: 'income', desc: `Пополнение на ${add}₸`, date: new Date().toLocaleString() }); 
         currentUser.balance += add; 
         toast(`Баланс пополнен на ${add}₸`); 
         renderBusiness(); 
     }
     window.addMoney = addMoney;
     
-    async function postOrder(){ 
-        if(!currentUser||currentUser.role!=='business') return; 
-        let title=document.getElementById('oTitle').value; 
-        let price=parseInt(document.getElementById('oPrice').value); 
-        let city=document.getElementById('oCity').value; 
-        let desc=document.getElementById('oDesc')?.value||''; 
-        if(!title||!price||!city){toast('Заполните поля');return;} 
+    async function postOrder() { 
+        if(!currentUser || currentUser.role !== 'business') return; 
+        let title = document.getElementById('oTitle').value; 
+        let price = parseInt(document.getElementById('oPrice').value); 
+        let city = document.getElementById('oCity').value; 
+        let desc = document.getElementById('oDesc')?.value || ''; 
+        if(!title || !price || !city) { toast('Заполните поля'); return; } 
         const newOrder = { 
-            title, 
-            price, 
-            city, 
-            description:desc, 
-            businessId:currentUser.id, 
-            businessName:currentUser.name, 
-            status:'open', 
-            takenBy:null, 
-            completed:false, 
-            createdAt:new Date().toISOString() 
+            title, price, city, description: desc, 
+            businessId: currentUser.id, businessName: currentUser.name, 
+            status: 'open', takenBy: null, completed: false, 
+            createdAt: new Date().toISOString() 
         }; 
         const newRef = push(ref(db, 'orders')); 
         await set(newRef, newOrder); 
@@ -456,12 +477,383 @@
     }
     window.postOrder = postOrder;
     
-    async function takeOrder(orderId){ 
-        if(!currentUser||currentUser.role!=='worker') return; 
+    async function takeOrder(orderId)
+        async function takeOrder(orderId) { 
+        if(!currentUser || currentUser.role !== 'worker') { toast('Только исполнители могут принимать заказы'); return; }
         const orderRef = ref(db, `orders/${orderId}`); 
         const snapshot = await get(orderRef); 
         const order = snapshot.val(); 
-        if(order && order.status==='open'){ 
-            await update(orderRef, { status:'taken', takenBy:currentUser.id }); 
-            const acceptRef = push(ref(db, 'accepted')); 
-            await set(acceptRef, { order
+        if(order && order.status === 'open'){ 
+            await update(orderRef, { status: 'taken', takenBy: currentUser.id }); 
+            toast('Смена принята!'); 
+            loadOrders(); 
+            renderWorker(); 
+        } else toast('Заказ уже недоступен'); 
+    }
+    window.takeOrder = takeOrder;
+    
+    async function completeOrderByBusiness(orderId) { 
+        if(!currentUser || currentUser.role !== 'business') { toast('Только бизнес может завершать заказы'); return; }
+        const orderRef = ref(db, `orders/${orderId}`); 
+        const snapshot = await get(orderRef); 
+        const order = snapshot.val(); 
+        if(!order || order.completed) { toast('Заказ уже завершён'); return; }
+        if(order.status !== 'taken') { toast('Заказ не принят исполнителем'); return; }
+        if(currentUser.balance < order.price) { toast('Недостаточно средств на балансе! Пополните счёт'); return; }
+        
+        // Списываем деньги у бизнеса
+        await update(ref(db, `users/${currentUser.id}/balance`), currentUser.balance - order.price);
+        
+        // Начисляем деньги исполнителю
+        const workerSnapshot = await get(ref(db, `users/${order.takenBy}`)); 
+        const worker = workerSnapshot.val(); 
+        if(worker) await update(ref(db, `users/${order.takenBy}/balance`), (worker.balance || 0) + order.price);
+        
+        // Обновляем статус заказа
+        await update(orderRef, { completed: true, status: 'completed' });
+        
+        // Записываем транзакции
+        const tx1 = push(ref(db, 'transactions')); 
+        await set(tx1, { userId: currentUser.id, amount: order.price, type: 'expense', desc: `Оплата "${order.title}"`, date: new Date().toLocaleString() });
+        const tx2 = push(ref(db, 'transactions')); 
+        await set(tx2, { userId: order.takenBy, amount: order.price, type: 'income', desc: `Получена оплата за "${order.title}"`, date: new Date().toLocaleString() });
+        
+        // Обновляем текущего пользователя
+        currentUser.balance -= order.price;
+        
+        toast(`✅ Заказ "${order.title}" завершён! Исполнителю начислено ${order.price}₸`);
+        
+        // Обновляем данные
+        await loadOrders();
+        await loadUsers();
+        renderBusiness();
+        renderWorker();
+        
+        // Показываем модальное окно для оценки
+        pendingRating = { orderId: orderId, workerId: order.takenBy, workerName: worker?.name || 'исполнителя' };
+        let modal = document.getElementById('ratingModal');
+        modal.style.display = 'flex';
+        document.getElementById('ratingTargetName').innerHTML = `Оцените работу ${pendingRating.workerName}`;
+        
+        // Настройка звёзд
+        let stars = document.querySelectorAll('#ratingModal .star-btn');
+        stars.forEach((star, index) => {
+            star.classList.remove('active');
+            star.onclick = () => {
+                let val = parseInt(star.getAttribute('data-rate'));
+                window.tempRateVal = val;
+                stars.forEach(s => s.classList.remove('active'));
+                for(let i = 0; i < val; i++) stars[i].classList.add('active');
+            };
+        });
+        window.tempRateVal = 5;
+        for(let i = 0; i < 5; i++) stars[i].classList.add('active');
+        document.getElementById('ratingComment').value = '';
+    }
+    window.completeOrderByBusiness = completeOrderByBusiness;
+    
+    async function submitRating() { 
+        if(!pendingRating) { 
+            document.getElementById('ratingModal').style.display = 'none'; 
+            return; 
+        }
+        let rate = window.tempRateVal || 5;
+        let comment = document.getElementById('ratingComment').value || 'Отличная работа!';
+        
+        const workerSnapshot = await get(ref(db, `users/${pendingRating.workerId}`));
+        const worker = workerSnapshot.val();
+        if(worker) {
+            let totalRating = (worker.rating * worker.ratingCount + rate) / (worker.ratingCount + 1);
+            await update(ref(db, `users/${pendingRating.workerId}`), { 
+                rating: Math.round(totalRating * 10) / 10, 
+                ratingCount: (worker.ratingCount || 0) + 1 
+            });
+            const reviewRef = push(ref(db, 'reviews'));
+            await set(reviewRef, { 
+                targetId: pendingRating.workerId, 
+                targetType: 'worker', 
+                fromId: currentUser?.id || 'system',
+                fromName: currentUser?.name || 'Пользователь',
+                rating: rate, 
+                comment: comment, 
+                date: new Date().toLocaleString() 
+            });
+            toast(`⭐ Оценка ${rate} выставлена! Спасибо за отзыв`);
+        }
+        pendingRating = null;
+        document.getElementById('ratingModal').style.display = 'none';
+        await loadUsers();
+        renderBusiness();
+        renderWorker();
+    }
+    window.submitRating = submitRating;
+    
+    async function withdrawMoneyWorker() { 
+        if(!currentUser || currentUser.role !== 'worker') return;
+        if(currentUser.balance > 0) { 
+            let amount = currentUser.balance; 
+            await update(ref(db, `users/${currentUser.id}/balance`), 0); 
+            const txRef = push(ref(db, 'transactions')); 
+            await set(txRef, { userId: currentUser.id, amount: amount, type: 'withdraw', desc: `Вывод средств ${amount}₸`, date: new Date().toLocaleString() }); 
+            currentUser.balance = 0; 
+            toast(`Выведено ${amount.toLocaleString()}₸`); 
+            renderWorker(); 
+        } else toast('Баланс нулевой'); 
+    }
+    window.withdrawMoneyWorker = withdrawMoneyWorker;
+    
+    function filterOrdersDebounce() { 
+        if(filterTimeout) clearTimeout(filterTimeout); 
+        filterTimeout = setTimeout(() => { renderWorker(); }, 300); 
+    }
+    window.filterOrdersDebounce = filterOrdersDebounce;
+    
+    function renderWorker() { 
+        if(!currentUser || currentUser.role !== 'worker') return; 
+        let filterTitle = document.getElementById('sTitle')?.value.toLowerCase() || ''; 
+        let filterCity = document.getElementById('sCity')?.value.toLowerCase() || ''; 
+        let available = allOrders.filter(o => o.status === 'open' && 
+            (!filterTitle || o.title.toLowerCase().includes(filterTitle)) && 
+            (!filterCity || o.city.toLowerCase().includes(filterCity))); 
+        let container = document.getElementById('worker_list'); 
+        if(container) {
+            if(available.length === 0) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i> Нет доступных смен</div>';
+            } else {
+                container.innerHTML = available.map(o => `
+                    <div class="order-item">
+                        <div>
+                            <b><i class="fas fa-briefcase"></i> ${escapeHtml(o.title)}</b><br>
+                            📍 ${escapeHtml(o.city)} | 💰 ${o.price.toLocaleString()} ₸<br>
+                            <small><i class="fas fa-building"></i> ${escapeHtml(o.businessName)}</small>
+                            ${o.description ? `<br><small>📝 ${escapeHtml(o.description.substring(0, 60))}</small>` : ''}
+                        </div>
+                        <button class="btn-action btn-sm" onclick="takeOrder('${o.id}')">
+                            <i class="fas fa-hand-peace"></i> Принять
+                        </button>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        let nameElem = document.getElementById('wName');
+        let ratingElem = document.getElementById('wRating');
+        let ratingCountElem = document.getElementById('wRatingCount');
+        let ratingStarsElem = document.getElementById('wRatingStars');
+        let balanceElem = document.getElementById('wBalance');
+        
+        if(nameElem) nameElem.innerHTML = `<i class="fas fa-user"></i> ${escapeHtml(currentUser.name)}`;
+        if(ratingElem) ratingElem.innerHTML = currentUser.rating || 5.0;
+        if(ratingCountElem) ratingCountElem.innerHTML = `(${currentUser.ratingCount || 0} оценок)`;
+        if(ratingStarsElem) ratingStarsElem.innerHTML = renderStars(currentUser.rating || 5.0);
+        if(balanceElem) balanceElem.innerHTML = (currentUser.balance || 0).toLocaleString();
+        
+        // Загрузка истории транзакций
+        loadUserTransactions(currentUser.id, 'wHistory');
+        loadUserReviews(currentUser.id, 'wReviews');
+    }
+    window.renderWorker = renderWorker;
+    
+    async function renderBusiness() { 
+        if(!currentUser || currentUser.role !== 'business') return; 
+        let myOrders = allOrders.filter(o => o.businessId === currentUser.id); 
+        let container = document.getElementById('biz_list'); 
+        if(container) {
+            if(myOrders.length === 0) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-plus-circle"></i> Создайте первое объявление</div>';
+            } else {
+                container.innerHTML = await Promise.all(myOrders.map(async (o) => { 
+                    let workerInfo = null;
+                    if(o.takenBy) {
+                        let found = allUsers.find(u => u.id === o.takenBy);
+                        if(found) workerInfo = found;
+                    }
+                    let statusText = o.status === 'open' ? '🔵 Открыт' : (o.status === 'taken' ? '🟡 Выполняется' : (o.completed ? '✅ Завершён' : '—'));
+                    return `
+                        <div class="order-item">
+                            <div>
+                                <b>${escapeHtml(o.title)}</b> | ${escapeHtml(o.city)} | ${o.price.toLocaleString()} ₸<br>
+                                Статус: ${statusText}<br>
+                                ${workerInfo ? `<i class="fas fa-user"></i> Исполнитель: ${escapeHtml(workerInfo.name)} ${renderStars(workerInfo.rating)}` : ''}
+                            </div>
+                            <div>
+                                ${o.status === 'taken' && !o.completed ? 
+                                    `<button class="btn-action btn-sm btn-success" onclick="completeOrderByBusiness('${o.id}')">
+                                        <i class="fas fa-check-circle"></i> Завершить и оплатить
+                                    </button>` : 
+                                    (o.completed ? '<span class="badge" style="background:var(--success); padding:6px 12px; border-radius:20px;">✔ Оплачен</span>' : '')
+                                }
+                            </div>
+                        </div>
+                    `;
+                })).join('');
+            }
+        }
+        
+        let nameElem = document.getElementById('bName');
+        let ratingElem = document.getElementById('bRating');
+        let ratingCountElem = document.getElementById('bRatingCount');
+        let balanceElem = document.getElementById('bBalance');
+        
+        if(nameElem) nameElem.innerHTML = `<i class="fas fa-building"></i> ${escapeHtml(currentUser.name)}`;
+        if(ratingElem) ratingElem.innerHTML = currentUser.rating || 5.0;
+        if(ratingCountElem) ratingCountElem.innerHTML = `(${currentUser.ratingCount || 0} оценок)`;
+        if(balanceElem) balanceElem.innerHTML = (currentUser.balance || 0).toLocaleString();
+        
+        // Загрузка истории транзакций
+        loadUserTransactions(currentUser.id, 'bHistory');
+        loadBusinessReviews(currentUser.id, 'bReviews');
+    }
+    window.renderBusiness = renderBusiness;
+    
+    async function renderMyJobs() { 
+        if(!currentUser || currentUser.role !== 'worker') return; 
+        let myAccepted = allOrders.filter(o => o.takenBy === currentUser.id && !o.completed); 
+        let container = document.getElementById('my_list'); 
+        if(container) {
+            if(myAccepted.length === 0) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-check-circle"></i> Нет активных задач</div>';
+            } else {
+                container.innerHTML = myAccepted.map(ord => `
+                    <div class="order-item">
+                        <div>
+                            <b><i class="fas fa-briefcase"></i> ${escapeHtml(ord.title)}</b><br>
+                            📍 ${escapeHtml(ord.city)} | 💰 ${ord.price.toLocaleString()} ₸<br>
+                            <small><i class="fas fa-building"></i> ${escapeHtml(ord.businessName)}</small><br>
+                            Статус: <span class="badge" style="background:var(--warning);">🟡 Ожидает завершения</span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+    }
+    window.renderMyJobs = renderMyJobs;
+    
+    async function loadUserTransactions(userId, elementId) {
+        const snapshot = await get(ref(db, 'transactions'));
+        let container = document.getElementById(elementId);
+        if(container && snapshot.exists()) {
+            let transactions = Object.entries(snapshot.val())
+                .map(([id, tx]) => ({ id, ...tx }))
+                .filter(tx => tx.userId === userId)
+                .sort((a, b) => new Date(b.date) - new Date(a.date))
+                .slice(0, 10);
+            
+            if(transactions.length === 0) {
+                container.innerHTML = '<div class="empty-state">Нет транзакций</div>';
+            } else {
+                container.innerHTML = transactions.map(tx => `
+                    <div class="tx-item">
+                        <div><i class="fas fa-${tx.type === 'income' ? 'arrow-down' : (tx.type === 'expense' ? 'arrow-up' : 'money-bill-wave')}"></i> 
+                        ${tx.desc}</div>
+                        <small>${tx.date}</small>
+                        <strong style="color: ${tx.type === 'income' ? 'var(--success)' : (tx.type === 'expense' ? 'var(--danger)' : 'var(--warning)')}">
+                            ${tx.type === 'income' ? '+' : '-'} ${tx.amount?.toLocaleString()} ₸
+                        </strong>
+                    </div>
+                `).join('');
+            }
+        } else if(container) {
+            container.innerHTML = '<div class="empty-state">Нет транзакций</div>';
+        }
+    }
+    
+    async function loadUserReviews(userId, elementId) {
+        const snapshot = await get(ref(db, 'reviews'));
+        let container = document.getElementById(elementId);
+        if(container && snapshot.exists()) {
+            let reviews = Object.entries(snapshot.val())
+                .map(([id, rev]) => ({ id, ...rev }))
+                .filter(rev => rev.targetId === userId)
+                .sort((a, b) => new Date(b.date) - new Date(a.date))
+                .slice(0, 5);
+            
+            if(reviews.length === 0) {
+                container.innerHTML = '<div class="empty-state">Нет отзывов</div>';
+            } else {
+                container.innerHTML = reviews.map(rev => `
+                    <div class="tx-item">
+                        <div>
+                            ${'★'.repeat(rev.rating)}${'☆'.repeat(5-rev.rating)} 
+                            <strong>${rev.rating}.0</strong>
+                        </div>
+                        <div><small>"${escapeHtml(rev.comment?.substring(0, 100) || '')}"</small></div>
+                        <small><i class="fas fa-user"></i> ${escapeHtml(rev.fromName || 'Пользователь')} | ${rev.date}</small>
+                    </div>
+                `).join('');
+            }
+        } else if(container) {
+            container.innerHTML = '<div class="empty-state">Нет отзывов</div>';
+        }
+    }
+    
+    async function loadBusinessReviews(businessId, elementId) {
+        // Отзывы о бизнесе от работников
+        const snapshot = await get(ref(db, 'reviews'));
+        let container = document.getElementById(elementId);
+        if(container && snapshot.exists()) {
+            let reviews = Object.entries(snapshot.val())
+                .map(([id, rev]) => ({ id, ...rev }))
+                .filter(rev => rev.targetId === businessId && rev.targetType === 'business')
+                .sort((a, b) => new Date(b.date) - new Date(a.date))
+                .slice(0, 5);
+            
+            if(reviews.length === 0) {
+                container.innerHTML = '<div class="empty-state">Нет отзывов о компании</div>';
+            } else {
+                container.innerHTML = reviews.map(rev => `
+                    <div class="tx-item">
+                        <div>
+                            ${'★'.repeat(rev.rating)}${'☆'.repeat(5-rev.rating)} 
+                            <strong>${rev.rating}.0</strong>
+                        </div>
+                        <div><small>"${escapeHtml(rev.comment?.substring(0, 100) || '')}"</small></div>
+                        <small><i class="fas fa-user"></i> ${escapeHtml(rev.fromName || 'Пользователь')} | ${rev.date}</small>
+                    </div>
+                `).join('');
+            }
+        } else if(container) {
+            container.innerHTML = '<div class="empty-state">Нет отзывов</div>';
+        }
+    }
+    
+    // Функция для экранирования HTML
+    function escapeHtml(str) {
+        if(!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if(m === '&') return '&amp;';
+            if(m === '<') return '&lt;';
+            if(m === '>') return '&gt;';
+            return m;
+        }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+            return c;
+        });
+    }
+    
+    // Настройка реального времени
+    function setupRealtimeListeners() {
+        onValue(ref(db, 'users'), () => loadUsers());
+        onValue(ref(db, 'orders'), () => loadOrders());
+    }
+    
+    // Инициализация
+    async function init() { 
+        const saved = sessionStorage.getItem('wl_current'); 
+        if(saved) { 
+            currentUser = JSON.parse(saved); 
+            updateNav(); 
+        } 
+        initTheme(); 
+        await loadUsers(); 
+        await loadOrders(); 
+        setupRealtimeListeners();
+        renderWorker(); 
+        renderBusiness();
+    }
+    
+    // Запускаем приложение
+    init();
+</script>
+</body>
+</html>
+    
