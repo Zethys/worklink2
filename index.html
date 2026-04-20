@@ -1,3 +1,8 @@
+Нет, в вашем коде есть **несколько ошибок**. Вы случайно испортили функции, заменив `currentUser` на `User` в некоторых местах, и в `completeOrderByBusiness` есть дублирование и ошибка.
+
+## 🔧 **Вот ПОЛНОСТЬЮ ИСПРАВЛЕННЫЙ код (скопируйте целиком):**
+
+```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -349,8 +354,8 @@
             allUsers = []; 
         }
         updateStats(); 
-        if(renderWorker) renderWorker(); 
-        if(renderBusiness) renderBusiness();
+        renderWorker(); 
+        renderBusiness();
     }
     
     async function loadOrders() { 
@@ -362,9 +367,9 @@
             allOrders = []; 
         }
         updateStats(); 
-        if(renderWorker) renderWorker(); 
-        if(renderBusiness) renderBusiness();
-        if(renderMyJobs) renderMyJobs();
+        renderWorker(); 
+        renderBusiness();
+        renderMyJobs();
     }
     
     async function updateStats() { 
@@ -429,74 +434,68 @@
         toast('Вы вышли'); 
     }
     
-  async function addMoney() { 
-    console.log('addMoney вызвана');
-    console.log('currentUser:', currentUser);
-    
-    if(!currentUser) { 
-        toast('Пользователь не авторизован'); 
-        return; 
-    }
-    if(currentUser.role !== 'business') { 
-        toast('Только бизнес-аккаунты могут пополнять баланс'); 
-        return; 
-    }
-    
-    let add = 10000; 
-    
-    try {
-        // Получаем текущий баланс из Firebase
-        const userRef = ref(db, `users/${currentUser.id}`);
-        const snapshot = await get(userRef);
+    async function addMoney() { 
+        console.log('addMoney вызвана');
+        console.log('currentUser:', currentUser);
         
-        if(!snapshot.exists()) {
-            toast('Пользователь не найден в базе');
-            return;
+        if(!currentUser) { 
+            toast('Пользователь не авторизован'); 
+            return; 
+        }
+        if(currentUser.role !== 'business') { 
+            toast('Только бизнес-аккаунты могут пополнять баланс'); 
+            return; 
         }
         
-        const userData = snapshot.val();
-        const currentBalance = userData.balance || 0;
-        const newBalance = currentBalance + add;
+        let add = 10000; 
         
-        console.log(`Текущий баланс: ${currentBalance}, Новый баланс: ${newBalance}`);
-        
-        // ИСПРАВЛЕНО: update должен получать ОБЪЕКТ
-        await update(userRef, { balance: newBalance });
-        
-        // Добавляем транзакцию
-        const txRef = push(ref(db, 'transactions')); 
-        await set(txRef, { 
-            userId: currentUser.id, 
-            amount: add, 
-            type: 'income', 
-            desc: `Пополнение на ${add}₸`, 
-            date: new Date().toLocaleString() 
-        });
-        
-        // Обновляем текущего пользователя
-        currentUser.balance = newBalance;
-        
-        // Обновляем отображение на странице
-        const balanceElem = document.getElementById('bBalance');
-        if(balanceElem) {
-            balanceElem.innerHTML = newBalance.toLocaleString();
+        try {
+            const userRef = ref(db, `users/${currentUser.id}`);
+            const snapshot = await get(userRef);
+            
+            if(!snapshot.exists()) {
+                toast('Пользователь не найден в базе');
+                return;
+            }
+            
+            const userData = snapshot.val();
+            const currentBalance = userData.balance || 0;
+            const newBalance = currentBalance + add;
+            
+            console.log(`Текущий баланс: ${currentBalance}, Новый баланс: ${newBalance}`);
+            
+            await update(userRef, { balance: newBalance });
+            
+            const txRef = push(ref(db, 'transactions')); 
+            await set(txRef, { 
+                userId: currentUser.id, 
+                amount: add, 
+                type: 'income', 
+                desc: `Пополнение на ${add}₸`, 
+                date: new Date().toLocaleString() 
+            });
+            
+            currentUser.balance = newBalance;
+            
+            const balanceElem = document.getElementById('bBalance');
+            if(balanceElem) {
+                balanceElem.innerHTML = newBalance.toLocaleString();
+            }
+            
+            toast(`✅ Баланс пополнен на ${add}₸! Новый баланс: ${newBalance.toLocaleString()}₸`); 
+            
+            await loadUsers();
+            await renderBusiness();
+            
+        } catch(error) {
+            console.error('Ошибка при пополнении:', error);
+            toast('❌ Ошибка: ' + error.message);
         }
-        
-        toast(`✅ Баланс пополнен на ${add}₸! Новый баланс: ${newBalance.toLocaleString()}₸`); 
-        
-        // Перезагружаем данные
-        await loadUsers();
-        await renderBusiness();
-        
-    } catch(error) {
-        console.error('Ошибка при пополнении:', error);
-        toast('❌ Ошибка: ' + error.message);
     }
-}
     
     async function postOrder() { 
         if(!currentUser || currentUser.role !== 'business') return; 
-        let title = document.getElementById('oTitle').value; 
+                let title = document.getElementById('oTitle').value; 
         let price = parseInt(document.getElementById('oPrice').value); 
         let city = document.getElementById('oCity').value; 
         let desc = document.getElementById('oDesc')?.value || ''; 
@@ -536,28 +535,50 @@
         if(order.status !== 'taken') { toast('Заказ не принят исполнителем'); return; }
         if(currentUser.balance < order.price) { toast('Недостаточно средств на балансе! Пополните счёт'); return; }
         
-        if(worker) await update(ref(db, `users/${order.takenBy}`), { balance: (worker.balance || 0) + order.price });
+        // Обновляем баланс бизнеса (списываем деньги)
+        const newBusinessBalance = currentUser.balance - order.price;
+        await update(ref(db, `users/${currentUser.id}`), { balance: newBusinessBalance });
         
+        // Получаем данные исполнителя и обновляем его баланс
         const workerSnapshot = await get(ref(db, `users/${order.takenBy}`)); 
         const worker = workerSnapshot.val(); 
-        if(worker) await update(ref(db, `users/${order.takenBy}/balance`), (worker.balance || 0) + order.price);
+        const newWorkerBalance = (worker?.balance || 0) + order.price;
+        if(worker) {
+            await update(ref(db, `users/${order.takenBy}`), { balance: newWorkerBalance });
+        }
         
+        // Обновляем статус заказа
         await update(orderRef, { completed: true, status: 'completed' });
         
+        // Записываем транзакции
         const tx1 = push(ref(db, 'transactions')); 
-        await set(tx1, { userId: currentUser.id, amount: order.price, type: 'expense', desc: `Оплата "${order.title}"`, date: new Date().toLocaleString() });
+        await set(tx1, { 
+            userId: currentUser.id, 
+            amount: order.price, 
+            type: 'expense', 
+            desc: `Оплата "${order.title}"`, 
+            date: new Date().toLocaleString() 
+        });
         const tx2 = push(ref(db, 'transactions')); 
-        await set(tx2, { userId: order.takenBy, amount: order.price, type: 'income', desc: `Получена оплата за "${order.title}"`, date: new Date().toLocaleString() });
+        await set(tx2, { 
+            userId: order.takenBy, 
+            amount: order.price, 
+            type: 'income', 
+            desc: `Получена оплата за "${order.title}"`, 
+            date: new Date().toLocaleString() 
+        });
         
-        currentUser.balance -= order.price;
+        // Обновляем текущего пользователя
+        currentUser.balance = newBusinessBalance;
         
-        toast(`✅ Заказ "${order.title}" завершён!`);
+        toast(`✅ Заказ "${order.title}" завершён! Исполнителю начислено ${order.price}₸`);
         
         await loadOrders();
         await loadUsers();
         renderBusiness();
         renderWorker();
         
+        // Показываем модальное окно для оценки
         pendingRating = { orderId: orderId, workerId: order.takenBy, workerName: worker?.name || 'исполнителя' };
         let modal = document.getElementById('ratingModal');
         modal.style.display = 'flex';
@@ -598,8 +619,8 @@
             await set(reviewRef, { 
                 targetId: pendingRating.workerId, 
                 targetType: 'worker', 
-                fromId: User?.id || 'system',
-                fromName: User?.name || 'Пользователь',
+                fromId: currentUser?.id || 'system',
+                fromName: currentUser?.name || 'Пользователь',
                 rating: rate, 
                 comment: comment, 
                 date: new Date().toLocaleString() 
@@ -614,13 +635,19 @@
     }
     
     async function withdrawMoneyWorker() { 
-        if(!User || User.role !== 'worker') return;
-        if(User.balance > 0) { 
-            let amount = User.balance; 
+        if(!currentUser || currentUser.role !== 'worker') return;
+        if(currentUser.balance > 0) { 
+            let amount = currentUser.balance; 
             await update(ref(db, `users/${currentUser.id}`), { balance: 0 }); 
             const txRef = push(ref(db, 'transactions')); 
-            await set(txRef, { userId: User.id, amount: amount, type: 'withdraw', desc: `Вывод средств ${amount}₸`, date: new Date().toLocaleString() }); 
-            User.balance = 0; 
+            await set(txRef, { 
+                userId: currentUser.id, 
+                amount: amount, 
+                type: 'withdraw', 
+                desc: `Вывод средств ${amount}₸`, 
+                date: new Date().toLocaleString() 
+            }); 
+            currentUser.balance = 0; 
             toast(`Выведено ${amount.toLocaleString()}₸`); 
             renderWorker(); 
         } else toast('Баланс нулевой'); 
@@ -642,7 +669,7 @@
     }
     
     function renderWorker() { 
-        if(!User || User.role !== 'worker') return; 
+        if(!currentUser || currentUser.role !== 'worker') return; 
         let filterTitle = document.getElementById('sTitle')?.value.toLowerCase() || ''; 
         let filterCity = document.getElementById('sCity')?.value.toLowerCase() || ''; 
         let available = allOrders.filter(o => o.status === 'open' && 
@@ -675,7 +702,7 @@
         let ratingStarsElem = document.getElementById('wRatingStars');
         let balanceElem = document.getElementById('wBalance');
         
-        if(nameElem) nameElem.innerHTML = `<i class="fas fa-user"></i> ${escapeHtml(User.name)}`;
+        if(nameElem) nameElem.innerHTML = `<i class="fas fa-user"></i> ${escapeHtml(currentUser.name)}`;
         if(ratingElem) ratingElem.innerHTML = currentUser.rating || 5.0;
         if(ratingCountElem) ratingCountElem.innerHTML = `(${currentUser.ratingCount || 0} оценок)`;
         if(ratingStarsElem) ratingStarsElem.innerHTML = renderStars(currentUser.rating || 5.0);
@@ -785,4 +812,3 @@
 </script>
 </body>
 </html>
-    
