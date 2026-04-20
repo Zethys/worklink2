@@ -443,16 +443,27 @@
     }
     
     let add = 10000; 
-    console.log('Пополнение на:', add);
     
     try {
-        // Получаем актуальные данные пользователя из Firebase
-        const userSnapshot = await get(ref(db, `users/${currentUser.id}`));
-        const freshUser = userSnapshot.val();
-        const newBalance = (freshUser?.balance || 0) + add;
+        // Получаем текущий баланс из Firebase
+        const userRef = ref(db, `users/${currentUser.id}`);
+        const snapshot = await get(userRef);
         
-        await update(ref(db, `users/${currentUser.id}/balance`), newBalance);
+        if(!snapshot.exists()) {
+            toast('Пользователь не найден в базе');
+            return;
+        }
         
+        const userData = snapshot.val();
+        const currentBalance = userData.balance || 0;
+        const newBalance = currentBalance + add;
+        
+        console.log(`Текущий баланс: ${currentBalance}, Новый баланс: ${newBalance}`);
+        
+        // Обновляем баланс
+        await update(userRef, { balance: newBalance });
+        
+        // Добавляем транзакцию
         const txRef = push(ref(db, 'transactions')); 
         await set(txRef, { 
             userId: currentUser.id, 
@@ -462,16 +473,24 @@
             date: new Date().toLocaleString() 
         });
         
-        // Обновляем currentUser
+        // Обновляем текущего пользователя
         currentUser.balance = newBalance;
         
-        // Обновляем отображение
+        // Обновляем отображение на странице
+        const balanceElem = document.getElementById('bBalance');
+        if(balanceElem) {
+            balanceElem.innerHTML = newBalance.toLocaleString();
+        }
+        
+        // Перезагружаем данные
+        await loadUsers();
         await renderBusiness();
         
-        toast(`Баланс пополнен на ${add}₸! Новый баланс: ${newBalance}₸`); 
+        toast(`✅ Баланс пополнен на ${add}₸! Новый баланс: ${newBalance.toLocaleString()}₸`); 
+        
     } catch(error) {
         console.error('Ошибка при пополнении:', error);
-        toast('Ошибка при пополнении баланса');
+        toast('❌ Ошибка при пополнении баланса: ' + error.message);
     }
 }
     
