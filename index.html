@@ -19,7 +19,7 @@
             <a onclick="showPage('about')">О нас</a>
             <a onclick="showPage('business_landing')">Для бизнеса</a>
             <a onclick="showPage('login')">Вход</a>
-            <a onclick="showPage('register')" class="reg-btn">Регистрация</a>
+            <a onclick="showPage('register')" class="reg-btn-nav">Регистрация</a>
         </div>
         <div id="userNav" style="display:none">
             <a id="panelBtn">Личный кабинет</a>
@@ -29,15 +29,35 @@
 </nav>
 
 <div id="home" class="page active">
-    <div class="hero">
-        <div class="hero-content">
-            <h1>Найти подработку<br>с помощью WorkLink</h1>
-            <ul class="features-list">
-                <li>💵 Доход до 45 000 тг в день</li>
-                <li>💼 Опыт работы не нужен</li>
-                <li>🕒 Выплаты в течение недели</li>
-            </ul>
-            <button class="btn-action btn-purple" onclick="showPage('register')">Начать сейчас</button>
+    <section class="hero-new">
+        <div class="hero-overlay"></div>
+        <div class="container hero-inner">
+            <div class="hero-text">
+                <span class="badge">№1 в Казахстане</span>
+                <h1>Работа, которая <br><span>подстраивается</span> под вас</h1>
+                <p>Получайте оплату ежедневно. Никаких резюме и собеседований — просто выберите смену и выходите работать.</p>
+                <div class="hero-btns">
+                    <button class="btn-main" onclick="showPage('register')">Найти подработку</button>
+                    <button class="btn-outline-white" onclick="showPage('about')">Узнать больше</button>
+                </div>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-card"><b>150+</b><span>Компаний</span></div>
+                <div class="stat-card"><b>12к+</b><span>Исполнителей</span></div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<div id="about" class="page">
+    <div class="container">
+        <div class="about-section">
+            <h2>WorkLink — мост между бизнесом и талантами</h2>
+            <p>Мы создаем экосистему, где подработка становится доступной и безопасной.</p>
+            <div class="about-grid">
+                <div class="info-card"><h3>Для исполнителей</h3><p>Работа рядом с домом и быстрые выплаты.</p></div>
+                <div class="info-card"><h3>Для компаний</h3><p>Персонал на смены за 30 минут.</p></div>
+            </div>
         </div>
     </div>
 </div>
@@ -54,7 +74,6 @@
                 <button class="btn-action btn-light">Вывести</button>
             </div>
         </div>
-
         <div class="panel-grid">
             <div class="main-content">
                 <div class="section-title">
@@ -62,7 +81,7 @@
                     <button class="btn-action btn-purple btn-sm" onclick="showPage('my_jobs')">Мои задачи</button>
                 </div>
                 <div class="controls">
-                    <input type="text" id="sTitle" placeholder="Поиск по названию..." oninput="renderWorker()">
+                    <input type="text" id="sTitle" placeholder="Поиск..." oninput="renderWorker()">
                     <input type="text" id="sCity" placeholder="Город..." oninput="renderWorker()">
                 </div>
                 <div id="worker_list"></div>
@@ -87,7 +106,6 @@
                 <button class="btn-action btn-light" onclick="addMoney()">Пополнить</button>
             </div>
         </div>
-
         <div class="panel-grid">
             <div class="main-content">
                 <div class="section-title">
@@ -106,7 +124,7 @@
 
 <div id="login" class="page"><div class="container"><div class="form-box"><h2>Вход</h2><div class="form-group"><label>Телефон</label><input type="text" id="logPhone"></div><div class="form-group"><label>Пароль</label><input type="password" id="logPass"></div><button class="btn-action btn-purple" onclick="auth('log')">Войти</button></div></div></div>
 <div id="register" class="page"><div class="container"><div class="form-box"><h2>Регистрация</h2><div class="form-group"><label>Телефон</label><input type="text" id="regPhone"></div><div class="form-group"><label>Пароль</label><input type="password" id="regPass"></div><div class="form-group"><label>Роль</label><select id="regRole"><option value="worker">Работник</option><option value="business">Бизнес</option></select></div><button class="btn-action btn-purple" onclick="auth('reg')">Создать</button></div></div></div>
-<div id="my_jobs" class="page"><div class="container"><button onclick="showPage('worker_panel')">← Назад</button><h2>Принятые заказы</h2><div id="my_list"></div></div></div>
+<div id="my_jobs" class="page"><div class="container"><button onclick="showPage('worker_panel')" class="btn-sm btn-purple">← Назад</button><h2>Принятые заказы</h2><div id="my_list"></div></div></div>
 <div id="create_order_page" class="page"><div class="container"><div class="form-box"><h2>Новая задача</h2><div class="form-group"><label>Название</label><input type="text" id="oTitle"></div><div class="form-group"><label>Оплата</label><input type="number" id="oPrice"></div><div class="form-group"><label>Город</label><input type="text" id="oCity"></div><button class="btn-action btn-success" onclick="postOrder()">Опубликовать</button></div></div></div>
 
 <div id="ratingModal" class="page" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:10000; align-items:center; justify-content:center; display:none">
