@@ -5,6 +5,14 @@ let user = JSON.parse(localStorage.getItem('wl_session')) || null;
 let currentOrderForRate = null;
 let selectedRating = 0;
 
+// ТЕМНАЯ ТЕМА
+const themeBtn = document.getElementById('themeToggle');
+if(localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-theme');
+themeBtn.onclick = () => {
+    document.body.classList.toggle('dark-theme');
+    localStorage.setItem('theme', document.body.classList.contains('dark-theme') ? 'dark' : 'light');
+};
+
 window.toast = (txt) => {
     const c = document.getElementById('toast-container');
     const t = document.createElement('div');
@@ -24,7 +32,7 @@ window.auth = async (type) => {
     const s = document.getElementById(type+'Pass').value;
     if(type === 'reg') {
         const r = document.getElementById('regRole').value;
-        await set(ref(db, 'users/'+p), { phone: p, pass: s, role: r, balance: 0 });
+        await set(ref(db, 'users/'+p), { phone: p, pass: s, role: r, balance: 0, rating: 5.0, ratesCount: 0 });
         toast("Успех!"); showPage('login');
     } else {
         const sn = await get(child(ref(db), `users/${p}`));
@@ -35,26 +43,54 @@ window.auth = async (type) => {
     }
 };
 
-window.updateBalance = async (phone, amount) => {
+window.addTransaction = async (phone, type, amount, desc) => {
+    await push(ref(db, `transactions/${phone}`), { type, amount, desc, date: Date.now() });
+};
+
+window.updateBalance = async (phone, amount, desc) => {
     const sn = await get(child(ref(db), `users/${phone}`));
     const current = sn.val().balance || 0;
     await update(ref(db, `users/${phone}`), { balance: current + amount });
+    await window.addTransaction(phone, amount > 0 ? 'plus' : 'minus', Math.abs(amount), desc);
 };
 
 window.addMoney = async () => {
     const amount = prompt("Сумма пополнения:");
-    if (amount > 0) { await window.updateBalance(user.phone, Number(amount)); toast("Пополнено!"); }
+    if (amount > 0) { await window.updateBalance(user.phone, Number(amount), "Пополнение баланса"); toast("Пополнено!"); }
 };
 
 window.initSession = () => {
     if(!user) return;
     document.getElementById('guestNav').style.display = 'none';
     document.getElementById('userNav').style.display = 'flex';
+    
+    // Подписка на данные пользователя (баланс, рейтинг)
     onValue(ref(db, `users/${user.phone}`), (sn) => {
         const d = sn.val();
         if(document.getElementById('wBalance')) document.getElementById('wBalance').innerText = d.balance || 0;
         if(document.getElementById('bBalance')) document.getElementById('bBalance').innerText = d.balance || 0;
+        if(document.getElementById('wRating')) document.getElementById('wRating').innerText = d.rating.toFixed(1);
+        if(document.getElementById('bRating')) document.getElementById('bRating').innerText = d.rating.toFixed(1);
     });
+
+    // Подписка на транзакции
+    onValue(ref(db, `transactions/${user.phone}`), (sn) => {
+        const data = sn.val();
+        const listW = document.getElementById('wHistory');
+        const listB = document.getElementById('bHistory');
+        const renderTx = (container) => {
+            if(!container) return; container.innerHTML = "";
+            for(let id in data) {
+                const tx = data[id];
+                const el = document.createElement('div');
+                el.className = `tx-item ${tx.type}`;
+                el.innerHTML = `<span>${tx.desc}</span> <b>${tx.type === 'plus' ? '+' : '-'}${tx.amount} ₸</b>`;
+                container.prepend(el);
+            }
+        };
+        renderTx(listW); renderTx(listB);
+    });
+
     const btn = document.getElementById('panelBtn');
     if(user.role === 'business') {
         btn.onclick = () => showPage('business_panel');
@@ -73,10 +109,44 @@ window.postOrder = async () => {
     const sn = await get(child(ref(db), `users/${user.phone}`));
     if(sn.val().balance < price) return toast("Мало денег!");
     await push(ref(db, 'orders'), { title, price, city: document.getElementById('oCity').value, status: 'open', owner: user.phone, time: Date.now() });
-    await window.updateBalance(user.phone, -price);
+    await window.updateBalance(user.phone, -price, `Создание заказа: ${title}`);
     toast("Создано!"); showPage('business_panel');
 };
 
+window.take = (id) => update(ref(db, `orders/${id}`), { status: 'taken', worker: user.phone });
+
+window.finish = async (id) => {
+    const order = window.ordersData[id];
+    await update(ref(db, `orders/${id}`), { status: 'completed' });
+    await window.updateBalance(user.phone, order.price, `Оплата за смену: ${order.title}`);
+    toast("Выполнено!");
+};
+
+window.openRating = (id) => { currentOrderForRate = id; document.getElementById('ratingModal').style.display = 'flex'; };
+
+window.setRating = (val) => { selectedRating = val; document.querySelectorAll('.star-btn').forEach((s, i) => s.style.color = i < val ? '#fdcb6e' : '#ddd'); };
+
+window.submitRating = async () => {
+    const orderSn = await get(child(ref(db), `orders/${currentOrderForRate}`));
+    const order = orderSn.val();
+    const workerPhone = order.worker;
+    
+    const userSn = await get(child(ref(db), `users/${workerPhone}`));
+    const userData = userSn.val();
+    
+    const newCount = (userData.ratesCount || 0) + 1;
+    const newRating = ((userData.rating * (newCount - 1)) + selectedRating) / newCount;
+    
+    await update(ref(db, `users/${workerPhone}`), { rating: newRating, ratesCount: newCount });
+    await update(ref(db, `orders/${currentOrderForRate}`), { rating: selectedRating });
+    
+    document.getElementById('ratingModal').style.display = 'none';
+    toast("Рейтинг обновлен!");
+};
+
+window.logout = () => { localStorage.clear(); location.reload(); };
+
+// ... (render функции остаются практически такими же, с добавлением стилей)
 window.renderBiz = (sn) => {
     const list = document.getElementById('biz_list'); 
     if(!list) return; list.innerHTML = "";
@@ -85,8 +155,8 @@ window.renderBiz = (sn) => {
         if(data[id].owner === user.phone) {
             const stars = data[id].rating ? '★'.repeat(data[id].rating) : '';
             const el = document.createElement('div'); el.className = 'order-card';
-            el.innerHTML = `<h3>${data[id].title}</h3><p>${data[id].price} ₸</p><div style="color:#fdcb6e">${stars}</div>
-            ${data[id].status === 'completed' && !data[id].rating ? `<button class="btn-action btn-purple" onclick="window.openRating('${id}')">⭐ Оценить</button>` : ''}`;
+            el.innerHTML = `<h3>${data[id].title}</h3><p>${data[id].price} ₸</p><div class="stars">${stars}</div>
+            ${data[id].status === 'completed' && !data[id].rating ? `<button class="btn-action btn-purple" onclick="window.openRating('${id}')">⭐ Оценить работника</button>` : ''}`;
             list.appendChild(el);
         }
     }
@@ -114,23 +184,5 @@ window.renderMy = () => {
         }
     }
 };
-
-window.take = (id) => update(ref(db, `orders/${id}`), { status: 'taken', worker: user.phone });
-window.finish = async (id) => {
-    const order = window.ordersData[id];
-    await update(ref(db, `orders/${id}`), { status: 'completed' });
-    await window.updateBalance(user.phone, order.price);
-    toast("Выполнено!");
-};
-
-window.openRating = (id) => { currentOrderForRate = id; document.getElementById('ratingModal').style.display = 'flex'; };
-window.setRating = (val) => { selectedRating = val; document.querySelectorAll('.star-btn').forEach((s, i) => s.style.color = i < val ? '#fdcb6e' : '#ddd'); };
-window.submitRating = async () => {
-    await update(ref(db, `orders/${currentOrderForRate}`), { rating: selectedRating });
-    document.getElementById('ratingModal').style.display = 'none';
-};
-
-window.logout = () => { localStorage.clear(); location.reload(); };
-window.submitPartner = () => { toast("Заявка отправлена!"); };
 
 if(user) window.initSession();
