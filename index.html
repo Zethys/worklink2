@@ -275,16 +275,6 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     
-    // Делаем функции глобальными для onclick
-    window.db = db;
-    window.ref = ref;
-    window.get = get;
-    window.set = set;
-    window.update = update;
-    window.push = push;
-    window.onValue = onValue;
-    window.remove = remove;
-    
     // Global state
     let currentUser = null;
     let allOrders = [];
@@ -334,7 +324,6 @@
         if(pageId === 'my_jobs') renderMyJobs(); 
         if(pageId === 'home') { loadUsers(); loadOrders(); }
     }
-    window.showPage = showPage;
     
     function updateNav() { 
         let guest = document.getElementById('guestNav'); 
@@ -351,7 +340,6 @@
         } 
     }
     
-    // Load data from Firebase
     async function loadUsers() { 
         const snapshot = await get(ref(db, 'users')); 
         if(snapshot.exists()) {
@@ -361,8 +349,8 @@
             allUsers = []; 
         }
         updateStats(); 
-        renderWorker(); 
-        renderBusiness();
+        if(renderWorker) renderWorker(); 
+        if(renderBusiness) renderBusiness();
     }
     
     async function loadOrders() { 
@@ -374,9 +362,9 @@
             allOrders = []; 
         }
         updateStats(); 
-        renderWorker(); 
-        renderBusiness();
-        renderMyJobs();
+        if(renderWorker) renderWorker(); 
+        if(renderBusiness) renderBusiness();
+        if(renderMyJobs) renderMyJobs();
     }
     
     async function updateStats() { 
@@ -408,7 +396,6 @@
             } else toast('Неверные данные'); 
         } else toast('Нет пользователей'); 
     }
-    window.authLogin = authLogin;
     
     async function authRegister() { 
         let phone = document.getElementById('regPhone').value; 
@@ -433,7 +420,6 @@
         showPage('login'); 
         loadUsers(); 
     }
-    window.authRegister = authRegister;
     
     async function logout() { 
         currentUser = null; 
@@ -442,7 +428,6 @@
         showPage('home'); 
         toast('Вы вышли'); 
     }
-    window.logout = logout;
     
     async function addMoney() { 
         if(!currentUser || currentUser.role !== 'business') return; 
@@ -454,7 +439,6 @@
         toast(`Баланс пополнен на ${add}₸`); 
         renderBusiness(); 
     }
-    window.addMoney = addMoney;
     
     async function postOrder() { 
         if(!currentUser || currentUser.role !== 'business') return; 
@@ -475,10 +459,8 @@
         showPage('business_panel'); 
         loadOrders(); 
     }
-    window.postOrder = postOrder;
     
-    async function takeOrder(orderId)
-        async function takeOrder(orderId) { 
+    async function takeOrder(orderId) { 
         if(!currentUser || currentUser.role !== 'worker') { toast('Только исполнители могут принимать заказы'); return; }
         const orderRef = ref(db, `orders/${orderId}`); 
         const snapshot = await get(orderRef); 
@@ -490,7 +472,6 @@
             renderWorker(); 
         } else toast('Заказ уже недоступен'); 
     }
-    window.takeOrder = takeOrder;
     
     async function completeOrderByBusiness(orderId) { 
         if(!currentUser || currentUser.role !== 'business') { toast('Только бизнес может завершать заказы'); return; }
@@ -501,41 +482,33 @@
         if(order.status !== 'taken') { toast('Заказ не принят исполнителем'); return; }
         if(currentUser.balance < order.price) { toast('Недостаточно средств на балансе! Пополните счёт'); return; }
         
-        // Списываем деньги у бизнеса
         await update(ref(db, `users/${currentUser.id}/balance`), currentUser.balance - order.price);
         
-        // Начисляем деньги исполнителю
         const workerSnapshot = await get(ref(db, `users/${order.takenBy}`)); 
         const worker = workerSnapshot.val(); 
         if(worker) await update(ref(db, `users/${order.takenBy}/balance`), (worker.balance || 0) + order.price);
         
-        // Обновляем статус заказа
         await update(orderRef, { completed: true, status: 'completed' });
         
-        // Записываем транзакции
         const tx1 = push(ref(db, 'transactions')); 
         await set(tx1, { userId: currentUser.id, amount: order.price, type: 'expense', desc: `Оплата "${order.title}"`, date: new Date().toLocaleString() });
         const tx2 = push(ref(db, 'transactions')); 
         await set(tx2, { userId: order.takenBy, amount: order.price, type: 'income', desc: `Получена оплата за "${order.title}"`, date: new Date().toLocaleString() });
         
-        // Обновляем текущего пользователя
         currentUser.balance -= order.price;
         
-        toast(`✅ Заказ "${order.title}" завершён! Исполнителю начислено ${order.price}₸`);
+        toast(`✅ Заказ "${order.title}" завершён!`);
         
-        // Обновляем данные
         await loadOrders();
         await loadUsers();
         renderBusiness();
         renderWorker();
         
-        // Показываем модальное окно для оценки
         pendingRating = { orderId: orderId, workerId: order.takenBy, workerName: worker?.name || 'исполнителя' };
         let modal = document.getElementById('ratingModal');
         modal.style.display = 'flex';
         document.getElementById('ratingTargetName').innerHTML = `Оцените работу ${pendingRating.workerName}`;
         
-        // Настройка звёзд
         let stars = document.querySelectorAll('#ratingModal .star-btn');
         stars.forEach((star, index) => {
             star.classList.remove('active');
@@ -550,7 +523,6 @@
         for(let i = 0; i < 5; i++) stars[i].classList.add('active');
         document.getElementById('ratingComment').value = '';
     }
-    window.completeOrderByBusiness = completeOrderByBusiness;
     
     async function submitRating() { 
         if(!pendingRating) { 
@@ -578,7 +550,7 @@
                 comment: comment, 
                 date: new Date().toLocaleString() 
             });
-            toast(`⭐ Оценка ${rate} выставлена! Спасибо за отзыв`);
+            toast(`⭐ Оценка ${rate} выставлена!`);
         }
         pendingRating = null;
         document.getElementById('ratingModal').style.display = 'none';
@@ -586,7 +558,6 @@
         renderBusiness();
         renderWorker();
     }
-    window.submitRating = submitRating;
     
     async function withdrawMoneyWorker() { 
         if(!currentUser || currentUser.role !== 'worker') return;
@@ -600,13 +571,21 @@
             renderWorker(); 
         } else toast('Баланс нулевой'); 
     }
-    window.withdrawMoneyWorker = withdrawMoneyWorker;
     
     function filterOrdersDebounce() { 
         if(filterTimeout) clearTimeout(filterTimeout); 
         filterTimeout = setTimeout(() => { renderWorker(); }, 300); 
     }
-    window.filterOrdersDebounce = filterOrdersDebounce;
+    
+    function escapeHtml(str) { 
+        if(!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if(m === '&') return '&amp;';
+            if(m === '<') return '&lt;';
+            if(m === '>') return '&gt;';
+            return m;
+        });
+    }
     
     function renderWorker() { 
         if(!currentUser || currentUser.role !== 'worker') return; 
@@ -628,7 +607,7 @@
                             <small><i class="fas fa-building"></i> ${escapeHtml(o.businessName)}</small>
                             ${o.description ? `<br><small>📝 ${escapeHtml(o.description.substring(0, 60))}</small>` : ''}
                         </div>
-                        <button class="btn-action btn-sm" onclick="takeOrder('${o.id}')">
+                        <button class="btn-action btn-sm" onclick="window.takeOrder('${o.id}')">
                             <i class="fas fa-hand-peace"></i> Принять
                         </button>
                     </div>
@@ -647,12 +626,7 @@
         if(ratingCountElem) ratingCountElem.innerHTML = `(${currentUser.ratingCount || 0} оценок)`;
         if(ratingStarsElem) ratingStarsElem.innerHTML = renderStars(currentUser.rating || 5.0);
         if(balanceElem) balanceElem.innerHTML = (currentUser.balance || 0).toLocaleString();
-        
-        // Загрузка истории транзакций
-        loadUserTransactions(currentUser.id, 'wHistory');
-        loadUserReviews(currentUser.id, 'wReviews');
     }
-    window.renderWorker = renderWorker;
     
     async function renderBusiness() { 
         if(!currentUser || currentUser.role !== 'business') return; 
@@ -662,14 +636,15 @@
             if(myOrders.length === 0) {
                 container.innerHTML = '<div class="empty-state"><i class="fas fa-plus-circle"></i> Создайте первое объявление</div>';
             } else {
-                container.innerHTML = await Promise.all(myOrders.map(async (o) => { 
+                let ordersHtml = '';
+                for(let o of myOrders) {
                     let workerInfo = null;
                     if(o.takenBy) {
                         let found = allUsers.find(u => u.id === o.takenBy);
                         if(found) workerInfo = found;
                     }
                     let statusText = o.status === 'open' ? '🔵 Открыт' : (o.status === 'taken' ? '🟡 Выполняется' : (o.completed ? '✅ Завершён' : '—'));
-                    return `
+                    ordersHtml += `
                         <div class="order-item">
                             <div>
                                 <b>${escapeHtml(o.title)}</b> | ${escapeHtml(o.city)} | ${o.price.toLocaleString()} ₸<br>
@@ -678,15 +653,16 @@
                             </div>
                             <div>
                                 ${o.status === 'taken' && !o.completed ? 
-                                    `<button class="btn-action btn-sm btn-success" onclick="completeOrderByBusiness('${o.id}')">
+                                    `<button class="btn-action btn-sm btn-success" onclick="window.completeOrderByBusiness('${o.id}')">
                                         <i class="fas fa-check-circle"></i> Завершить и оплатить
                                     </button>` : 
-                                    (o.completed ? '<span class="badge" style="background:var(--success); padding:6px 12px; border-radius:20px;">✔ Оплачен</span>' : '')
+                                    (o.completed ? '<span style="background:var(--success); padding:6px 12px; border-radius:20px; color:white;">✔ Оплачен</span>' : '')
                                 }
                             </div>
                         </div>
                     `;
-                })).join('');
+                }
+                container.innerHTML = ordersHtml;
             }
         }
         
@@ -699,14 +675,9 @@
         if(ratingElem) ratingElem.innerHTML = currentUser.rating || 5.0;
         if(ratingCountElem) ratingCountElem.innerHTML = `(${currentUser.ratingCount || 0} оценок)`;
         if(balanceElem) balanceElem.innerHTML = (currentUser.balance || 0).toLocaleString();
-        
-        // Загрузка истории транзакций
-        loadUserTransactions(currentUser.id, 'bHistory');
-        loadBusinessReviews(currentUser.id, 'bReviews');
     }
-    window.renderBusiness = renderBusiness;
     
-    async function renderMyJobs() { 
+    function renderMyJobs() { 
         if(!currentUser || currentUser.role !== 'worker') return; 
         let myAccepted = allOrders.filter(o => o.takenBy === currentUser.id && !o.completed); 
         let container = document.getElementById('my_list'); 
@@ -720,123 +691,27 @@
                             <b><i class="fas fa-briefcase"></i> ${escapeHtml(ord.title)}</b><br>
                             📍 ${escapeHtml(ord.city)} | 💰 ${ord.price.toLocaleString()} ₸<br>
                             <small><i class="fas fa-building"></i> ${escapeHtml(ord.businessName)}</small><br>
-                            Статус: <span class="badge" style="background:var(--warning);">🟡 Ожидает завершения</span>
+                            Статус: <span style="background:var(--warning); padding:6px 12px; border-radius:20px;">🟡 Ожидает завершения</span>
                         </div>
                     </div>
                 `).join('');
             }
         }
     }
-    window.renderMyJobs = renderMyJobs;
     
-    async function loadUserTransactions(userId, elementId) {
-        const snapshot = await get(ref(db, 'transactions'));
-        let container = document.getElementById(elementId);
-        if(container && snapshot.exists()) {
-            let transactions = Object.entries(snapshot.val())
-                .map(([id, tx]) => ({ id, ...tx }))
-                .filter(tx => tx.userId === userId)
-                .sort((a, b) => new Date(b.date) - new Date(a.date))
-                .slice(0, 10);
-            
-            if(transactions.length === 0) {
-                container.innerHTML = '<div class="empty-state">Нет транзакций</div>';
-            } else {
-                container.innerHTML = transactions.map(tx => `
-                    <div class="tx-item">
-                        <div><i class="fas fa-${tx.type === 'income' ? 'arrow-down' : (tx.type === 'expense' ? 'arrow-up' : 'money-bill-wave')}"></i> 
-                        ${tx.desc}</div>
-                        <small>${tx.date}</small>
-                        <strong style="color: ${tx.type === 'income' ? 'var(--success)' : (tx.type === 'expense' ? 'var(--danger)' : 'var(--warning)')}">
-                            ${tx.type === 'income' ? '+' : '-'} ${tx.amount?.toLocaleString()} ₸
-                        </strong>
-                    </div>
-                `).join('');
-            }
-        } else if(container) {
-            container.innerHTML = '<div class="empty-state">Нет транзакций</div>';
-        }
-    }
+    // РЕГИСТРИРУЕМ ВСЕ ФУНКЦИИ ГЛОБАЛЬНО
+    window.showPage = showPage;
+    window.authLogin = authLogin;
+    window.authRegister = authRegister;
+    window.logout = logout;
+    window.addMoney = addMoney;
+    window.postOrder = postOrder;
+    window.takeOrder = takeOrder;
+    window.completeOrderByBusiness = completeOrderByBusiness;
+    window.submitRating = submitRating;
+    window.withdrawMoneyWorker = withdrawMoneyWorker;
+    window.filterOrdersDebounce = filterOrdersDebounce;
     
-    async function loadUserReviews(userId, elementId) {
-        const snapshot = await get(ref(db, 'reviews'));
-        let container = document.getElementById(elementId);
-        if(container && snapshot.exists()) {
-            let reviews = Object.entries(snapshot.val())
-                .map(([id, rev]) => ({ id, ...rev }))
-                .filter(rev => rev.targetId === userId)
-                .sort((a, b) => new Date(b.date) - new Date(a.date))
-                .slice(0, 5);
-            
-            if(reviews.length === 0) {
-                container.innerHTML = '<div class="empty-state">Нет отзывов</div>';
-            } else {
-                container.innerHTML = reviews.map(rev => `
-                    <div class="tx-item">
-                        <div>
-                            ${'★'.repeat(rev.rating)}${'☆'.repeat(5-rev.rating)} 
-                            <strong>${rev.rating}.0</strong>
-                        </div>
-                        <div><small>"${escapeHtml(rev.comment?.substring(0, 100) || '')}"</small></div>
-                        <small><i class="fas fa-user"></i> ${escapeHtml(rev.fromName || 'Пользователь')} | ${rev.date}</small>
-                    </div>
-                `).join('');
-            }
-        } else if(container) {
-            container.innerHTML = '<div class="empty-state">Нет отзывов</div>';
-        }
-    }
-    
-    async function loadBusinessReviews(businessId, elementId) {
-        // Отзывы о бизнесе от работников
-        const snapshot = await get(ref(db, 'reviews'));
-        let container = document.getElementById(elementId);
-        if(container && snapshot.exists()) {
-            let reviews = Object.entries(snapshot.val())
-                .map(([id, rev]) => ({ id, ...rev }))
-                .filter(rev => rev.targetId === businessId && rev.targetType === 'business')
-                .sort((a, b) => new Date(b.date) - new Date(a.date))
-                .slice(0, 5);
-            
-            if(reviews.length === 0) {
-                container.innerHTML = '<div class="empty-state">Нет отзывов о компании</div>';
-            } else {
-                container.innerHTML = reviews.map(rev => `
-                    <div class="tx-item">
-                        <div>
-                            ${'★'.repeat(rev.rating)}${'☆'.repeat(5-rev.rating)} 
-                            <strong>${rev.rating}.0</strong>
-                        </div>
-                        <div><small>"${escapeHtml(rev.comment?.substring(0, 100) || '')}"</small></div>
-                        <small><i class="fas fa-user"></i> ${escapeHtml(rev.fromName || 'Пользователь')} | ${rev.date}</small>
-                    </div>
-                `).join('');
-            }
-        } else if(container) {
-            container.innerHTML = '<div class="empty-state">Нет отзывов</div>';
-        }
-    }
-    
-    // Функция для экранирования HTML
-    function escapeHtml(str) {
-        if(!str) return '';
-        return str.replace(/[&<>]/g, function(m) {
-            if(m === '&') return '&amp;';
-            if(m === '<') return '&lt;';
-            if(m === '>') return '&gt;';
-            return m;
-        }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
-            return c;
-        });
-    }
-    
-    // Настройка реального времени
-    function setupRealtimeListeners() {
-        onValue(ref(db, 'users'), () => loadUsers());
-        onValue(ref(db, 'orders'), () => loadOrders());
-    }
-    
-    // Инициализация
     async function init() { 
         const saved = sessionStorage.getItem('wl_current'); 
         if(saved) { 
@@ -846,12 +721,12 @@
         initTheme(); 
         await loadUsers(); 
         await loadOrders(); 
-        setupRealtimeListeners();
+        onValue(ref(db, 'users'), () => loadUsers()); 
+        onValue(ref(db, 'orders'), () => loadOrders()); 
         renderWorker(); 
         renderBusiness();
     }
     
-    // Запускаем приложение
     init();
 </script>
 </body>
