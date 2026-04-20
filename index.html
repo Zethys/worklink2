@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>WorkLink — Гибкая подработка в Казахстане</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -17,45 +18,42 @@
             font-family: 'Inter', sans-serif;
             background: var(--bg-page);
             color: var(--text-primary);
-            line-height: 1.4;
+            line-height: 1.5;
         }
 
-        /* ТЕМЫ */
         :root {
-            --bg-page: #f5f7fc;
+            --bg-page: #f0f4f8;
             --card-bg: #ffffff;
-            --nav-bg: rgba(255,255,255,0.96);
-            --border-light: #eef2ff;
-            --text-primary: #1a1f36;
-            --text-secondary: #334155;
-            --accent: #4f46e5;
-            --accent-dark: #3b3bdf;
-            --badge-bg: #e0e7ff;
-            --shadow: 0 12px 30px -12px rgba(0,0,0,0.05);
+            --nav-bg: rgba(255,255,255,0.98);
+            --border-light: #e2e8f0;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --accent: #6366f1;
+            --accent-hover: #4f46e5;
+            --accent-light: #eef2ff;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
         }
         body.dark {
             --bg-page: #0f172a;
             --card-bg: #1e293b;
-            --nav-bg: rgba(15,23,42,0.96);
+            --nav-bg: rgba(15,23,42,0.98);
             --border-light: #334155;
             --text-primary: #f1f5f9;
             --text-secondary: #cbd5e1;
             --accent: #818cf8;
-            --accent-dark: #6366f1;
-            --badge-bg: #2d3a5e;
-            --shadow: 0 12px 30px -12px rgba(0,0,0,0.4);
+            --accent-hover: #a5b4fc;
+            --accent-light: #2d3a5e;
         }
 
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--border-light);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #94a3b8;
-            border-radius: 12px;
-        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--border-light); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
 
         #toast-container {
             position: fixed;
@@ -70,11 +68,10 @@
             background: var(--card-bg);
             color: var(--text-primary);
             padding: 12px 24px;
-            border-radius: 60px;
-            font-size: 0.9rem;
+            border-radius: 12px;
             font-weight: 500;
-            box-shadow: 0 12px 25px -10px rgba(0,0,0,0.2);
-            border: 1px solid var(--border-light);
+            box-shadow: var(--shadow-lg);
+            border-left: 4px solid var(--accent);
             animation: slideIn 0.25s ease;
         }
         @keyframes slideIn {
@@ -107,6 +104,7 @@
             display: flex;
             gap: 28px;
             align-items: center;
+            flex-wrap: wrap;
         }
         .nav-links a {
             font-weight: 600;
@@ -132,7 +130,7 @@
         }
         .page { display: none; animation: fadeUp 0.3s ease; }
         .page.active { display: block; }
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(8px);} to { opacity: 1; transform: translateY(0);} }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(10px);} to { opacity: 1; transform: translateY(0);} }
         .container { max-width: 1280px; margin: 0 auto; padding: 32px 24px; }
 
         .hero-new {
@@ -140,12 +138,12 @@
             border-radius: 2rem;
             margin: 24px;
             border: 1px solid var(--border-light);
-            box-shadow: var(--shadow);
+            box-shadow: var(--shadow-xl);
         }
-        .hero-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 40px; }
+        .hero-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 40px; padding: 48px; }
         .hero-text { flex: 1; }
         .badge {
-            background: var(--badge-bg);
+            background: var(--accent-light);
             color: var(--accent);
             padding: 6px 14px;
             border-radius: 40px;
@@ -154,37 +152,50 @@
             display: inline-block;
             margin-bottom: 20px;
         }
-        .hero-text h1 { font-size: 3.2rem; font-weight: 800; line-height: 1.2; color: var(--text-primary); }
+        .hero-text h1 { font-size: 3.5rem; font-weight: 800; line-height: 1.2; color: var(--text-primary); }
         .hero-text h1 span { background: linear-gradient(to right, var(--accent), #a855f7); -webkit-background-clip: text; background-clip: text; color: transparent; }
         .hero-text p { font-size: 1.1rem; margin: 24px 0; color: var(--text-secondary); }
         .hero-btns { display: flex; gap: 16px; flex-wrap: wrap; }
-        .btn-main { background: var(--accent); color: white; border: none; padding: 12px 32px; border-radius: 60px; font-weight: 700; cursor: pointer; }
-        .btn-outline-white { background: transparent; border: 1.5px solid var(--accent); color: var(--accent); padding: 12px 32px; border-radius: 60px; font-weight: 600; cursor: pointer; }
-        .hero-stats { display: flex; gap: 32px; background: var(--card-bg); padding: 20px 32px; border-radius: 48px; border: 1px solid var(--border-light); }
+        .btn-main { background: var(--accent); color: white; border: none; padding: 14px 32px; border-radius: 60px; font-weight: 700; cursor: pointer; transition: transform 0.2s; }
+        .btn-main:hover { transform: translateY(-2px); background: var(--accent-hover); }
+        .btn-outline-white { background: transparent; border: 1.5px solid var(--accent); color: var(--accent); padding: 14px 32px; border-radius: 60px; font-weight: 600; cursor: pointer; }
+        .hero-stats { display: flex; gap: 32px; background: var(--bg-page); padding: 20px 32px; border-radius: 48px; border: 1px solid var(--border-light); }
         .stat-card b { font-size: 2rem; display: block; color: var(--accent); }
 
         .info-card, .order-card, .form-box, .profile-header, .order-item {
             background: var(--card-bg);
-            border-radius: 32px;
+            border-radius: 24px;
             padding: 24px;
             border: 1px solid var(--border-light);
-            box-shadow: var(--shadow);
+            box-shadow: var(--shadow-md);
         }
-        .profile-header { display: flex; justify-content: space-between; flex-wrap: wrap; margin-bottom: 32px; }
-        .wallet-card { background: var(--border-light); border-radius: 28px; padding: 16px 28px; text-align: right; }
-        .balance-amount { font-size: 2rem; font-weight: 800; color: var(--accent); }
-        .btn-action { background: var(--accent); border: none; padding: 10px 24px; border-radius: 40px; color: white; font-weight: 600; cursor: pointer; }
+        .profile-header { display: flex; justify-content: space-between; flex-wrap: wrap; margin-bottom: 32px; align-items: center; }
+        .wallet-card { background: linear-gradient(135deg, var(--accent-light), var(--card-bg)); border-radius: 20px; padding: 20px 28px; text-align: right; }
+        .balance-amount { font-size: 2.2rem; font-weight: 800; color: var(--accent); }
+        .btn-action { background: var(--accent); border: none; padding: 10px 24px; border-radius: 40px; color: white; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .btn-action:hover { background: var(--accent-hover); transform: scale(0.98); }
         .btn-light { background: var(--border-light); color: var(--text-primary); }
+        .btn-success { background: var(--success); }
         .btn-sm { padding: 6px 18px; font-size: 0.8rem; }
-        .controls { display: flex; gap: 14px; margin: 20px 0; }
+        .controls { display: flex; gap: 14px; margin: 20px 0; flex-wrap: wrap; }
         .controls input { padding: 12px 16px; border-radius: 48px; border: 1px solid var(--border-light); background: var(--card-bg); color: var(--text-primary); flex: 1; }
-        .order-item { margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+        .order-item { margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
         .panel-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 28px; }
-        @media (max-width: 800px) { .panel-grid { grid-template-columns: 1fr; } nav { padding: 12px 20px; } .hero-text h1 { font-size: 2rem; } }
+        @media (max-width: 800px) { .panel-grid { grid-template-columns: 1fr; } nav { padding: 12px 20px; } .hero-text h1 { font-size: 2rem; } .hero-inner { padding: 24px; } }
+        
         .rating-input { font-size: 2rem; letter-spacing: 8px; margin: 20px 0; }
-        .star-btn { cursor: pointer; color: #cbd5e1; transition: 0.1s; }
+        .star-btn { cursor: pointer; color: #cbd5e1; transition: 0.1s; font-size: 2rem; }
         .star-btn.active, .star-btn:hover { color: #fbbf24; }
-        .tx-list { max-height: 280px; overflow-y: auto; }
+        .tx-list { max-height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+        .tx-item { padding: 12px; border-bottom: 1px solid var(--border-light); font-size: 0.9rem; }
+        .rating-stars { display: inline-flex; gap: 2px; margin-left: 8px; }
+        .rating-stars i { color: #fbbf24; font-size: 0.8rem; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { font-weight: 600; display: block; margin-bottom: 8px; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 14px 18px; border-radius: 60px; border: 1px solid var(--border-light); background: var(--card-bg); color: var(--text-primary); font-size: 1rem; }
+        .loading-spinner { text-align: center; padding: 40px; }
+        .loading-spinner i { font-size: 2rem; color: var(--accent); animation: spin 1s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -193,258 +204,140 @@
 <nav>
     <div class="logo" onclick="showPage('home')">worklink</div>
     <div class="nav-links">
-        <button id="themeToggle" class="theme-btn">🌙</button>
+        <button id="themeToggle" class="theme-btn"><i class="fas fa-moon"></i></button>
         <div id="guestNav">
-            <a onclick="showPage('about')">О нас</a>
-            <a onclick="showPage('business_landing')">Для бизнеса</a>
-            <a onclick="showPage('login')">Вход</a>
-            <a onclick="showPage('register')" class="reg-btn-nav">Регистрация</a>
+            <a onclick="showPage('about')"><i class="fas fa-info-circle"></i> О нас</a>
+            <a onclick="showPage('business_landing')"><i class="fas fa-building"></i> Для бизнеса</a>
+            <a onclick="showPage('login')"><i class="fas fa-sign-in-alt"></i> Вход</a>
+            <a onclick="showPage('register')" class="reg-btn-nav"><i class="fas fa-user-plus"></i> Регистрация</a>
         </div>
         <div id="userNav" style="display:none">
-            <a id="panelBtn">Личный кабинет</a>
-            <a onclick="logout()">Выйти</a>
+            <a id="panelBtn"><i class="fas fa-tachometer-alt"></i> Личный кабинет</a>
+            <a onclick="logout()"><i class="fas fa-sign-out-alt"></i> Выйти</a>
         </div>
     </div>
 </nav>
 
+<!-- Pages -->
 <div id="home" class="page active">
     <section class="hero-new">
-        <div class="container hero-inner">
+        <div class="hero-inner">
             <div class="hero-text">
-                <span class="badge">⭐ №1 в Казахстане</span>
+                <span class="badge"><i class="fas fa-star"></i> №1 в Казахстане</span>
                 <h1>Работа, которая <br><span>подстраивается</span> под вас</h1>
-                <p>Ежедневные выплаты, никаких резюме — выбери смену и начинай зарабатывать.</p>
+                <p><i class="fas fa-calendar-check"></i> Ежедневные выплаты, никаких резюме — выбери смену и начинай зарабатывать.</p>
                 <div class="hero-btns">
-                    <button class="btn-main" onclick="showPage('register')">Найти подработку</button>
-                    <button class="btn-outline-white" onclick="showPage('about')">Как это работает</button>
+                    <button class="btn-main" onclick="showPage('register')"><i class="fas fa-briefcase"></i> Найти подработку</button>
+                    <button class="btn-outline-white" onclick="showPage('about')"><i class="fas fa-play"></i> Как это работает</button>
                 </div>
             </div>
             <div class="hero-stats">
-                <div class="stat-card"><b>150+</b><span>Компаний</span></div>
-                <div class="stat-card"><b>12к+</b><span>Исполнителей</span></div>
+                <div class="stat-card"><b id="statCompanies">150+</b><span>Компаний</span></div>
+                <div class="stat-card"><b id="statWorkers">12к+</b><span>Исполнителей</span></div>
+                <div class="stat-card"><b id="statOrders">0</b><span>Активных заказов</span></div>
             </div>
         </div>
     </section>
 </div>
 
-<div id="about" class="page"><div class="container"><div class="about-section"><h2>WorkLink — мост между бизнесом и талантами</h2><p>Прозрачные отзывы, безопасные платежи и смены рядом с домом.</p><div class="panel-grid" style="grid-template-columns:1fr 1fr"><div class="info-card"><h3>🔹 Для исполнителей</h3><p>Работа рядом с домом, рейтинговая система и моментальные выплаты.</p></div><div class="info-card"><h3>🔹 Для компаний</h3><p>Персонал на смену за 30 минут, контроль качества через рейтинги.</p></div></div></div></div></div>
-<div id="business_landing" class="page"><div class="container"><div class="form-box"><h2>🚀 WorkLink для бизнеса</h2><p>Публикуйте задачи, находите исполнителей, экономьте время. Регистрация бесплатна.</p><button class="btn-main" onclick="showPage('register')">Присоединиться</button></div></div></div>
+<div id="about" class="page"><div class="container"><div class="about-section"><h2><i class="fas fa-handshake"></i> WorkLink — мост между бизнесом и талантами</h2><p>Прозрачные отзывы, безопасные платежи и смены рядом с домом.</p><div class="panel-grid" style="grid-template-columns:repeat(3,1fr); margin-top:32px"><div class="info-card"><i class="fas fa-user-check" style="font-size:2rem; color:var(--accent)"></i><h3>Для исполнителей</h3><p>Работа рядом с домом, рейтинговая система и моментальные выплаты.</p></div><div class="info-card"><i class="fas fa-chart-line" style="font-size:2rem; color:var(--accent)"></i><h3>Для компаний</h3><p>Персонал на смену за 30 минут, контроль качества через рейтинги.</p></div><div class="info-card"><i class="fas fa-shield-alt" style="font-size:2rem; color:var(--accent)"></i><h3>Безопасность</h3><p>Все транзакции защищены, данные в облаке Firebase.</p></div></div></div></div></div>
+<div id="business_landing" class="page"><div class="container"><div class="form-box"><h2><i class="fas fa-rocket"></i> WorkLink для бизнеса</h2><p>Публикуйте задачи, находите исполнителей, экономьте время до 40% на поиске персонала.</p><button class="btn-main" onclick="showPage('register')"><i class="fas fa-user-plus"></i> Присоединиться</button></div></div></div>
 
-<div id="worker_panel" class="page"><div class="container"><div class="profile-header"><div><h2 id="wName">Исполнитель</h2><div>Рейтинг: <span id="wRating">5.0</span> ★</div></div><div class="wallet-card"><div>Мой баланс</div><div class="balance-amount"><span id="wBalance">0</span> ₸</div><button class="btn-action btn-light" onclick="withdrawMoneyWorker()">Вывести</button></div></div><div class="panel-grid"><div class="main-content"><div style="display:flex; justify-content:space-between; align-items:center"><h2>📋 Доступные смены</h2><button class="btn-action btn-sm" onclick="showPage('my_jobs')">Мои задачи</button></div><div class="controls"><input type="text" id="sTitle" placeholder="Поиск" oninput="renderWorker()"><input type="text" id="sCity" placeholder="Город" oninput="renderWorker()"></div><div id="worker_list"></div></div><div class="side-content"><h3>📜 История</h3><div id="wHistory" class="tx-list"></div></div></div></div></div>
+<div id="worker_panel" class="page"><div class="container"><div class="profile-header"><div><h2 id="wName"><i class="fas fa-user"></i> Исполнитель</h2><div class="rating-stars" id="wRatingStars"></div><div>Рейтинг: <span id="wRating">5.0</span> ★ <span id="wRatingCount">(0 оценок)</span></div></div><div class="wallet-card"><div><i class="fas fa-wallet"></i> Мой баланс</div><div class="balance-amount"><span id="wBalance">0</span> ₸</div><button class="btn-action btn-light" onclick="withdrawMoneyWorker()"><i class="fas fa-money-bill-wave"></i> Вывести</button></div></div><div class="panel-grid"><div class="main-content"><div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap"><h2><i class="fas fa-tasks"></i> Доступные смены</h2><button class="btn-action btn-sm" onclick="showPage('my_jobs')"><i class="fas fa-list"></i> Мои задачи</button></div><div class="controls"><input type="text" id="sTitle" placeholder="🔍 Поиск по названию" oninput="filterOrdersDebounce()"><input type="text" id="sCity" placeholder="📍 Город" oninput="filterOrdersDebounce()"></div><div id="worker_list"><div class="loading-spinner"><i class="fas fa-spinner fa-pulse"></i> Загрузка...</div></div></div><div class="side-content"><h3><i class="fas fa-history"></i> История транзакций</h3><div id="wHistory" class="tx-list"></div><h3 style="margin-top:24px"><i class="fas fa-star"></i> Мои отзывы</h3><div id="wReviews" class="tx-list"></div></div></div></div></div>
 
-<div id="business_panel" class="page"><div class="container"><div class="profile-header"><div><h2 id="bName">Компания</h2><div>Рейтинг: <span id="bRating">5.0</span> ★</div></div><div class="wallet-card"><div>Баланс компании</div><div class="balance-amount"><span id="bBalance">0</span> ₸</div><button class="btn-action btn-light" onclick="addMoney()">Пополнить</button></div></div><div class="panel-grid"><div class="main-content"><div style="display:flex; justify-content:space-between"><h2>📌 Мои объявления</h2><button class="btn-action btn-sm" onclick="showPage('create_order_page')">+ Создать</button></div><div id="biz_list"></div></div><div class="side-content"><h3>💰 История</h3><div id="bHistory" class="tx-list"></div></div></div></div></div>
+<div id="business_panel" class="page"><div class="container"><div class="profile-header"><div><h2 id="bName"><i class="fas fa-building"></i> Компания</h2><div>Рейтинг: <span id="bRating">5.0</span> ★ <span id="bRatingCount">(0 оценок)</span></div></div><div class="wallet-card"><div><i class="fas fa-coins"></i> Баланс компании</div><div class="balance-amount"><span id="bBalance">0</span> ₸</div><button class="btn-action btn-light" onclick="addMoney()"><i class="fas fa-plus-circle"></i> Пополнить</button></div></div><div class="panel-grid"><div class="main-content"><div style="display:flex; justify-content:space-between"><h2><i class="fas fa-clipboard-list"></i> Мои объявления</h2><button class="btn-action btn-sm" onclick="showPage('create_order_page')"><i class="fas fa-plus"></i> Создать</button></div><div id="biz_list"><div class="loading-spinner"><i class="fas fa-spinner fa-pulse"></i> Загрузка...</div></div></div><div class="side-content"><h3><i class="fas fa-receipt"></i> История оплат</h3><div id="bHistory" class="tx-list"></div><h3 style="margin-top:24px"><i class="fas fa-comment"></i> Отзывы о компании</h3><div id="bReviews" class="tx-list"></div></div></div></div></div>
 
-<div id="login" class="page"><div class="container"><div class="form-box"><h2>Добро пожаловать</h2><div class="form-group" style="margin-bottom:16px"><label>Телефон</label><input type="text" id="logPhone" placeholder="+7 700 000 00 00" style="width:100%; padding:12px; border-radius:60px; border:1px solid var(--border-light); background:var(--card-bg)"></div><div class="form-group"><label>Пароль</label><input type="password" id="logPass" style="width:100%; padding:12px; border-radius:60px; border:1px solid var(--border-light); background:var(--card-bg)"></div><button class="btn-action" onclick="auth('log')" style="width:100%">Войти</button></div></div></div>
-<div id="register" class="page"><div class="container"><div class="form-box"><h2>Создать аккаунт</h2><div class="form-group"><label>Телефон</label><input type="text" id="regPhone" style="width:100%; padding:12px; border-radius:60px"></div><div class="form-group"><label>Пароль</label><input type="password" id="regPass" style="width:100%; padding:12px; border-radius:60px"></div><div class="form-group"><label>Роль</label><select id="regRole" style="width:100%; padding:12px; border-radius:60px"><option value="worker">🧑‍💼 Работник</option><option value="business">🏢 Бизнес</option></select></div><button class="btn-action" onclick="auth('reg')" style="width:100%">Зарегистрироваться</button></div></div></div>
-<div id="my_jobs" class="page"><div class="container"><button onclick="showPage('worker_panel')" class="btn-action btn-sm" style="margin-bottom:20px">← Назад</button><h2>✅ Принятые заказы</h2><div id="my_list"></div></div></div>
-<div id="create_order_page" class="page"><div class="container"><div class="form-box"><h2>➕ Новая задача</h2><div class="form-group"><label>Название</label><input type="text" id="oTitle" placeholder="Например: курьер"></div><div class="form-group"><label>Оплата (₸)</label><input type="number" id="oPrice"></div><div class="form-group"><label>Город</label><input type="text" id="oCity" placeholder="Алматы, Астана.."></div><button class="btn-action" onclick="postOrder()" style="background:#10b981">Опубликовать</button></div></div></div>
+<div id="login" class="page"><div class="container"><div class="form-box"><h2><i class="fas fa-sign-in-alt"></i> Добро пожаловать</h2><div class="form-group"><label><i class="fas fa-phone"></i> Телефон</label><input type="text" id="logPhone" placeholder="+7 700 000 00 00"></div><div class="form-group"><label><i class="fas fa-lock"></i> Пароль</label><input type="password" id="logPass"></div><button class="btn-action" onclick="authLogin()" style="width:100%"><i class="fas fa-arrow-right"></i> Войти</button><p style="margin-top:16px; text-align:center">Нет аккаунта? <a onclick="showPage('register')" style="color:var(--accent);cursor:pointer">Зарегистрироваться</a></p></div></div></div>
+<div id="register" class="page"><div class="container"><div class="form-box"><h2><i class="fas fa-user-plus"></i> Создать аккаунт</h2><div class="form-group"><label><i class="fas fa-phone"></i> Телефон</label><input type="text" id="regPhone" placeholder="+7 700 000 00 00"></div><div class="form-group"><label><i class="fas fa-user"></i> Имя / Название</label><input type="text" id="regName" placeholder="Как к вам обращаться?"></div><div class="form-group"><label><i class="fas fa-lock"></i> Пароль</label><input type="password" id="regPass"></div><div class="form-group"><label><i class="fas fa-user-tag"></i> Роль</label><select id="regRole"><option value="worker">🧑‍💼 Работник</option><option value="business">🏢 Бизнес</option></select></div><button class="btn-action" onclick="authRegister()" style="width:100%"><i class="fas fa-check"></i> Зарегистрироваться</button></div></div></div>
+<div id="my_jobs" class="page"><div class="container"><button onclick="showPage('worker_panel')" class="btn-action btn-sm" style="margin-bottom:20px"><i class="fas fa-arrow-left"></i> Назад</button><h2><i class="fas fa-check-circle"></i> Принятые заказы</h2><div id="my_list"></div></div></div>
+<div id="create_order_page" class="page"><div class="container"><div class="form-box"><h2><i class="fas fa-plus-circle"></i> Новая задача</h2><div class="form-group"><label>Название</label><input type="text" id="oTitle" placeholder="Например: курьер на вечер"></div><div class="form-group"><label>Оплата (₸)</label><input type="number" id="oPrice" placeholder="5000"></div><div class="form-group"><label>Город</label><input type="text" id="oCity" placeholder="Алматы, Астана, Шымкент..."></div><div class="form-group"><label>Описание</label><textarea id="oDesc" rows="3" placeholder="Подробности задачи..."></textarea></div><button class="btn-action btn-success" onclick="postOrder()" style="width:100%"><i class="fas fa-paper-plane"></i> Опубликовать</button></div></div></div>
 
-<div id="ratingModal" class="page" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:10000; align-items:center; justify-content:center; display:none; backdrop-filter: blur(6px);">
-    <div class="form-box" style="text-align:center; max-width:400px"><h3>Оцените работу исполнителя</h3><div class="rating-input"><span class="star-btn" data-rate="1">★</span><span class="star-btn" data-rate="2">★</span><span class="star-btn" data-rate="3">★</span><span class="star-btn" data-rate="4">★</span><span class="star-btn" data-rate="5">★</span></div><button class="btn-action" onclick="submitRating()">Подтвердить</button></div>
+<div id="ratingModal" class="page" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:10000; align-items:center; justify-content:center; display:none; backdrop-filter: blur(8px);">
+    <div class="form-box" style="text-align:center; max-width:450px"><h3><i class="fas fa-star"></i> Оцените работу</h3><p id="ratingTargetName"></p><div class="rating-input"><span class="star-btn" data-rate="1">★</span><span class="star-btn" data-rate="2">★</span><span class="star-btn" data-rate="3">★</span><span class="star-btn" data-rate="4">★</span><span class="star-btn" data-rate="5">★</span></div><textarea id="ratingComment" placeholder="Оставьте отзыв" style="width:100%; border-radius:16px; padding:12px; margin:16px 0"></textarea><button class="btn-action" onclick="submitRating()"><i class="fas fa-check"></i> Подтвердить</button></div>
 </div>
 
-<script>
-    // ======================== DATA & HELPERS ========================
-    let users = JSON.parse(localStorage.getItem('wl_users')) || [];
-    let orders = JSON.parse(localStorage.getItem('wl_orders')) || [];
-    let accepted = JSON.parse(localStorage.getItem('wl_accepted')) || [];
-    let transactions = JSON.parse(localStorage.getItem('wl_transactions')) || [];
-    let currentUser = JSON.parse(sessionStorage.getItem('wl_current')) || null;
-    let pendingRating = null; // { orderId, workerId }
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, set, get, push, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    function saveAll(){ 
-        localStorage.setItem('wl_users',JSON.stringify(users)); 
-        localStorage.setItem('wl_orders',JSON.stringify(orders)); 
-        localStorage.setItem('wl_accepted',JSON.stringify(accepted)); 
-        localStorage.setItem('wl_transactions',JSON.stringify(transactions)); 
-    }
-    function toast(msg){ let c=document.getElementById('toast-container'); let t=document.createElement('div'); t.className='toast'; t.innerText=msg; c.appendChild(t); setTimeout(()=>t.remove(),2500);}
+    const firebaseConfig = {
+        apiKey: "AIzaSyAjSLp9bkzKz71GytZU1Jz5bQoNMKB5Fxo",
+        authDomain: "worklink-5384c.firebaseapp.com",
+        databaseURL: "https://worklink-5384c-default-rtdb.firebaseio.com/",
+        projectId: "worklink-5384c",
+        storageBucket: "worklink-5384c.firebasestorage.app",
+        appId: "1:582114312352:web:08dea19f81f35abfe649c5"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
     
-    // ТЕМНАЯ ТЕМА
-    function initTheme(){ let saved=localStorage.getItem('wl_theme'); if(saved==='dark') document.body.classList.add('dark'); else document.body.classList.remove('dark'); updateThemeBtn(); }
-    function toggleTheme(){ document.body.classList.toggle('dark'); localStorage.setItem('wl_theme', document.body.classList.contains('dark')?'dark':'light'); updateThemeBtn(); }
-    function updateThemeBtn(){ let btn=document.getElementById('themeToggle'); if(document.body.classList.contains('dark')) btn.innerText='☀️'; else btn.innerText='🌙'; }
+    // Global state
+    let currentUser = null;
+    let allOrders = [];
+    let allUsers = [];
+    let filterTimeout = null;
+    
+    function toast(msg) { let c=document.getElementById('toast-container'); let t=document.createElement('div'); t.className='toast'; t.innerHTML=`<i class="fas fa-bell"></i> ${msg}`; c.appendChild(t); setTimeout(()=>t.remove(),2500); }
+    
+    // Theme
+    function initTheme(){ let saved=localStorage.getItem('wl_theme'); if(saved==='dark') document.body.classList.add('dark'); else document.body.classList.remove('dark'); }
+    function toggleTheme(){ document.body.classList.toggle('dark'); localStorage.setItem('wl_theme', document.body.classList.contains('dark')?'dark':'light'); }
     document.getElementById('themeToggle').addEventListener('click', toggleTheme);
     
-    function showPage(pageId){ 
-        document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); 
-        document.getElementById(pageId).classList.add('active'); 
-        if(pageId==='worker_panel' && currentUser?.role==='worker') renderWorker(); 
-        if(pageId==='business_panel' && currentUser?.role==='business') renderBusiness(); 
-        if(pageId==='my_jobs') renderMyJobs(); 
-    }
-    function updateNav(){ 
-        let guest=document.getElementById('guestNav'); 
-        let userDiv=document.getElementById('userNav'); 
-        let panelBtn=document.getElementById('panelBtn'); 
-        if(currentUser){ 
-            guest.style.display='none'; 
-            userDiv.style.display='flex'; 
-            panelBtn.innerText= currentUser.role==='worker' ? 'Мои смены' : 'Бизнес-кабинет'; 
-            panelBtn.onclick=()=>showPage(currentUser.role==='worker'?'worker_panel':'business_panel'); 
-        } else { guest.style.display='flex'; userDiv.style.display='none'; } 
-    }
-    function auth(mode){ 
-        let phone=mode==='log'?document.getElementById('logPhone').value:document.getElementById('regPhone').value; 
-        let pwd=mode==='log'?document.getElementById('logPass').value:document.getElementById('regPass').value; 
-        if(!phone||!pwd){toast('Заполните поля');return;} 
-        if(mode==='reg'){ 
-            let role=document.getElementById('regRole').value; 
-            if(users.find(u=>u.phone===phone)){toast('Пользователь существует');return;} 
-            let newUser={id:Date.now(), phone, password:pwd, role, balance:role==='business'?0:0, rating:5.0, name:role==='worker'?`Исполнитель ${phone.slice(-4)}`:`Компания ${phone.slice(-4)}`, history:[]}; 
-            users.push(newUser); saveAll(); toast('Регистрация успешна! Войдите'); showPage('login'); 
-        } else { 
-            let user=users.find(u=>u.phone===phone && u.password===pwd); 
-            if(!user){toast('Неверные данные');return;} 
-            currentUser={...user}; 
-            sessionStorage.setItem('wl_current',JSON.stringify(currentUser)); 
-            updateNav(); 
-            if(user.role==='worker') showPage('worker_panel'); 
-            else showPage('business_panel'); 
-            renderWorker(); renderBusiness(); 
-            toast(`Добро пожаловать, ${user.name}`); 
-        } 
-    }
-    function logout(){ sessionStorage.removeItem('wl_current'); currentUser=null; updateNav(); showPage('home'); toast('Вы вышли'); }
-    function addTransaction(userId, amount, type, desc){ 
-        let tx={userId, amount, type, desc, date:new Date().toLocaleString()}; 
-        transactions.push(tx); 
-        let u=users.find(u=>u.id===userId); 
-        if(u){ 
-            if(type==='income') u.balance+=amount; 
-            else if(type==='expense') u.balance-=amount; 
-            if(!u.history) u.history=[]; 
-            u.history.push(desc); 
-            saveAll(); 
-            if(currentUser && currentUser.id===userId){ currentUser.balance=u.balance; sessionStorage.setItem('wl_current',JSON.stringify(currentUser)); }
-        } 
-    }
-    function addMoney(){ if(!currentUser||currentUser.role!=='business') return; let add=10000; addTransaction(currentUser.id, add, 'income', `Пополнение на ${add}₸`); toast(`Баланс пополнен на ${add}₸`); renderBusiness(); }
-    function postOrder(){ 
-        if(!currentUser||currentUser.role!=='business') return; 
-        let title=document.getElementById('oTitle').value; 
-        let price=parseInt(document.getElementById('oPrice').value); 
-        let city=document.getElementById('oCity').value; 
-        if(!title||!price||!city){toast('Заполните все поля');return;} 
-        let newOrder={id:Date.now(), title, price, city, businessId:currentUser.id, businessName:currentUser.name, status:'open', takenBy:null, completed:false, workerRated:false}; 
-        orders.push(newOrder); saveAll(); toast('Объявление создано!'); showPage('business_panel'); renderBusiness(); 
-    }
-    function takeOrder(orderId){ 
-        if(!currentUser||currentUser.role!=='worker') return; 
-        let order=orders.find(o=>o.id===orderId); 
-        if(order && order.status==='open'){ 
-            let already=accepted.find(a=>a.orderId===orderId && a.workerId===currentUser.id); 
-            if(already){toast('Вы уже приняли');return;} 
-            order.status='taken'; 
-            order.takenBy=currentUser.id; 
-            accepted.push({orderId, workerId:currentUser.id, completed:false, rated:false}); 
-            saveAll(); 
-            renderWorker(); 
-            toast('Смена принята! Завершить сможет заказчик после выполнения'); 
-        } else toast('Недоступно'); 
-    }
-    // ГЛАВНОЕ: завершение заказа заказчиком (оплата + кнопка оценки)
-    function completeOrderByBusiness(orderId){ 
-        let order=orders.find(o=>o.id===orderId); 
-        if(!order || order.completed) return toast('Уже завершён'); 
-        if(order.status!=='taken') return toast('Заказ не принят исполнителем'); 
-        let worker=users.find(u=>u.id===order.takenBy); 
-        if(!worker) return toast('Исполнитель не найден'); 
-        if(currentUser.balance < order.price){ toast('Недостаточно средств! Пополните баланс'); return; } 
-        // оплата
-        addTransaction(currentUser.id, order.price, 'expense', `Оплата за "${order.title}" исполнителю ${worker.name}`); 
-        addTransaction(worker.id, order.price, 'income', `Получена оплата за "${order.title}" от ${currentUser.name}`); 
-        order.completed=true; 
-        order.status='completed'; 
-        let acceptEntry=accepted.find(a=>a.orderId===orderId && a.workerId===worker.id); 
-        if(acceptEntry) acceptEntry.completed=true; 
-        saveAll(); 
-        toast(`✅ Заказ завершён! ${worker.name} получил ${order.price}₸`); 
-        renderBusiness(); 
-        renderWorker(); 
-        // открыть окно оценки
-        pendingRating={orderId, workerId:worker.id}; 
-        let modal=document.getElementById('ratingModal'); 
-        modal.style.display='flex'; 
-        let stars=document.querySelectorAll('#ratingModal .star-btn'); 
-        stars.forEach(star=>{ star.classList.remove('active'); star.onclick=()=>{ let val=parseInt(star.getAttribute('data-rate')); window.tempRateVal=val; stars.forEach(s=>s.classList.remove('active')); for(let i=0;i<val;i++) stars[i].classList.add('active'); }; }); 
-        window.tempRateVal=5; 
-        for(let i=0;i<5;i++) stars[i].classList.add('active'); 
-    }
-    function submitRating(){ 
-        if(!pendingRating) { document.getElementById('ratingModal').style.display='none'; return; } 
-        let rate=window.tempRateVal||5; 
-        let worker=users.find(u=>u.id===pendingRating.workerId); 
-        if(worker){ 
-            let newRating=(worker.rating+rate)/2; 
-            worker.rating=Math.round(newRating*10)/10; 
-            saveAll(); 
-            toast(`⭐ Оценка ${rate} выставлена исполнителю`); 
-        } 
-        pendingRating=null; 
-        document.getElementById('ratingModal').style.display='none'; 
-        renderBusiness(); renderWorker(); 
-    }
-    function renderWorker(){ 
-        if(!currentUser||currentUser.role!=='worker') return; 
-        let filterTitle=document.getElementById('sTitle')?.value.toLowerCase()||''; 
-        let filterCity=document.getElementById('sCity')?.value.toLowerCase()||''; 
-        let available=orders.filter(o=>o.status==='open' && (!filterTitle||o.title.toLowerCase().includes(filterTitle)) && (!filterCity||o.city.toLowerCase().includes(filterCity))); 
-        let container=document.getElementById('worker_list'); 
-        if(container) container.innerHTML=available.map(o=>`<div class="order-item"><div><b>${o.title}</b><br>📍 ${o.city} | 💰 ${o.price} ₸<br><small>${o.businessName}</small></div><button class="btn-action btn-sm" onclick="takeOrder(${o.id})">Принять смену</button></div>`).join('')||'<div class="info-card">Нет доступных смен</div>'; 
-        document.getElementById('wName').innerHTML=currentUser.name; 
-        document.getElementById('wRating').innerHTML=currentUser.rating; 
-        document.getElementById('wBalance').innerHTML=currentUser.balance; 
-        let userTx=transactions.filter(t=>t.userId===currentUser.id).slice(-5); 
-        document.getElementById('wHistory').innerHTML=userTx.map(t=>`<div style="padding:8px;border-bottom:1px solid var(--border-light)">${t.desc}<br><span style="font-size:12px; opacity:0.7">${t.date}</span></div>`).join('')||'Нет операций'; 
-    }
-    function renderBusiness(){ 
-        if(!currentUser||currentUser.role!=='business') return; 
-        let myOrders=orders.filter(o=>o.businessId===currentUser.id); 
-        let container=document.getElementById('biz_list'); 
-        if(container) container.innerHTML=myOrders.map(o=>{ 
-            let workerInfo=o.takenBy?users.find(u=>u.id===o.takenBy):null; 
-            let statusText=o.status==='open'?'🔵 Открыт':o.status==='taken'?'🟡 Выполняется':o.completed?'✅ Завершён':'—'; 
-            return `<div class="order-item"><div><b>${o.title}</b> | ${o.city} | ${o.price}₸<br>Статус: ${statusText}<br>${workerInfo?`Исполнитель: ${workerInfo.name} (⭐${workerInfo.rating})`:''}</div><div>${o.status==='taken' && !o.completed?`<button class="btn-action btn-sm" onclick="completeOrderByBusiness(${o.id})">✅ Завершить и оплатить</button>`:o.completed?'<span style="color:green">✔ Оплачен</span>':''}</div></div>`; 
-        }).join('')||'<div class="info-card">Нет объявлений. Создайте!</div>'; 
-        document.getElementById('bName').innerHTML=currentUser.name; 
-        document.getElementById('bRating').innerHTML=currentUser.rating; 
-        document.getElementById('bBalance').innerHTML=currentUser.balance; 
-        let busTx=transactions.filter(t=>t.userId===currentUser.id).slice(-5); 
-        document.getElementById('bHistory').innerHTML=busTx.map(t=>`<div style="padding:8px;border-bottom:1px solid var(--border-light)">${t.desc}<br><span style="font-size:12px">${t.date}</span></div>`).join('')||'Нет операций'; 
-    }
-    function renderMyJobs(){ 
-        if(!currentUser) return; 
-        let myTaken=accepted.filter(a=>a.workerId===currentUser.id); 
-        let container=document.getElementById('my_list'); 
-        if(container) container.innerHTML=myTaken.map(acc=>{ 
-            let ord=orders.find(o=>o.id===acc.orderId); 
-            if(!ord) return ''; 
-            return `<div class="order-item"><div><b>${ord.title}</b> | ${ord.city} | ${ord.price}₸<br>Статус: ${ord.completed?'✅ Завершён (оплата получена)':'🟡 Ожидает завершения от заказчика'}</div></div>`; 
-        }).join('')||'<div class="info-card">Нет принятых задач</div>'; 
-    }
-    function withdrawMoneyWorker(){ 
-        if(currentUser && currentUser.balance>0){ 
-            let amount=currentUser.balance; 
-            addTransaction(currentUser.id, amount, 'expense', `Вывод средств ${amount}₸`); 
-            toast(`Выведено ${amount}₸ на карту`); 
-            renderWorker(); 
-        } else toast('Баланс нулевой'); 
-    }
-    // expose globals
-    window.showPage=showPage; window.auth=auth; window.logout=logout; window.addMoney=addMoney; window.postOrder=postOrder; window.takeOrder=takeOrder; window.completeOrderByBusiness=completeOrderByBusiness; window.renderWorker=renderWorker; window.renderBusiness=renderBusiness; window.renderMyJobs=renderMyJobs; window.withdrawMoneyWorker=withdrawMoneyWorker; window.submitRating=submitRating;
+    function renderStars(rating){ let full=Math.floor(rating); let html=''; for(let i=1;i<=5;i++){ if(i<=full) html+='<i class="fas fa-star" style="color:#fbbf24"></i>'; else if(i===full+1 && rating%1>=0.5) html+='<i class="fas fa-star-half-alt" style="color:#fbbf24"></i>'; else html+='<i class="far fa-star" style="color:#cbd5e1"></i>'; } return html; }
     
-    // init demo data if empty
-    if(!localStorage.getItem('wl_users')){ 
-        users.push({id:1,phone:'777000001',password:'123',role:'worker',balance:2500,rating:5.0,name:'Айбек',history:[]}); 
-        users.push({id:2,phone:'777000002',password:'123',role:'business',balance:50000,rating:5.0,name:'Kaspi Жұмыс',history:[]}); 
-        orders.push({id:101,title:'Курьер на обед',price:4500,city:'Алматы',businessId:2,businessName:'Kaspi Жұмыс',status:'open',takenBy:null,completed:false,workerRated:false}); 
-        orders.push({id:102,title:'Уборка офиса',price:6000,city:'Астана',businessId:2,businessName:'Kaspi Жұмыс',status:'open',takenBy:null,completed:false,workerRated:false}); 
-        saveAll(); 
-    }
-    if(currentUser) updateNav(); else updateNav();
-    initTheme();
-    renderWorker(); renderBusiness();
+    function showPage(pageId){ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); document.getElementById(pageId).classList.add('active'); if(pageId==='worker_panel' && currentUser?.role==='worker') renderWorker(); if(pageId==='business_panel' && currentUser?.role==='business') renderBusiness(); if(pageId==='my_jobs') renderMyJobs(); }
+    window.showPage = showPage;
+    
+    function updateNav(){ let guest=document.getElementById('guestNav'); let userDiv=document.getElementById('userNav'); let panelBtn=document.getElementById('panelBtn'); if(currentUser){ guest.style.display='none'; userDiv.style.display='flex'; panelBtn.innerHTML=`<i class="fas fa-tachometer-alt"></i> ${currentUser.role==='worker'?'Мои смены':'Бизнес-кабинет'}`; panelBtn.onclick=()=>showPage(currentUser.role==='worker'?'worker_panel':'business_panel'); } else { guest.style.display='flex'; userDiv.style.display='none'; } }
+    
+    // Load data from Firebase
+    async function loadUsers(){ const snapshot = await get(ref(db, 'users')); if(snapshot.exists()) allUsers = Object.values(snapshot.val()); else allUsers = []; updateStats(); }
+    async function loadOrders(){ const snapshot = await get(ref(db, 'orders')); if(snapshot.exists()) allOrders = Object.values(snapshot.val()); else allOrders = []; updateStats(); renderWorker(); renderBusiness(); renderMyJobs(); }
+    async function updateStats(){ document.getElementById('statCompanies').innerHTML = allUsers.filter(u=>u.role==='business').length+'+'; document.getElementById('statWorkers').innerHTML = allUsers.filter(u=>u.role==='worker').length+'+'; document.getElementById('statOrders').innerHTML = allOrders.filter(o=>o.status==='open').length; }
+    
+    async function authLogin(){ let phone=document.getElementById('logPhone').value; let pwd=document.getElementById('logPass').value; if(!phone||!pwd){toast('Заполните поля');return;} const snapshot = await get(ref(db, 'users')); if(snapshot.exists()){ const users = snapshot.val(); const userEntry = Object.entries(users).find(([id,u])=>u.phone===phone && u.password===pwd); if(userEntry){ currentUser = {id:userEntry[0], ...userEntry[1]}; sessionStorage.setItem('wl_current', JSON.stringify(currentUser)); updateNav(); toast(`Добро пожаловать, ${currentUser.name}!`); if(currentUser.role==='worker') showPage('worker_panel'); else showPage('business_panel'); renderWorker(); renderBusiness(); } else toast('Неверные данные'); } else toast('Нет пользователей'); }
+    
+    async function authRegister(){ let phone=document.getElementById('regPhone').value; let pwd=document.getElementById('regPass').value; let name=document.getElementById('regName').value; let role=document.getElementById('regRole').value; if(!phone||!pwd){toast('Заполните поля');return;} const snapshot = await get(ref(db, 'users')); if(snapshot.exists()){ const users = snapshot.val(); if(Object.values(users).some(u=>u.phone===phone)){toast('Пользователь существует');return;} } const newUser = { phone, password:pwd, role, name:name||(role==='worker'?`Исполнитель ${phone.slice(-4)}`:`Компания ${phone.slice(-4)}`), balance:0, rating:5.0, ratingCount:0, createdAt:new Date().toISOString() }; const newRef = push(ref(db, 'users')); await set(newRef, newUser); toast('Регистрация успешна! Войдите'); showPage('login'); loadUsers(); }
+    
+    window.authLogin = authLogin; window.authRegister = authRegister;
+    
+    async function logout(){ currentUser=null; sessionStorage.removeItem('wl_current'); updateNav(); showPage('home'); toast('Вы вышли'); }
+    window.logout = logout;
+    
+    async function addMoney(){ if(!currentUser||currentUser.role!=='business') return; let add=10000; await update(ref(db, `users/${currentUser.id}/balance`), currentUser.balance+add); const txRef = push(ref(db, 'transactions')); await set(txRef, { userId:currentUser.id, amount:add, type:'income', desc:`Пополнение на ${add}₸`, date:new Date().toLocaleString() }); currentUser.balance += add; toast(`Баланс пополнен на ${add}₸`); renderBusiness(); }
+    window.addMoney = addMoney;
+    
+    async function postOrder(){ if(!currentUser||currentUser.role!=='business') return; let title=document.getElementById('oTitle').value; let price=parseInt(document.getElementById('oPrice').value); let city=document.getElementById('oCity').value; let desc=document.getElementById('oDesc')?.value||''; if(!title||!price||!city){toast('Заполните поля');return;} const newOrder = { title, price, city, description:desc, businessId:currentUser.id, businessName:currentUser.name, status:'open', takenBy:null, completed:false, createdAt:new Date().toISOString() }; const newRef = push(ref(db, 'orders')); await set(newRef, newOrder); toast('Объявление создано!'); showPage('business_panel'); loadOrders(); }
+    window.postOrder = postOrder;
+    
+    async function takeOrder(orderId){ if(!currentUser||currentUser.role!=='worker') return; const orderRef = ref(db, `orders/${orderId}`); const snapshot = await get(orderRef); const order = snapshot.val(); if(order && order.status==='open'){ await update(orderRef, { status:'taken', takenBy:currentUser.id }); const acceptRef = push(ref(db, 'accepted')); await set(acceptRef, { orderId, workerId:currentUser.id, completed:false, takenAt:new Date().toISOString() }); toast('Смена принята!'); loadOrders(); renderWorker(); } else toast('Недоступно'); }
+    window.takeOrder = takeOrder;
+    
+    async function completeOrderByBusiness(orderId){ if(!currentUser) return; const orderRef = ref(db, `orders/${orderId}`); const snapshot = await get(orderRef); const order = snapshot.val(); if(!order || order.completed) return toast('Уже завершён'); if(order.status!=='taken') return toast('Заказ не принят'); if(currentUser.balance < order.price){ toast('Недостаточно средств!'); return; } await update(ref(db, `users/${currentUser.id}/balance`), currentUser.balance - order.price); const workerSnapshot = await get(ref(db, `users/${order.takenBy}`)); const worker = workerSnapshot.val(); if(worker) await update(ref(db, `users/${order.takenBy}/balance`), (worker.balance||0) + order.price); await update(orderRef, { completed:true, status:'completed' }); const tx1 = push(ref(db, 'transactions')); await set(tx1, { userId:currentUser.id, amount:order.price, type:'expense', desc:`Оплата "${order.title}"`, date:new Date().toLocaleString() }); const tx2 = push(ref(db, 'transactions')); await set(tx2, { userId:order.takenBy, amount:order.price, type:'income', desc:`Получена оплата за "${order.title}"`, date:new Date().toLocaleString() }); currentUser.balance -= order.price; toast(`✅ Заказ завершён!`); loadOrders(); renderBusiness(); renderWorker(); pendingRating = { orderId, workerId:order.takenBy }; let modal=document.getElementById('ratingModal'); modal.style.display='flex'; document.getElementById('ratingTargetName').innerHTML=`Оцените работу ${worker?.name||'исполнителя'}`; let stars=document.querySelectorAll('#ratingModal .star-btn'); stars.forEach(star=>{ star.classList.remove('active'); star.onclick=()=>{ let val=parseInt(star.getAttribute('data-rate')); window.tempRateVal=val; stars.forEach(s=>s.classList.remove('active')); for(let i=0;i<val;i++) stars[i].classList.add('active'); }; }); window.tempRateVal=5; for(let i=0;i<5;i++) stars[i].classList.add('active'); document.getElementById('ratingComment').value=''; }
+    window.completeOrderByBusiness = completeOrderByBusiness;
+    
+    let pendingRating = null;
+    async function submitRating(){ if(!pendingRating) { document.getElementById('ratingModal').style.display='none'; return; } let rate=window.tempRateVal||5; let comment=document.getElementById('ratingComment').value||'Отличная работа!'; const workerSnapshot = await get(ref(db, `users/${pendingRating.workerId}`)); const worker = workerSnapshot.val(); if(worker){ let newRating = (worker.rating + rate) / 2; await update(ref(db, `users/${pendingRating.workerId}`), { rating:Math.round(newRating*10)/10, ratingCount:(worker.ratingCount||0)+1 }); const reviewRef = push(ref(db, 'reviews')); await set(reviewRef, { targetId:pendingRating.workerId, targetType:'worker', fromId:currentUser.id, rating:rate, comment, date:new Date().toLocaleString() }); toast(`⭐ Оценка ${rate} выставлена!`); } pendingRating=null; document.getElementById('ratingModal').style.display='none'; loadUsers(); renderBusiness(); renderWorker(); }
+    window.submitRating = submitRating;
+    
+    async function withdrawMoneyWorker(){ if(currentUser && currentUser.balance>0){ let amount=currentUser.balance; await update(ref(db, `users/${currentUser.id}/balance`), 0); const txRef = push(ref(db, 'transactions')); await set(txRef, { userId:currentUser.id, amount, type:'expense', desc:`Вывод средств ${amount}₸`, date:new Date().toLocaleString() }); currentUser.balance = 0; toast(`Выведено ${amount.toLocaleString()}₸`); renderWorker(); } else toast('Баланс нулевой'); }
+    window.withdrawMoneyWorker = withdrawMoneyWorker;
+    
+    function filterOrdersDebounce(){ if(filterTimeout) clearTimeout(filterTimeout); filterTimeout = setTimeout(()=>{ renderWorker(); }, 300); }
+    window.filterOrdersDebounce = filterOrdersDebounce;
+    
+    function renderWorker(){ if(!currentUser||currentUser.role!=='worker') return; let filterTitle=document.getElementById('sTitle')?.value.toLowerCase()||''; let filterCity=document.getElementById('sCity')?.value.toLowerCase()||''; let available = allOrders.filter(o=>o.status==='open' && (!filterTitle||o.title.toLowerCase().includes(filterTitle)) && (!filterCity||o.city.toLowerCase().includes(filterCity))); let container=document.getElementById('worker_list'); if(container) container.innerHTML=available.map(o=>`<div class="order-item"><div><b><i class="fas fa-briefcase"></i> ${o.title}</b><br>📍 ${o.city} | 💰 ${o.price.toLocaleString()} ₸<br><small><i class="fas fa-building"></i> ${o.businessName}</small>${o.description?`<br><small>📝 ${o.description.substring(0,60)}</small>`:''}</div><button class="btn-action btn-sm" onclick="takeOrder('${o.id}')"><i class="fas fa-hand-peace"></i> Принять</button></div>`).join('')||'<div class="empty-state">Нет доступных смен</div>'; document.getElementById('wName').innerHTML=`<i class="fas fa-user"></i> ${currentUser.name}`; document.getElementById('wRating').innerHTML=currentUser.rating; document.getElementById('wRatingCount').innerHTML=`(${currentUser.ratingCount||0} оценок)`; document.getElementById('wRatingStars').innerHTML=renderStars(currentUser.rating); document.getElementById('wBalance').innerHTML=currentUser.balance.toLocaleString(); }
+    
+    async function renderBusiness(){ if(!currentUser||currentUser.role!=='business') return; let myOrders = allOrders.filter(o=>o.businessId===currentUser.id); let container=document.getElementById('biz_list'); if(container) container.innerHTML=myOrders.map(o=>{ let workerInfo = o.takenBy ? allUsers.find(u=>u.id===o.takenBy) : null; let statusText=o.status==='open'?'🔵 Открыт':o.status==='taken'?'🟡 Выполняется':o.completed?'✅ Завершён':'—'; return `<div class="order-item"><div><b>${o.title}</b> | ${o.city} | ${o.price.toLocaleString()} ₸<br>Статус: ${statusText}<br>${workerInfo?`<i class="fas fa-user"></i> Исполнитель: ${workerInfo.name} ${renderStars(workerInfo.rating)}`:''}</div><div>${o.status==='taken' && !o.completed?`<button class="btn-action btn-sm" onclick="completeOrderByBusiness('${o.id}')"><i class="fas fa-check-circle"></i> Завершить</button>`:o.completed?'<span class="badge" style="background:var(--success)">✔ Оплачен</span>':''}</div></div>`; }).join('')||'<div class="empty-state">Нет объявлений</div>'; document.getElementById('bName').innerHTML=`<i class="fas fa-building"></i> ${currentUser.name}`; document.getElementById('bRating').innerHTML=currentUser.rating; document.getElementById('bRatingCount').innerHTML=`(${currentUser.ratingCount||0} оценок)`; document.getElementById('bBalance').innerHTML=currentUser.balance.toLocaleString(); }
+    
+    function renderMyJobs(){ if(!currentUser) return; let myAccepted = allOrders.filter(o=>o.takenBy===currentUser.id); let container=document.getElementById('my_list'); if(container) container.innerHTML=myAccepted.map(ord=>`<div class="order-item"><div><b>${ord.title}</b> | ${ord.city} | ${ord.price.toLocaleString()} ₸<br>Статус: ${ord.completed?'✅ Завершён':'🟡 Ожидает'}</div></div>`).join('')||'<div class="empty-state">Нет принятых задач</div>'; }
+    
+    // Load initial data and setup realtime listeners
+    async function init(){ const saved = sessionStorage.getItem('wl_current'); if(saved) { currentUser = JSON.parse(saved); updateNav(); } initTheme(); await loadUsers(); await loadOrders(); onValue(ref(db, 'users'), () => loadUsers()); onValue(ref(db, 'orders'), () => loadOrders()); renderWorker(); renderBusiness(); }
+    window.renderWorker = renderWorker; window.renderBusiness = renderBusiness; window.renderMyJobs = renderMyJobs;
+    init();
 </script>
 </body>
 </html>
