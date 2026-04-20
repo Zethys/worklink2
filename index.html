@@ -429,7 +429,7 @@
         toast('Вы вышли'); 
     }
     
-   async function addMoney() { 
+  async function addMoney() { 
     console.log('addMoney вызвана');
     console.log('currentUser:', currentUser);
     
@@ -460,7 +460,7 @@
         
         console.log(`Текущий баланс: ${currentBalance}, Новый баланс: ${newBalance}`);
         
-        // Обновляем баланс
+        // ИСПРАВЛЕНО: update должен получать ОБЪЕКТ
         await update(userRef, { balance: newBalance });
         
         // Добавляем транзакцию
@@ -482,15 +482,15 @@
             balanceElem.innerHTML = newBalance.toLocaleString();
         }
         
+        toast(`✅ Баланс пополнен на ${add}₸! Новый баланс: ${newBalance.toLocaleString()}₸`); 
+        
         // Перезагружаем данные
         await loadUsers();
         await renderBusiness();
         
-        toast(`✅ Баланс пополнен на ${add}₸! Новый баланс: ${newBalance.toLocaleString()}₸`); 
-        
     } catch(error) {
         console.error('Ошибка при пополнении:', error);
-        toast('❌ Ошибка при пополнении баланса: ' + error.message);
+        toast('❌ Ошибка: ' + error.message);
     }
 }
     
