@@ -196,6 +196,7 @@
         .loading-spinner { text-align: center; padding: 40px; }
         .loading-spinner i { font-size: 2rem; color: var(--accent); animation: spin 1s linear infinite; }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .empty-state { text-align: center; padding: 40px; color: var(--text-secondary); }
     </style>
 </head>
 <body>
@@ -252,7 +253,7 @@
 <div id="my_jobs" class="page"><div class="container"><button onclick="showPage('worker_panel')" class="btn-action btn-sm" style="margin-bottom:20px"><i class="fas fa-arrow-left"></i> Назад</button><h2><i class="fas fa-check-circle"></i> Принятые заказы</h2><div id="my_list"></div></div></div>
 <div id="create_order_page" class="page"><div class="container"><div class="form-box"><h2><i class="fas fa-plus-circle"></i> Новая задача</h2><div class="form-group"><label>Название</label><input type="text" id="oTitle" placeholder="Например: курьер на вечер"></div><div class="form-group"><label>Оплата (₸)</label><input type="number" id="oPrice" placeholder="5000"></div><div class="form-group"><label>Город</label><input type="text" id="oCity" placeholder="Алматы, Астана, Шымкент..."></div><div class="form-group"><label>Описание</label><textarea id="oDesc" rows="3" placeholder="Подробности задачи..."></textarea></div><button class="btn-action btn-success" onclick="postOrder()" style="width:100%"><i class="fas fa-paper-plane"></i> Опубликовать</button></div></div></div>
 
-<div id="ratingModal" class="page" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:10000; align-items:center; justify-content:center; display:none; backdrop-filter: blur(8px);">
+<div id="ratingModal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:10000; align-items:center; justify-content:center; display:none; backdrop-filter: blur(8px);">
     <div class="form-box" style="text-align:center; max-width:450px"><h3><i class="fas fa-star"></i> Оцените работу</h3><p id="ratingTargetName"></p><div class="rating-input"><span class="star-btn" data-rate="1">★</span><span class="star-btn" data-rate="2">★</span><span class="star-btn" data-rate="3">★</span><span class="star-btn" data-rate="4">★</span><span class="star-btn" data-rate="5">★</span></div><textarea id="ratingComment" placeholder="Оставьте отзыв" style="width:100%; border-radius:16px; padding:12px; margin:16px 0"></textarea><button class="btn-action" onclick="submitRating()"><i class="fas fa-check"></i> Подтвердить</button></div>
 </div>
 
@@ -272,6 +273,16 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     
+    // Делаем Firebase функции глобальными для onclick обработчиков
+    window.db = db;
+    window.ref = ref;
+    window.get = get;
+    window.set = set;
+    window.update = update;
+    window.push = push;
+    window.onValue = onValue;
+    window.remove = remove;
+    
     // Global state
     let currentUser = null;
     let allOrders = [];
@@ -287,57 +298,170 @@
     
     function renderStars(rating){ let full=Math.floor(rating); let html=''; for(let i=1;i<=5;i++){ if(i<=full) html+='<i class="fas fa-star" style="color:#fbbf24"></i>'; else if(i===full+1 && rating%1>=0.5) html+='<i class="fas fa-star-half-alt" style="color:#fbbf24"></i>'; else html+='<i class="far fa-star" style="color:#cbd5e1"></i>'; } return html; }
     
-    function showPage(pageId){ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); document.getElementById(pageId).classList.add('active'); if(pageId==='worker_panel' && currentUser?.role==='worker') renderWorker(); if(pageId==='business_panel' && currentUser?.role==='business') renderBusiness(); if(pageId==='my_jobs') renderMyJobs(); }
+    function showPage(pageId){ 
+        document.querySelectorAll('.page').forEach(p=>p.style.display='none'); 
+        document.getElementById(pageId).style.display='block';
+        if(pageId==='worker_panel' && currentUser?.role==='worker') renderWorker(); 
+        if(pageId==='business_panel' && currentUser?.role==='business') renderBusiness(); 
+        if(pageId==='my_jobs') renderMyJobs(); 
+    }
     window.showPage = showPage;
     
-    function updateNav(){ let guest=document.getElementById('guestNav'); let userDiv=document.getElementById('userNav'); let panelBtn=document.getElementById('panelBtn'); if(currentUser){ guest.style.display='none'; userDiv.style.display='flex'; panelBtn.innerHTML=`<i class="fas fa-tachometer-alt"></i> ${currentUser.role==='worker'?'Мои смены':'Бизнес-кабинет'}`; panelBtn.onclick=()=>showPage(currentUser.role==='worker'?'worker_panel':'business_panel'); } else { guest.style.display='flex'; userDiv.style.display='none'; } }
+    function updateNav(){ 
+        let guest=document.getElementById('guestNav'); 
+        let userDiv=document.getElementById('userNav'); 
+        let panelBtn=document.getElementById('panelBtn'); 
+        if(currentUser){ 
+            guest.style.display='none'; 
+            userDiv.style.display='flex'; 
+            panelBtn.innerHTML=`<i class="fas fa-tachometer-alt"></i> ${currentUser.role==='worker'?'Мои смены':'Бизнес-кабинет'}`; 
+            panelBtn.onclick=()=>showPage(currentUser.role==='worker'?'worker_panel':'business_panel'); 
+        } else { 
+            guest.style.display='flex'; 
+            userDiv.style.display='none'; 
+        } 
+    }
     
     // Load data from Firebase
-    async function loadUsers(){ const snapshot = await get(ref(db, 'users')); if(snapshot.exists()) allUsers = Object.values(snapshot.val()); else allUsers = []; updateStats(); }
-    async function loadOrders(){ const snapshot = await get(ref(db, 'orders')); if(snapshot.exists()) allOrders = Object.values(snapshot.val()); else allOrders = []; updateStats(); renderWorker(); renderBusiness(); renderMyJobs(); }
-    async function updateStats(){ document.getElementById('statCompanies').innerHTML = allUsers.filter(u=>u.role==='business').length+'+'; document.getElementById('statWorkers').innerHTML = allUsers.filter(u=>u.role==='worker').length+'+'; document.getElementById('statOrders').innerHTML = allOrders.filter(o=>o.status==='open').length; }
+    async function loadUsers(){ 
+        const snapshot = await get(ref(db, 'users')); 
+        if(snapshot.exists()){
+            const usersObj = snapshot.val();
+            allUsers = Object.entries(usersObj).map(([id, user]) => ({ id, ...user }));
+        } else { 
+            allUsers = []; 
+        }
+        updateStats(); 
+        renderWorker(); 
+        renderBusiness();
+    }
     
-    async function authLogin(){ let phone=document.getElementById('logPhone').value; let pwd=document.getElementById('logPass').value; if(!phone||!pwd){toast('Заполните поля');return;} const snapshot = await get(ref(db, 'users')); if(snapshot.exists()){ const users = snapshot.val(); const userEntry = Object.entries(users).find(([id,u])=>u.phone===phone && u.password===pwd); if(userEntry){ currentUser = {id:userEntry[0], ...userEntry[1]}; sessionStorage.setItem('wl_current', JSON.stringify(currentUser)); updateNav(); toast(`Добро пожаловать, ${currentUser.name}!`); if(currentUser.role==='worker') showPage('worker_panel'); else showPage('business_panel'); renderWorker(); renderBusiness(); } else toast('Неверные данные'); } else toast('Нет пользователей'); }
+    async function loadOrders(){ 
+        const snapshot = await get(ref(db, 'orders')); 
+        if(snapshot.exists()){
+            const ordersObj = snapshot.val();
+            allOrders = Object.entries(ordersObj).map(([id, order]) => ({ id, ...order }));
+        } else { 
+            allOrders = []; 
+        }
+        updateStats(); 
+        renderWorker(); 
+        renderBusiness();
+        renderMyJobs();
+    }
     
-    async function authRegister(){ let phone=document.getElementById('regPhone').value; let pwd=document.getElementById('regPass').value; let name=document.getElementById('regName').value; let role=document.getElementById('regRole').value; if(!phone||!pwd){toast('Заполните поля');return;} const snapshot = await get(ref(db, 'users')); if(snapshot.exists()){ const users = snapshot.val(); if(Object.values(users).some(u=>u.phone===phone)){toast('Пользователь существует');return;} } const newUser = { phone, password:pwd, role, name:name||(role==='worker'?`Исполнитель ${phone.slice(-4)}`:`Компания ${phone.slice(-4)}`), balance:0, rating:5.0, ratingCount:0, createdAt:new Date().toISOString() }; const newRef = push(ref(db, 'users')); await set(newRef, newUser); toast('Регистрация успешна! Войдите'); showPage('login'); loadUsers(); }
+    async function updateStats(){ 
+        document.getElementById('statCompanies').innerHTML = (allUsers.filter(u=>u.role==='business').length || 0)+'+'; 
+        document.getElementById('statWorkers').innerHTML = (allUsers.filter(u=>u.role==='worker').length || 0)+'+'; 
+        document.getElementById('statOrders').innerHTML = allOrders.filter(o=>o.status==='open').length || 0; 
+    }
     
-    window.authLogin = authLogin; window.authRegister = authRegister;
+    async function authLogin(){ 
+        let phone=document.getElementById('logPhone').value; 
+        let pwd=document.getElementById('logPass').value; 
+        if(!phone||!pwd){toast('Заполните поля');return;} 
+        const snapshot = await get(ref(db, 'users')); 
+        if(snapshot.exists()){ 
+            const users = snapshot.val(); 
+            const userEntry = Object.entries(users).find(([id,u])=>u.phone===phone && u.password===pwd); 
+            if(userEntry){ 
+                currentUser = {id:userEntry[0], ...userEntry[1]}; 
+                sessionStorage.setItem('wl_current', JSON.stringify(currentUser)); 
+                updateNav(); 
+                toast(`Добро пожаловать, ${currentUser.name}!`); 
+                if(currentUser.role==='worker') showPage('worker_panel'); 
+                else showPage('business_panel'); 
+                renderWorker(); 
+                renderBusiness(); 
+            } else toast('Неверные данные'); 
+        } else toast('Нет пользователей'); 
+    }
     
-    async function logout(){ currentUser=null; sessionStorage.removeItem('wl_current'); updateNav(); showPage('home'); toast('Вы вышли'); }
+    async function authRegister(){ 
+        let phone=document.getElementById('regPhone').value; 
+        let pwd=document.getElementById('regPass').value; 
+        let name=document.getElementById('regName').value; 
+        let role=document.getElementById('regRole').value; 
+        if(!phone||!pwd){toast('Заполните поля');return;} 
+        const snapshot = await get(ref(db, 'users')); 
+        if(snapshot.exists()){ 
+            const users = snapshot.val(); 
+            if(Object.values(users).some(u=>u.phone===phone)){toast('Пользователь существует');return;} 
+        } 
+        const newUser = { 
+            phone, 
+            password:pwd, 
+            role, 
+            name:name||(role==='worker'?`Исполнитель ${phone.slice(-4)}`:`Компания ${phone.slice(-4)}`), 
+            balance:0, 
+            rating:5.0, 
+            ratingCount:0, 
+            createdAt:new Date().toISOString() 
+        }; 
+        const newRef = push(ref(db, 'users')); 
+        await set(newRef, newUser); 
+        toast('Регистрация успешна! Войдите'); 
+        showPage('login'); 
+        loadUsers(); 
+    }
+    
+    window.authLogin = authLogin; 
+    window.authRegister = authRegister;
+    
+    async function logout(){ 
+        currentUser=null; 
+        sessionStorage.removeItem('wl_current'); 
+        updateNav(); 
+        showPage('home'); 
+        toast('Вы вышли'); 
+    }
     window.logout = logout;
     
-    async function addMoney(){ if(!currentUser||currentUser.role!=='business') return; let add=10000; await update(ref(db, `users/${currentUser.id}/balance`), currentUser.balance+add); const txRef = push(ref(db, 'transactions')); await set(txRef, { userId:currentUser.id, amount:add, type:'income', desc:`Пополнение на ${add}₸`, date:new Date().toLocaleString() }); currentUser.balance += add; toast(`Баланс пополнен на ${add}₸`); renderBusiness(); }
+    async function addMoney(){ 
+        if(!currentUser||currentUser.role!=='business') return; 
+        let add=10000; 
+        await update(ref(db, `users/${currentUser.id}/balance`), currentUser.balance+add); 
+        const txRef = push(ref(db, 'transactions')); 
+        await set(txRef, { userId:currentUser.id, amount:add, type:'income', desc:`Пополнение на ${add}₸`, date:new Date().toLocaleString() }); 
+        currentUser.balance += add; 
+        toast(`Баланс пополнен на ${add}₸`); 
+        renderBusiness(); 
+    }
     window.addMoney = addMoney;
     
-    async function postOrder(){ if(!currentUser||currentUser.role!=='business') return; let title=document.getElementById('oTitle').value; let price=parseInt(document.getElementById('oPrice').value); let city=document.getElementById('oCity').value; let desc=document.getElementById('oDesc')?.value||''; if(!title||!price||!city){toast('Заполните поля');return;} const newOrder = { title, price, city, description:desc, businessId:currentUser.id, businessName:currentUser.name, status:'open', takenBy:null, completed:false, createdAt:new Date().toISOString() }; const newRef = push(ref(db, 'orders')); await set(newRef, newOrder); toast('Объявление создано!'); showPage('business_panel'); loadOrders(); }
+    async function postOrder(){ 
+        if(!currentUser||currentUser.role!=='business') return; 
+        let title=document.getElementById('oTitle').value; 
+        let price=parseInt(document.getElementById('oPrice').value); 
+        let city=document.getElementById('oCity').value; 
+        let desc=document.getElementById('oDesc')?.value||''; 
+        if(!title||!price||!city){toast('Заполните поля');return;} 
+        const newOrder = { 
+            title, 
+            price, 
+            city, 
+            description:desc, 
+            businessId:currentUser.id, 
+            businessName:currentUser.name, 
+            status:'open', 
+            takenBy:null, 
+            completed:false, 
+            createdAt:new Date().toISOString() 
+        }; 
+        const newRef = push(ref(db, 'orders')); 
+        await set(newRef, newOrder); 
+        toast('Объявление создано!'); 
+        showPage('business_panel'); 
+        loadOrders(); 
+    }
     window.postOrder = postOrder;
     
-    async function takeOrder(orderId){ if(!currentUser||currentUser.role!=='worker') return; const orderRef = ref(db, `orders/${orderId}`); const snapshot = await get(orderRef); const order = snapshot.val(); if(order && order.status==='open'){ await update(orderRef, { status:'taken', takenBy:currentUser.id }); const acceptRef = push(ref(db, 'accepted')); await set(acceptRef, { orderId, workerId:currentUser.id, completed:false, takenAt:new Date().toISOString() }); toast('Смена принята!'); loadOrders(); renderWorker(); } else toast('Недоступно'); }
-    window.takeOrder = takeOrder;
-    
-    async function completeOrderByBusiness(orderId){ if(!currentUser) return; const orderRef = ref(db, `orders/${orderId}`); const snapshot = await get(orderRef); const order = snapshot.val(); if(!order || order.completed) return toast('Уже завершён'); if(order.status!=='taken') return toast('Заказ не принят'); if(currentUser.balance < order.price){ toast('Недостаточно средств!'); return; } await update(ref(db, `users/${currentUser.id}/balance`), currentUser.balance - order.price); const workerSnapshot = await get(ref(db, `users/${order.takenBy}`)); const worker = workerSnapshot.val(); if(worker) await update(ref(db, `users/${order.takenBy}/balance`), (worker.balance||0) + order.price); await update(orderRef, { completed:true, status:'completed' }); const tx1 = push(ref(db, 'transactions')); await set(tx1, { userId:currentUser.id, amount:order.price, type:'expense', desc:`Оплата "${order.title}"`, date:new Date().toLocaleString() }); const tx2 = push(ref(db, 'transactions')); await set(tx2, { userId:order.takenBy, amount:order.price, type:'income', desc:`Получена оплата за "${order.title}"`, date:new Date().toLocaleString() }); currentUser.balance -= order.price; toast(`✅ Заказ завершён!`); loadOrders(); renderBusiness(); renderWorker(); pendingRating = { orderId, workerId:order.takenBy }; let modal=document.getElementById('ratingModal'); modal.style.display='flex'; document.getElementById('ratingTargetName').innerHTML=`Оцените работу ${worker?.name||'исполнителя'}`; let stars=document.querySelectorAll('#ratingModal .star-btn'); stars.forEach(star=>{ star.classList.remove('active'); star.onclick=()=>{ let val=parseInt(star.getAttribute('data-rate')); window.tempRateVal=val; stars.forEach(s=>s.classList.remove('active')); for(let i=0;i<val;i++) stars[i].classList.add('active'); }; }); window.tempRateVal=5; for(let i=0;i<5;i++) stars[i].classList.add('active'); document.getElementById('ratingComment').value=''; }
-    window.completeOrderByBusiness = completeOrderByBusiness;
-    
-    let pendingRating = null;
-    async function submitRating(){ if(!pendingRating) { document.getElementById('ratingModal').style.display='none'; return; } let rate=window.tempRateVal||5; let comment=document.getElementById('ratingComment').value||'Отличная работа!'; const workerSnapshot = await get(ref(db, `users/${pendingRating.workerId}`)); const worker = workerSnapshot.val(); if(worker){ let newRating = (worker.rating + rate) / 2; await update(ref(db, `users/${pendingRating.workerId}`), { rating:Math.round(newRating*10)/10, ratingCount:(worker.ratingCount||0)+1 }); const reviewRef = push(ref(db, 'reviews')); await set(reviewRef, { targetId:pendingRating.workerId, targetType:'worker', fromId:currentUser.id, rating:rate, comment, date:new Date().toLocaleString() }); toast(`⭐ Оценка ${rate} выставлена!`); } pendingRating=null; document.getElementById('ratingModal').style.display='none'; loadUsers(); renderBusiness(); renderWorker(); }
-    window.submitRating = submitRating;
-    
-    async function withdrawMoneyWorker(){ if(currentUser && currentUser.balance>0){ let amount=currentUser.balance; await update(ref(db, `users/${currentUser.id}/balance`), 0); const txRef = push(ref(db, 'transactions')); await set(txRef, { userId:currentUser.id, amount, type:'expense', desc:`Вывод средств ${amount}₸`, date:new Date().toLocaleString() }); currentUser.balance = 0; toast(`Выведено ${amount.toLocaleString()}₸`); renderWorker(); } else toast('Баланс нулевой'); }
-    window.withdrawMoneyWorker = withdrawMoneyWorker;
-    
-    function filterOrdersDebounce(){ if(filterTimeout) clearTimeout(filterTimeout); filterTimeout = setTimeout(()=>{ renderWorker(); }, 300); }
-    window.filterOrdersDebounce = filterOrdersDebounce;
-    
-    function renderWorker(){ if(!currentUser||currentUser.role!=='worker') return; let filterTitle=document.getElementById('sTitle')?.value.toLowerCase()||''; let filterCity=document.getElementById('sCity')?.value.toLowerCase()||''; let available = allOrders.filter(o=>o.status==='open' && (!filterTitle||o.title.toLowerCase().includes(filterTitle)) && (!filterCity||o.city.toLowerCase().includes(filterCity))); let container=document.getElementById('worker_list'); if(container) container.innerHTML=available.map(o=>`<div class="order-item"><div><b><i class="fas fa-briefcase"></i> ${o.title}</b><br>📍 ${o.city} | 💰 ${o.price.toLocaleString()} ₸<br><small><i class="fas fa-building"></i> ${o.businessName}</small>${o.description?`<br><small>📝 ${o.description.substring(0,60)}</small>`:''}</div><button class="btn-action btn-sm" onclick="takeOrder('${o.id}')"><i class="fas fa-hand-peace"></i> Принять</button></div>`).join('')||'<div class="empty-state">Нет доступных смен</div>'; document.getElementById('wName').innerHTML=`<i class="fas fa-user"></i> ${currentUser.name}`; document.getElementById('wRating').innerHTML=currentUser.rating; document.getElementById('wRatingCount').innerHTML=`(${currentUser.ratingCount||0} оценок)`; document.getElementById('wRatingStars').innerHTML=renderStars(currentUser.rating); document.getElementById('wBalance').innerHTML=currentUser.balance.toLocaleString(); }
-    
-    async function renderBusiness(){ if(!currentUser||currentUser.role!=='business') return; let myOrders = allOrders.filter(o=>o.businessId===currentUser.id); let container=document.getElementById('biz_list'); if(container) container.innerHTML=myOrders.map(o=>{ let workerInfo = o.takenBy ? allUsers.find(u=>u.id===o.takenBy) : null; let statusText=o.status==='open'?'🔵 Открыт':o.status==='taken'?'🟡 Выполняется':o.completed?'✅ Завершён':'—'; return `<div class="order-item"><div><b>${o.title}</b> | ${o.city} | ${o.price.toLocaleString()} ₸<br>Статус: ${statusText}<br>${workerInfo?`<i class="fas fa-user"></i> Исполнитель: ${workerInfo.name} ${renderStars(workerInfo.rating)}`:''}</div><div>${o.status==='taken' && !o.completed?`<button class="btn-action btn-sm" onclick="completeOrderByBusiness('${o.id}')"><i class="fas fa-check-circle"></i> Завершить</button>`:o.completed?'<span class="badge" style="background:var(--success)">✔ Оплачен</span>':''}</div></div>`; }).join('')||'<div class="empty-state">Нет объявлений</div>'; document.getElementById('bName').innerHTML=`<i class="fas fa-building"></i> ${currentUser.name}`; document.getElementById('bRating').innerHTML=currentUser.rating; document.getElementById('bRatingCount').innerHTML=`(${currentUser.ratingCount||0} оценок)`; document.getElementById('bBalance').innerHTML=currentUser.balance.toLocaleString(); }
-    
-    function renderMyJobs(){ if(!currentUser) return; let myAccepted = allOrders.filter(o=>o.takenBy===currentUser.id); let container=document.getElementById('my_list'); if(container) container.innerHTML=myAccepted.map(ord=>`<div class="order-item"><div><b>${ord.title}</b> | ${ord.city} | ${ord.price.toLocaleString()} ₸<br>Статус: ${ord.completed?'✅ Завершён':'🟡 Ожидает'}</div></div>`).join('')||'<div class="empty-state">Нет принятых задач</div>'; }
-    
-    // Load initial data and setup realtime listeners
-    async function init(){ const saved = sessionStorage.getItem('wl_current'); if(saved) { currentUser = JSON.parse(saved); updateNav(); } initTheme(); await loadUsers(); await loadOrders(); onValue(ref(db, 'users'), () => loadUsers()); onValue(ref(db, 'orders'), () => loadOrders()); renderWorker(); renderBusiness(); }
-    window.renderWorker = renderWorker; window.renderBusiness = renderBusiness; window.renderMyJobs = renderMyJobs;
-    init();
-</script>
-</body>
-</html>
+    async function takeOrder(orderId){ 
+        if(!currentUser||currentUser.role!=='worker') return; 
+        const orderRef = ref(db, `orders/${orderId}`); 
+        const snapshot = await get(orderRef); 
+        const order = snapshot.val(); 
+        if(order && order.status==='open'){ 
+            await update(orderRef, { status:'taken', takenBy:currentUser.id }); 
+            const acceptRef = push(ref(db, 'accepted')); 
+            await set(acceptRef, { order
