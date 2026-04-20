@@ -429,16 +429,51 @@
         toast('Вы вышли'); 
     }
     
-    async function addMoney() { 
-        if(!currentUser || currentUser.role !== 'business') return; 
-        let add = 10000; 
-        await update(ref(db, `users/${currentUser.id}/balance`), currentUser.balance + add); 
-        const txRef = push(ref(db, 'transactions')); 
-        await set(txRef, { userId: currentUser.id, amount: add, type: 'income', desc: `Пополнение на ${add}₸`, date: new Date().toLocaleString() }); 
-        currentUser.balance += add; 
-        toast(`Баланс пополнен на ${add}₸`); 
-        renderBusiness(); 
+   async function addMoney() { 
+    console.log('addMoney вызвана');
+    console.log('currentUser:', currentUser);
+    
+    if(!currentUser) { 
+        toast('Пользователь не авторизован'); 
+        return; 
     }
+    if(currentUser.role !== 'business') { 
+        toast('Только бизнес-аккаунты могут пополнять баланс'); 
+        return; 
+    }
+    
+    let add = 10000; 
+    console.log('Пополнение на:', add);
+    
+    try {
+        // Получаем актуальные данные пользователя из Firebase
+        const userSnapshot = await get(ref(db, `users/${currentUser.id}`));
+        const freshUser = userSnapshot.val();
+        const newBalance = (freshUser?.balance || 0) + add;
+        
+        await update(ref(db, `users/${currentUser.id}/balance`), newBalance);
+        
+        const txRef = push(ref(db, 'transactions')); 
+        await set(txRef, { 
+            userId: currentUser.id, 
+            amount: add, 
+            type: 'income', 
+            desc: `Пополнение на ${add}₸`, 
+            date: new Date().toLocaleString() 
+        });
+        
+        // Обновляем currentUser
+        currentUser.balance = newBalance;
+        
+        // Обновляем отображение
+        await renderBusiness();
+        
+        toast(`Баланс пополнен на ${add}₸! Новый баланс: ${newBalance}₸`); 
+    } catch(error) {
+        console.error('Ошибка при пополнении:', error);
+        toast('Ошибка при пополнении баланса');
+    }
+}
     
     async function postOrder() { 
         if(!currentUser || currentUser.role !== 'business') return; 
